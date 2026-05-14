@@ -126,6 +126,107 @@
       color: var(--teal);
     }
 
+    a.badge {
+      text-decoration: none;
+      transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+
+    a.badge:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* — YouTube embed — */
+    .video-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 1040px;
+      margin: 8px auto 0;
+      aspect-ratio: 16 / 9;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--line);
+      background: #000;
+    }
+    .video-wrap iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .video-fallback {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      text-decoration: none;
+      color: #E2E8F0;
+      background:
+        radial-gradient(600px 320px at 50% 40%, rgba(20, 184, 166, .25), transparent 70%),
+        linear-gradient(180deg, #0F172A, #0B1224);
+      padding: 32px;
+    }
+    .video-fallback[hidden] { display: none; }
+    .video-fallback-inner { max-width: 560px; }
+    .video-fallback .play-icon {
+      width: 84px; height: 84px;
+      margin: 0 auto 18px;
+      border-radius: 50%;
+      background: var(--teal);
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px;
+      box-shadow: 0 0 0 8px rgba(20, 184, 166, .18), 0 18px 40px rgba(20, 184, 166, .35);
+      transition: transform .2s ease;
+    }
+    .video-fallback:hover .play-icon { transform: scale(1.06); }
+    .fallback-title { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .fallback-sub { font-size: 13px; color: var(--slate-soft); line-height: 1.6; }
+    .fallback-sub code {
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      color: var(--teal-2);
+      padding: 1px 6px; border-radius: 5px; font-size: 12px;
+    }
+    .video-meta {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      justify-content: center;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+    .video-meta .chip-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid var(--line);
+      color: var(--ink-soft);
+      font-size: 13px;
+      font-family: 'JetBrains Mono', monospace;
+      text-decoration: none;
+      box-shadow: var(--shadow-sm);
+      transition: transform .15s ease, background .15s ease;
+    }
+    .video-meta .chip-link:hover {
+      transform: translateY(-1px);
+      background: var(--teal-wash);
+      color: var(--teal-ink);
+      border-color: rgba(20, 184, 166, .3);
+    }
+    .video-meta .chip-link .dot {
+      color: var(--teal);
+      font-weight: 700;
+    }
+
     h1 {
       font-size: 76px;
       line-height: 1.04;
@@ -993,6 +1094,7 @@
           <span class="badge"><span class="dot">&gt;_</span> rust + typescript</span>
           <span class="badge alt"><span class="dot">●</span> all four phases shipped</span>
           <span class="badge alt"><span class="dot">▲</span> overgraph storage · 2026-05-01</span>
+          <a class="badge" href="https://github.com/shoocstorm/ug" target="_blank" rel="noopener"><span class="dot">★</span> github.com/shoocstorm/ug</a>
         </div>
       </div>
       <div class="footer-bar">
@@ -1726,7 +1828,45 @@
       </div>
     </section>
 
-    <!-- ───────────────────────────────────────── 14 · CLOSE ─────────────────────────────────────── -->
+    <!-- ───────────────────────────────────────── 14 · DEMO ──────────────────────────────────────── -->
+    <section class="slide" data-title="Demo">
+      <span class="badge"><span class="dot">▶</span> live demo</span>
+      <h1 class="small">See <span class="hl">UltraGraph-KB</span> in action.</h1>
+      <p class="lede" style="margin-bottom: 12px;">A full walkthrough — indexing, embedding, the graph viz, hybrid PPR retrieval, and the MCP handshake — in one take.</p>
+
+      <div class="video-wrap" id="video-wrap">
+        <iframe
+          id="yt-embed"
+          src="https://www.youtube-nocookie.com/embed/d4OgINrD27Y?rel=0&modestbranding=1&playsinline=1"
+          title="UltraGraph-KB demo"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen></iframe>
+        <a class="video-fallback" id="yt-fallback" href="https://youtu.be/d4OgINrD27Y" target="_blank" rel="noopener" hidden>
+          <div class="video-fallback-inner">
+            <div class="play-icon">▶</div>
+            <div class="fallback-title">Open demo on YouTube</div>
+            <div class="fallback-sub">Embeds are blocked when this file is opened via <code>file://</code>.<br/>Serve it (e.g. <code>python3 -m http.server</code>) or deploy via Firebase.</div>
+          </div>
+        </a>
+      </div>
+
+      <div class="video-meta">
+        <a class="chip-link" href="https://youtu.be/d4OgINrD27Y" target="_blank" rel="noopener">
+          <span class="dot">▶</span> youtu.be/d4OgINrD27Y
+        </a>
+        <a class="chip-link" href="https://github.com/shoocstorm/ug" target="_blank" rel="noopener">
+          <span class="dot">★</span> github.com/shoocstorm/ug
+        </a>
+      </div>
+
+      <div class="footer-bar">
+        <span class="tip">Run it yourself</span><span class="sep"></span>
+        <span><code>git clone https://github.com/shoocstorm/ug</code> · <code>ug gen -i ./src --serve</code></span>
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────── 15 · CLOSE ─────────────────────────────────────── -->
     <section class="slide title-slide" data-title="Try it">
       <div>
         <div class="brand">Try it</div>
@@ -1754,10 +1894,19 @@
             style="background: var(--bg-alt); padding: 4px 10px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; color: var(--ink); font-size: 18px;">ug</code>
           · perfect context, in seconds.
         </div>
+
+        <div class="video-meta" style="margin-top: 28px;">
+          <a class="chip-link" href="https://github.com/shoocstorm/ug" target="_blank" rel="noopener">
+            <span class="dot">★</span> github.com/shoocstorm/ug
+          </a>
+          <a class="chip-link" href="https://youtu.be/d4OgINrD27Y" target="_blank" rel="noopener">
+            <span class="dot">▶</span> watch the demo
+          </a>
+        </div>
       </div>
       <div class="footer-bar">
         <span class="tip">Last refreshed</span><span class="sep"></span>
-        <span>2026-05-13 · all four phases shipped · OverGraph migration complete</span>
+        <span>2026-05-14 · all four phases shipped · OverGraph migration complete</span>
       </div>
     </section>
 
@@ -1765,7 +1914,7 @@
 
   <div class="hud">
     <button id="prev" aria-label="Previous">◀</button>
-    <div class="pill"><span id="cur">1</span> / <span id="tot">14</span></div>
+    <div class="pill"><span id="cur">1</span> / <span id="tot">15</span></div>
     <button id="next" aria-label="Next">▶</button>
   </div>
 
@@ -1813,6 +1962,19 @@
       });
 
       go(0);
+    })();
+
+    // YouTube embeds error out with code 153 on file:// origins.
+    // Detect that case and swap in the click-through poster.
+    (function () {
+      const isFileProto = location.protocol === 'file:';
+      const iframe = document.getElementById('yt-embed');
+      const fallback = document.getElementById('yt-fallback');
+      if (!iframe || !fallback) return;
+      if (isFileProto) {
+        iframe.remove();
+        fallback.hidden = false;
+      }
     })();
   </script>
 </body>
