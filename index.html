@@ -307,6 +307,34 @@
       background: var(--slate-soft);
     }
 
+    .footer-bar .arch-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: var(--teal-wash);
+      border: 1px solid rgba(20, 184, 166, .28);
+      color: var(--teal-ink);
+      font-weight: 600;
+      font-size: 12.5px;
+      text-decoration: none;
+      transition: background .15s ease, transform .15s ease, border-color .15s ease;
+    }
+    .footer-bar .arch-link svg {
+      width: 14px;
+      height: 14px;
+    }
+    .footer-bar .arch-link .arrow {
+      font-size: 13px;
+      line-height: 1;
+    }
+    .footer-bar .arch-link:hover {
+      background: rgba(20, 184, 166, .14);
+      border-color: rgba(20, 184, 166, .45);
+      transform: translateY(-1px);
+    }
+
     .footer-bar code {
       font-family: 'JetBrains Mono', monospace;
       background: #fff;
@@ -1196,6 +1224,12 @@
       <div class="footer-bar">
         <span class="tip">Why hybrid?</span><span class="sep"></span>
         <span>Speed where it pays · flexibility where it matters.</span>
+        <span class="sep"></span>
+        <a class="arch-link" href="architecture.html" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8 7l8 0M7 8l0 8M17 8l0 8M8 17l8 0"/></svg>
+          View full diagram
+          <span class="arrow">↗</span>
+        </a>
       </div>
     </section>
 
