@@ -81,4 +81,4 @@ case ":$PATH:" in
 esac
 
 info "Next: run 'ug gen' in a repo to build your first knowledge graph."
-info "For MCP (Claude Desktop / Cursor) setup: node $INSTALL_ROOT/.ug/cli.mjs mcp install claude"
+info "For MCP (Claude / Cursor etc.) setup: ug mcp install claude"
