@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=1280, initial-scale=1" />
-  <title>UltraGraph-KB — Perfect context, in seconds.</title>
+  <title>UltraGraph-KB — The right context, in seconds.</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -547,6 +547,53 @@
     .terminal.compact pre {
       font-size: 13px;
       padding: 14px 18px;
+    }
+
+    .copy-btn {
+      background: rgba(45, 212, 191, .12);
+      color: var(--teal-2);
+      border: 1px solid rgba(45, 212, 191, .35);
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: .02em;
+      cursor: pointer;
+      transition: background .15s ease, color .15s ease;
+      flex-shrink: 0;
+    }
+
+    .copy-btn:hover {
+      background: rgba(45, 212, 191, .22);
+    }
+
+    .copy-btn.copied {
+      background: var(--teal);
+      color: #06251F;
+      border-color: var(--teal);
+    }
+
+    .terminal .titlebar .copy-btn {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .cmd-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+      background: var(--code-bg);
+      border-radius: 10px;
+      padding: 10px 14px;
+    }
+
+    .cmd-chip code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--code-text);
     }
 
     .c-key {
@@ -1111,24 +1158,44 @@
   <div class="progress" id="progress"></div>
   <div class="deck" id="deck">
 
-    <!-- ───────────────────────────────────────── 1 · TITLE ───────────────────────────────────────── -->
-    <section class="slide title-slide active" data-title="Title">
-      <div>
-        <div class="brand">UltraGraph-KB · <span style="color: var(--teal)">ug</span></div>
-        <h1>Perfect <span class="hl">context</span>,<br />in <span class="hl">seconds</span>.</h1>
-        <div class="tag">A local-first knowledge-base generator that turns any codebase into a queryable <strong
-            style="color: var(--ink)">Semantic Knowledge Graph</strong>.</div>
-        <div class="meta">
-          <span class="badge"><span class="dot">&gt;_</span> rust + typescript</span>
-          <span class="badge alt"><span class="dot">●</span> all four phases shipped</span>
-          <span class="badge alt"><span class="dot">▲</span> overgraph storage · 2026-05-01</span>
-          <a class="badge" href="https://github.com/shoocstorm/ug" target="_blank" rel="noopener"><span class="dot">★</span> github.com/shoocstorm/ug</a>
+    <!-- ───────────────────────────────────────── 1 · DEMO + TITLE ───────────────────────────────── -->
+    <section class="slide title-slide active" data-title="Demo">
+      <div class="two-col" style="align-items: center; column-gap: 56px;">
+        <div>
+          <div class="brand">UltraGraph-KB · <span style="color: var(--teal)">ug</span></div>
+          <h1 style="font-size: 56px; line-height: 1.08;">The <span class="hl">right context</span>, in <span
+              class="hl">seconds</span>.</h1>
+          <div class="tag" style="margin-top: 10px;">A local-first knowledge-base generator that turns your codebase or document collection
+            into a queryable <strong style="color: var(--ink)">Semantic Knowledge Graph</strong>.</div>
+          <div class="meta" style="margin-top: 20px;">
+            <span class="badge"><span class="dot">&gt;_</span> rust + typescript</span>
+            <a class="badge" href="https://github.com/shoocstorm/ug" target="_blank" rel="noopener"><span
+                class="dot">★</span> github.com/shoocstorm/ug</a>
+          </div>
+        </div>
+        <div>
+          <div class="video-wrap" id="video-wrap" style="max-width: 100%; margin: 0;">
+            <iframe id="yt-embed"
+              src="https://www.youtube-nocookie.com/embed/3K-L7NSw9vs?rel=0&modestbranding=1&playsinline=1"
+              title="UltraGraph-KB demo"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            <a class="video-fallback" id="yt-fallback" href="https://youtu.be/3K-L7NSw9vs" target="_blank"
+              rel="noopener" hidden>
+              <div class="video-fallback-inner">
+                <div class="play-icon">▶</div>
+                <div class="fallback-title">Open demo on YouTube</div>
+                <div class="fallback-sub">Embeds are blocked when this file is opened via <code>file://</code>.<br />Serve
+                  it (e.g. <code>python3 -m http.server</code>) or deploy via Firebase.</div>
+              </div>
+            </a>
+          </div>
         </div>
       </div>
       <div class="footer-bar">
         <span class="tip">Tip</span> <span class="sep"></span>
         <span>navigate with</span> <span class="kbd">←</span> <span class="kbd">→</span> <span class="sep"></span>
-        <span>jump with</span> <span class="kbd">1</span>–<span class="kbd">9</span>
+        <span>jump with</span> <span class="kbd">1</span>–<span class="kbd">7</span>
       </div>
     </section>
 
@@ -1179,51 +1246,35 @@
       </div>
     </section>
 
-    <!-- ───────────────────────────────────────── 3 · ARCHITECTURE ────────────────────────────────── -->
-    <section class="slide" data-title="Architecture">
-      <span class="badge"><span class="dot">02</span> Hybrid architecture</span>
-      <h1 class="small">Rust saturates cores. <span class="hl">TypeScript</span> owns the API.</h1>
+    <!-- ───────────────────────────────────────── 3 · THE SOLUTION ────────────────────────────────── -->
+    <section class="slide" data-title="The Solution">
+      <span class="badge"><span class="dot">02</span> The solution</span>
+      <h1 class="small">One graph. Every relationship. <span class="hl">Grounded answers.</span></h1>
+      <p class="lede">UltraGraph indexes your codebase into a single structural graph, then lets that structure
+        guide retrieval — so one relevant hit surfaces the whole neighborhood an answer needs, not just its
+        nearest vector neighbors.</p>
 
-      <div class="stack-layers" style="margin-top: 16px;">
-        <div class="layer">
-          <div class="label">Interface <span class="sub">TypeScript · Node 20+</span></div>
-          <div class="chips">
-            <span class="chip">cli.cjs</span>
-            <span class="chip">mcp-server.mjs</span>
-            <span class="chip">pnpm</span>
-            <span class="chip">zod</span>
-          </div>
+      <div class="grid-3" style="margin-top: 18px;">
+        <div class="card tinted">
+          <h3>One graph, not isolated chunks</h3>
+          <p class="sub">Files, symbols, and every relationship between them — calls, imports, extends — land in
+            a single queryable graph. Nothing is retrieved in isolation.</p>
         </div>
-        <div class="layer">
-          <div class="label">NAPI-RS Bridge <span class="sub">native .node module</span></div>
-          <div class="chips">
-            <span class="chip acc">napi_bindings.rs</span>
-            <span class="chip">zero-copy</span>
-          </div>
+        <div class="card tinted">
+          <h3>Retrieval follows structure</h3>
+          <p class="sub">Personalized PageRank walks outward from every relevant seed at once, surfacing the
+            neighborhood an answer actually needs — not a lone top-1 hit.</p>
         </div>
-        <div class="layer core">
-          <div class="label">Core Engine <span class="sub">Rust · the turbo layer</span></div>
-          <div class="chips">
-            <span class="chip">ignore + rayon</span>
-            <span class="chip">tree-sitter</span>
-            <span class="chip">blake3</span>
-            <span class="chip">axum + tower</span>
-            <span class="chip acc">ppr + rrf</span>
-          </div>
-        </div>
-        <div class="layer">
-          <div class="label">Storage & Embeddings <span class="sub">embedded graph + vector + FTS</span></div>
-          <div class="chips">
-            <span class="chip acc">OverGraph</span>
-            <span class="chip">Qwen3-Embedding-0.6B-4bit-DWQ</span>
-            <span class="chip">openai-compatible @ :8000</span>
-          </div>
+        <div class="card tinted">
+          <h3>Local-first, zero setup</h3>
+          <p class="sub">Runs on your machine in seconds — no external services required, ready for any AI
+            agent via MCP.</p>
         </div>
       </div>
 
       <div class="footer-bar">
-        <span class="tip">Why hybrid?</span><span class="sep"></span>
-        <span>Speed where it pays · flexibility where it matters.</span>
+        <span class="tip">How</span><span class="sep"></span>
+        <span>Structure-first indexing → graph-aware retrieval → local, zero-setup runtime</span>
         <span class="sep"></span>
         <a class="arch-link" href="architecture.html" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8 7l8 0M7 8l0 8M17 8l0 8M8 17l8 0"/></svg>
@@ -1233,206 +1284,51 @@
       </div>
     </section>
 
-    <!-- ───────────────────────────────────────── 4 · PHASE 1 ─────────────────────────────────────── -->
-    <section class="slide" data-title="Phase 1 — Indexer">
-      <span class="section-tag">Phase 1 · the turbo indexer</span>
-      <h1 class="small">A 1,000-file repo, <span class="hl">in seconds</span>.</h1>
+    <!-- ───────────────────────────────────────── 4 · INDEX, GRAPH & SERVE ────────────────────────── -->
+    <section class="slide" data-title="Index, Graph & Serve">
+      <span class="section-tag">Index → Graph → Serve · in seconds</span>
+      <h1 class="small">A repo becomes a graph, <span class="hl">instantly viewable</span>.</h1>
 
       <div class="two-col">
         <ul class="feat">
-          <li><strong>Parallel crawler</strong> — <code>rayon</code> over <code>ignore</code>, respects
-            <code>.gitignore</code></li>
-          <li><strong>Incremental indexing</strong> — <code>blake3</code> hashes → only re-parse changed files</li>
-          <li><strong>AST extraction</strong> — TypeScript · Python · Markdown (CommonMark)</li>
-          <li><strong>NAPI bridge</strong> — one call: <code>index(path)</code> → structured JSON of nodes + edges</li>
+          <li><strong>Parallel, incremental indexing</strong> — <code>.gitignore</code>-aware, <code>blake3</code>-cached
+          </li>
+          <li><strong>7 languages</strong> — TypeScript, JavaScript, Python, Java, Rust, Markdown, PDF</li>
+          <li><strong>9 structural edge types</strong> + K-hop BFS, centrality, cycles, shortest path</li>
+          <li><strong>One binary serves it all</strong> — visualization + full REST API, zero setup</li>
         </ul>
-        <div class="terminal compact">
-          <div class="titlebar">
-            <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-            <div class="title">native/src/indexer.rs</div>
-          </div>
-          <pre><span class="c-key">use</span> rayon::prelude::*;
-<span class="c-key">use</span> ignore::WalkBuilder;
-
-<span class="c-key">fn</span> <span class="c-fn">crawl</span>(root: &<span class="c-key">Path</span>) -> Vec&lt;FileNode&gt; {
-    WalkBuilder::<span class="c-fn">new</span>(root)
-        .<span class="c-fn">build</span>()
-        .par_bridge()
-        .<span class="c-fn">filter_map</span>(|entry| {
-            <span class="c-key">let</span> p = entry.<span class="c-fn">ok</span>()?.<span class="c-fn">into_path</span>();
-            <span class="c-key">let</span> hash = blake3::<span class="c-fn">hash</span>(&fs::<span class="c-fn">read</span>(&p).<span class="c-fn">ok</span>()?);
-            <span class="c-fn">parse_ast</span>(&p, hash)   <span class="c-com">// tree-sitter</span>
-        })
-        .<span class="c-fn">collect</span>()
-}</pre>
+        <div>
+          <div class="terminal compact">
+            <div class="titlebar">
+              <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+              <div class="title">~/repo · zsh</div>
+            </div>
+            <pre><span class="prompt">$</span> ug gen <span class="c-flag">-i</span> ./src <span class="c-flag">--serve --watch</span>
+<span class="c-com"># index → graph → viz → ingest → live server</span>
+<span class="c-acc">▸</span> listening on http://127.0.0.1:8080</pre>
+          </div>          
         </div>
+      </div>
+
+      <div style="margin-top: 18px; display: flex; justify-content: center;">
+        <img src="UG-Proj-List.png" alt="UltraGraph-KB project list" style="max-width: 100%; height: auto; border-radius: 14px; box-shadow: var(--shadow-md); border: 1px solid var(--line);" />
       </div>
 
       <div class="footer-bar">
         <span class="tip">Spec target</span><span class="sep"></span>
-        <span>Ingest a 1,000-file repo in <strong style="color: var(--ink)">&lt; 5 s</strong> · memory <strong
-            style="color: var(--ink)">&lt; 500 MB</strong></span>
+        <span>&lt; 5 s / 1,000 files · pre-compressed once, served forever from RAM</span>
       </div>
     </section>
 
-    <!-- ───────────────────────────────────────── 5 · PHASE 1 EXTENDED ─────────────────────────────── -->
-    <section class="slide" data-title="Phase 1 — Extended">
-      <span class="section-tag">Phase 1 · extended · the relationship cheat-sheet</span>
-      <h1 class="small">Nine edges. <span class="hl">Every</span> structural truth.</h1>
-
-      <table class="t">
-        <thead>
-          <tr>
-            <th class="mono">Edge</th>
-            <th>Source → Target</th>
-            <th>What it surfaces</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><span class="pillv">CONTAINS</span></td>
-            <td class="mono">Folder/File → Folder/File/Symbol</td>
-            <td>Structural hierarchy (folder forest + symbol + heading nesting)</td>
-          </tr>
-          <tr>
-            <td><span class="pillv">IMPORTS</span></td>
-            <td class="mono">File/Symbol → File/Symbol</td>
-            <td>Cross-file dependencies</td>
-          </tr>
-          <tr>
-            <td><span class="pillv">EXPORTS</span></td>
-            <td class="mono">Symbol → File</td>
-            <td>Module exports</td>
-          </tr>
-          <tr>
-            <td><span class="pillv">CALLS</span></td>
-            <td class="mono">Function → Function</td>
-            <td>The call graph</td>
-          </tr>
-          <tr>
-            <td><span class="pillv">EXTENDS</span></td>
-            <td class="mono">Class → Class</td>
-            <td>Inheritance</td>
-          </tr>
-          <tr>
-            <td><span class="pillv">IMPLEMENTS</span></td>
-            <td class="mono">Class → Interface</td>
-            <td>Interface implementations</td>
-          </tr>
-          <tr>
-            <td><span class="pillv">TYPED_AS</span></td>
-            <td class="mono">Symbol → Type/Symbol</td>
-            <td>Type relationships</td>
-          </tr>
-          <tr>
-            <td><span class="pillv">CONFIGURED_BY</span></td>
-            <td class="mono">Symbol → Config</td>
-            <td>Configuration links</td>
-          </tr>
-          <tr>
-            <td><span class="pillv">DEPENDS_ON</span></td>
-            <td class="mono">File → Package</td>
-            <td>NPM / external deps</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="footer-bar">
-        <span class="tip">Also extracted</span><span class="sep"></span>
-        <span>JSDoc · Python docstrings · signatures · code metrics · file classification · folder hierarchy w/
-          READMEs</span>
-      </div>
-    </section>
-
-    <!-- ───────────────────────────────────────── 6 · PHASE 2 ─────────────────────────────────────── -->
-    <section class="slide" data-title="Phase 2 — Graph + Viz">
-      <span class="section-tag">Phase 2 · embedded persistence + visualization</span>
-      <h1 class="small">Zero-latency traversal. <span class="hl">No external DB.</span></h1>
-
-      <div class="two-col">
-        <ul class="feat">
-          <li><strong>Schema</strong> — Nodes: <code>File · Folder · Symbol · Concept</code></li>
-          <li><strong>K-Hop BFS</strong> — in-memory, Rust-side</li>
-          <li><strong>Graph analytics</strong> — edge-type filtering · shortest path · degree/betweenness · cycle
-            detection</li>
-          <li><strong>D3.js viz</strong> — forceLink + forceManyBody + forceCenter + forceCollide + group-pull forceX/Y
-          </li>
-          <li><strong>Single embedded HTML</strong> — drag · zoom · pan · neighbor hover · responsive SVG</li>
-        </ul>
-        <div class="terminal compact">
-          <div class="titlebar">
-            <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-            <div class="title">visualization.html · d3.v7</div>
-          </div>
-          <pre><span class="c-key">const</span> sim = d3.<span class="c-fn">forceSimulation</span>(nodes)
-  .<span class="c-fn">force</span>(<span class="c-str">"link"</span>,    d3.<span class="c-fn">forceLink</span>(edges).<span class="c-fn">id</span>(d =&gt; d.id))
-  .<span class="c-fn">force</span>(<span class="c-str">"charge"</span>,  d3.<span class="c-fn">forceManyBody</span>().<span class="c-fn">strength</span>(<span class="c-num">-220</span>))
-  .<span class="c-fn">force</span>(<span class="c-str">"center"</span>,  d3.<span class="c-fn">forceCenter</span>(W/<span class="c-num">2</span>, H/<span class="c-num">2</span>))
-  .<span class="c-fn">force</span>(<span class="c-str">"collide"</span>, d3.<span class="c-fn">forceCollide</span>().<span class="c-fn">radius</span>(<span class="c-num">18</span>))
-  .<span class="c-fn">force</span>(<span class="c-str">"x"</span>, d3.<span class="c-fn">forceX</span>(byGroupX).<span class="c-fn">strength</span>(<span class="c-num">0.06</span>))
-  .<span class="c-fn">force</span>(<span class="c-str">"y"</span>, d3.<span class="c-fn">forceY</span>(byGroupY).<span class="c-fn">strength</span>(<span class="c-num">0.06</span>));</pre>
-        </div>
-      </div>
-
-      <div class="footer-bar">
-        <span class="tip">Built with</span><span class="sep"></span>
-        <span>vanilla JS · HTML5 · SVG — <strong style="color: var(--ink)">no build pipeline</strong></span>
-      </div>
-    </section>
-
-    <!-- ───────────────────────────────────────── 7 · PHASE 3 ─────────────────────────────────────── -->
-    <section class="slide" data-title="Phase 3 — Semantic Storage">
-      <span class="section-tag">Phase 3 · semantic storage + enrichment</span>
-      <h1 class="small">Meaning, layered on the <span class="hl">structural map</span>.</h1>
-
-      <div class="grid-3" style="margin-top: 14px;">
-        <div class="card tinted">
-          <h3>Vector integration</h3>
-          <p class="sub">Embed every node via a local OpenAI-compatible endpoint, persist into OverGraph alongside the
-            graph.</p>
-        </div>
-        <div class="card tinted">
-          <h3>Folder-aware embedding text</h3>
-          <p class="sub">Folders ship with a synthesized synopsis — classification, language breakdown, depth — so they
-            have retrieval signal pre-LLM.</p>
-        </div>
-        <div class="card tinted">
-          <h3>Auto-created indexes</h3>
-          <p class="sub">Vector + FTS, built at ingest. No second pass, no maintenance dance.</p>
-        </div>
-      </div>
-
-      <div style="margin-top: 22px;" class="terminal compact">
-        <div class="titlebar">
-          <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-          <div class="title">folder-synopsis (pre-LLM)</div>
-        </div>
-        <pre>{
-  <span class="c-key">"id"</span>:           <span class="c-str">"folder:src/auth"</span>,
-  <span class="c-key">"kind"</span>:         <span class="c-str">"Folder"</span>,
-  <span class="c-key">"classification"</span>: <span class="c-str">"Source"</span>,
-  <span class="c-key">"depth"</span>:        <span class="c-num">2</span>,
-  <span class="c-key">"languages"</span>:    [{ <span class="c-key">"ts"</span>: <span class="c-num">0.82</span> }, { <span class="c-key">"md"</span>: <span class="c-num">0.18</span> }],
-  <span class="c-key">"synopsis"</span>:     <span class="c-str">"Source folder under src/. 9 files. TS-heavy. Contains oauth/, session.ts, README.md."</span>
-}</pre>
-      </div>
-
-      <div class="footer-bar">
-        <span class="tip">Deferred (on roadmap)</span><span class="sep"></span>
-        <span>LLM-written summaries · semantic clustering · "functional modules"</span>
-      </div>
-    </section>
-
-    <!-- ───────────────────────────────────────── 8 · PHASE 4 — THE HEADLINE ──────────────────────── -->
-    <section class="slide" data-title="Phase 4 — GraphRAG">
-      <span class="badge"><span class="dot">★</span> Phase 4 · the headline</span>
+    <!-- ───────────────────────────────────────── 5 · STORAGE, GRAPHRAG & PERFORMANCE ──────────────── -->
+    <section class="slide" data-title="Storage & GraphRAG">
+      <span class="badge"><span class="dot">★</span> Semantic storage + retrieval</span>
       <h1 class="small">Many seeds. <span class="hl">One walk.</span> Token-budgeted answer.</h1>
-      <p class="lede">We replaced the legacy <em>vector top-1 → BFS → MMR rerank</em> with <strong>Personalized PageRank
-          seeded by RRF</strong>, HippoRAG-style. Legacy MMR remains behind <code
-          style="background: var(--bg-alt); padding: 1px 6px; border-radius: 5px; font-family: 'JetBrains Mono', monospace; font-size: 14px;">strategy:"mmr"</code>
-        for diversity-first callers.</p>
+      <p class="lede">Every node is embedded and written into OverGraph as it's ingested — vector + full-text
+        indexes, built automatically. At query time, <strong>Personalized PageRank seeded by RRF</strong>
+        (HippoRAG-style) replaces the old <em>vector top-1 → BFS → MMR rerank</em> cascade.</p>
 
-      <div class="pipe" style="margin-top: 12px;">
+      <div class="pipe" style="margin-top: 14px;">
         <div class="block">
           <h4><span class="tag">stage 1</span> RRF seed pool · vector + FTS</h4>
           <p>top-16 hits → weighted personalization vector (not fixed BFS roots)</p>
@@ -1440,7 +1336,7 @@
         <div class="arrow"></div>
         <div class="block accent">
           <h4><span class="tag">stage 2</span> Personalized PageRank</h4>
-          <p>random walk + restart α = 0.15 · edge-type weights · L1 tol = 1e-4</p>
+          <p>random walk + restart, edge-type weighted — calls &gt; extends &gt; imports &gt; … &gt; contains</p>
         </div>
         <div class="arrow"></div>
         <div class="block">
@@ -1449,300 +1345,23 @@
         </div>
       </div>
 
+      <div style="margin-top: 18px; display: flex; justify-content: center;">
+        <a class="badge alt" href="https://github.com/bhensley5/overgraph" target="_blank" rel="noopener" style="gap: 10px; padding: 10px 22px; font-size: 14px;">
+          <span class="dot">⚡</span> Powered by <strong>OverGraph</strong> — high-performance graph vector DB
+          <span style="font-weight: 400; opacity: .7;">↗</span>
+        </a>
+      </div>
+
       <div class="footer-bar">
         <span class="tip">MCP-native</span><span class="sep"></span>
-        <span><code>search_kb</code> · <code>traverse_kb</code> · <code>ping_embedder</code> over stdio — drop-in for
-          any MCP agent</span>
+        <span><code>search_kb</code> · <code>traverse_kb</code> · <code>ping_embedder</code> over stdio
       </div>
     </section>
 
-    <!-- ───────────────────────────────────────── 9 · PPR KNOBS + LADDER ──────────────────────────── -->
-    <section class="slide" data-title="PPR Tuning">
-      <span class="section-tag">PPR · tuning knobs</span>
-      <h1 class="small">The <span class="hl">edge-weight ladder</span> is the soul of the retrieval story.</h1>
-
-      <div class="two-col" style="grid-template-columns: 1.15fr 1fr;">
-        <div>
-          <table class="t">
-            <thead>
-              <tr>
-                <th class="mono">parameter</th>
-                <th>default</th>
-                <th>effect</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="mono">pprRestartProb (α)</td>
-                <td><span class="pillv">0.15</span></td>
-                <td>Teleport prob. Higher → near seeds; lower → centrality dominates.</td>
-              </tr>
-              <tr>
-                <td class="mono">pprMaxIter</td>
-                <td><span class="pillv">100</span></td>
-                <td>Power-iteration cap (L1 tol = 1e-4).</td>
-              </tr>
-              <tr>
-                <td class="mono">pprSeedPool</td>
-                <td><span class="pillv">16</span></td>
-                <td>RRF hits feeding the personalization vector.</td>
-              </tr>
-              <tr>
-                <td class="mono">pprEdgeWeights</td>
-                <td><span class="pillv">per-type</span></td>
-                <td>Override edge-type weights (case-insensitive).</td>
-              </tr>
-            </tbody>
-          </table>
-          <p class="lede" style="font-size: 13px; margin-top: 16px;"><strong>Scaling note:</strong> PPR loads the full
-            edges table per query — single-digit ms via sparse iteration at ≤100K edges. Past ~1M edges, switch to
-            subgraph restriction or precomputed PPR vectors.</p>
-        </div>
-        <div class="card">
-          <h3 style="margin-bottom: 14px;">Default edge weights</h3>
-          <div class="ladder">
-            <div class="rung">
-              <div class="name">calls</div>
-              <div class="bar" style="width: 100%;"></div>
-              <div class="val">1.00</div>
-            </div>
-            <div class="rung">
-              <div class="name">extends</div>
-              <div class="bar" style="width: 90%;"></div>
-              <div class="val">0.90</div>
-            </div>
-            <div class="rung">
-              <div class="name">implements</div>
-              <div class="bar" style="width: 90%;"></div>
-              <div class="val">0.90</div>
-            </div>
-            <div class="rung">
-              <div class="name">imports</div>
-              <div class="bar" style="width: 70%;"></div>
-              <div class="val">0.70</div>
-            </div>
-            <div class="rung">
-              <div class="name">requires</div>
-              <div class="bar" style="width: 70%;"></div>
-              <div class="val">0.70</div>
-            </div>
-            <div class="rung">
-              <div class="name">exports</div>
-              <div class="bar" style="width: 60%;"></div>
-              <div class="val">0.60</div>
-            </div>
-            <div class="rung">
-              <div class="name">uses</div>
-              <div class="bar" style="width: 60%;"></div>
-              <div class="val">0.60</div>
-            </div>
-            <div class="rung">
-              <div class="name">references</div>
-              <div class="bar dim" style="width: 50%;"></div>
-              <div class="val">0.50</div>
-            </div>
-            <div class="rung">
-              <div class="name">dependson</div>
-              <div class="bar dim" style="width: 40%;"></div>
-              <div class="val">0.40</div>
-            </div>
-            <div class="rung">
-              <div class="name">contains</div>
-              <div class="bar dim" style="width: 30%;"></div>
-              <div class="val">0.30</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="footer-bar">
-        <span class="tip">Exposed via</span><span class="sep"></span>
-        <span>MCP <code>search_kb</code> · NAPI <code>dbHybridSearch</code> · CLI <code>db-rag</code></span>
-      </div>
-    </section>
-
-    <!-- ───────────────────────────────────────── 10 · UG SERVE ───────────────────────────────────── -->
-    <section class="slide" data-title="ug serve">
-      <span class="section-tag"><code
-          style="background: transparent; font-size: 13px; color: var(--teal-ink);">ug serve</code> · the embedded web
-        api</span>
-      <h1 class="small">One Axum process. <span class="hl">Pre-compressed</span> bytes. Zero setup.</h1>
-
-      <div class="two-col">
-        <div>
-          <ul class="feat">
-            <li><strong>Self-contained binary</strong> — <code>visualization.html</code> + <code>d3.v7.min.js</code> are
-              <code>include_str!</code>'d</li>
-            <li><strong>Pre-compressed at startup</strong> — brotli-9 + gzip-9 baked once, served forever</li>
-            <li><strong>Three route phases</strong> — static · read-only graph API · DB-backed semantic/hybrid</li>
-            <li><strong>Default bind</strong> — <code>127.0.0.1</code> — local-first, always</li>
-          </ul>
-          <div style="margin-top: 16px;" class="terminal compact">
-            <div class="titlebar">
-              <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-              <div class="title">~/repo · zsh</div>
-            </div>
-            <pre><span class="prompt">$</span> ug gen <span class="c-flag">-i</span> ./src <span class="c-flag">--serve --watch</span>
-<span class="c-com"># index → graph → viz → ingest → live server</span>
-<span class="c-acc">▸</span> listening on http://127.0.0.1:8080</pre>
-          </div>
-        </div>
-        <div>
-          <h3
-            style="font-size: 15px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .05em; margin: 0 0 10px;">
-            Compression payoff · 31.6 MB graph</h3>
-          <div class="compress">
-            <div class="row-c">
-              <div class="lbl">identity</div>
-              <div class="bar">
-                <div class="fill" style="width: 100%;"></div>
-              </div>
-              <div class="val">31,625,670 B · 1×</div>
-            </div>
-            <div class="row-c">
-              <div class="lbl">gzip-9</div>
-              <div class="bar">
-                <div class="fill t" style="width: 8.8%;"></div>
-              </div>
-              <div class="val">2,777,891 B · ~11×</div>
-            </div>
-            <div class="row-c">
-              <div class="lbl">brotli-9</div>
-              <div class="bar">
-                <div class="fill t" style="width: 7.2%;"></div>
-              </div>
-              <div class="val">2,272,127 B · ~14×</div>
-            </div>
-          </div>
-
-          <h3
-            style="font-size: 15px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .05em; margin: 22px 0 10px;">
-            Route surface</h3>
-          <table class="t">
-            <thead>
-              <tr>
-                <th>phase</th>
-                <th>routes</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><span class="pillv">1 static</span></td>
-                <td class="mono" style="font-size: 12px;">/ · /index.html · /d3.v7.min.js · /graph.json · /healthz</td>
-              </tr>
-              <tr>
-                <td><span class="pillv">2 graph</span></td>
-                <td class="mono" style="font-size: 12px;">/api/graph/stats · /node/*id · /search · /bfs · /path ·
-                  /filter · /centrality · /cycles</td>
-              </tr>
-              <tr>
-                <td><span class="pillv">3 db</span></td>
-                <td class="mono" style="font-size: 12px;">/api/db/node/*id · /api/db/traverse/*id · POST
-                  /api/search/{semantic,hybrid}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="footer-bar">
-        <span class="tip">41,614 nodes / 95,117 edges</span><span class="sep"></span>
-        <span>compressed once at boot — served forever from RAM</span>
-      </div>
-    </section>
-
-    <!-- ───────────────────────────────────────── 11 · PERFORMANCE ────────────────────────────────── -->
-    <section class="slide" data-title="Performance">
-      <span class="badge"><span class="dot">▲</span> performance · overgraph migration</span>
-      <h1 class="small">From <span
-          style="color: var(--slate); text-decoration: line-through; text-decoration-color: rgba(100,116,139,.5);">5
-          minutes</span> to <span class="hl">~1–2 minutes</span>.</h1>
-
-      <div class="grid-4" style="margin-top: 18px;">
-        <div class="stat">
-          <div class="big">9.27<span class="unit">s</span></div>
-          <div class="lbl">Indexing</div>
-          <div class="delta">spec: &lt; 5 s / 1K files</div>
-        </div>
-        <div class="stat">
-          <div class="big">264<span class="unit">ms</span></div>
-          <div class="lbl">Graph build</div>
-          <div class="delta">in-memory, Rust-side</div>
-        </div>
-        <div class="stat">
-          <div class="big">5.7<span class="unit">ms</span></div>
-          <div class="lbl">Hybrid search · p95</div>
-          <div class="delta">PPR · single-digit ms</div>
-        </div>
-        <div class="stat">
-          <div class="big">64.8<span class="unit">ms</span></div>
-          <div class="lbl">Ingest 1K nodes + 5K edges</div>
-          <div class="delta">dev profile · ARM64</div>
-        </div>
-      </div>
-
-      <h3
-        style="font-size: 15px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .05em; margin: 26px 0 8px;">
-        Before / after · ~/.hermes/hermes-agent · M5 Max</h3>
-      <table class="t">
-        <thead>
-          <tr>
-            <th>metric</th>
-            <th>before · LanceDB</th>
-            <th>after · OverGraph (2026-05-01)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Total wall time (full pipeline + embeddings)</td>
-            <td><span class="num-before">~5 min</span></td>
-            <td><span class="num-after">~1–2 min</span></td>
-          </tr>
-          <tr>
-            <td>Embeddings (41,619 nodes)</td>
-            <td><span class="c-dim" style="font-family: 'JetBrains Mono', monospace;">—</span></td>
-            <td class="num-after">618 s</td>
-          </tr>
-          <tr>
-            <td>Node write</td>
-            <td><span class="c-dim" style="font-family: 'JetBrains Mono', monospace;">—</span></td>
-            <td class="num-after">993 ms</td>
-          </tr>
-          <tr>
-            <td>Edge write (95,071)</td>
-            <td><span class="c-dim" style="font-family: 'JetBrains Mono', monospace;">—</span></td>
-            <td class="num-after">215 ms</td>
-          </tr>
-          <tr>
-            <td>Native binary</td>
-            <td><span class="num-before">300 MB</span></td>
-            <td><span class="num-after">10 MB · 30× smaller</span></td>
-          </tr>
-          <tr>
-            <td>DB on disk</td>
-            <td><span class="num-before">300 MB</span></td>
-            <td><span class="num-after">200 MB</span></td>
-          </tr>
-          <tr>
-            <td><code
-                style="background: var(--bg-alt); padding: 1px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 12px;">ppr.rs</code>
-              source size</td>
-            <td><span class="num-before">445 LOC</span></td>
-            <td><span class="num-after">116 LOC · 3.8×</span></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="footer-bar">
-        <span class="tip">Hardware</span><span class="sep"></span>
-        <span>MacBook Pro · M5 Max · 18-core · 40-GPU · 128 GB</span>
-      </div>
-    </section>
-
-    <!-- ───────────────────────────────────────── 12 · MCP INTEGRATION ────────────────────────────── -->
+    <!-- ───────────────────────────────────────── 6 · MCP INTEGRATION ────────────────────────────── -->
     <section class="slide" data-title="MCP Integration">
-      <span class="section-tag">MCP · drop-in for any agent</span>
-      <h1 class="small">One tool call away from <span class="hl">perfect context</span>.</h1>
+      <span class="section-tag">MCP · drop-in for your AI agent</span>
+      <h1 class="small">One tool call away from <span class="hl">the right context</span>.</h1>
 
       <div class="two-col">
         <div>
@@ -1790,129 +1409,46 @@
             </h3>
             <p class="sub">Health-check the local embedding endpoint. Fail fast, fail loud.</p>
           </div>
-        </div>
-      </div>
-
-      <div class="footer-bar">
-        <span class="tip">Local embedding endpoint</span><span class="sep"></span>
-        <span><code>openai/Qwen3-Embedding-0.6B-4bit-DWQ</code> @ <code>http://localhost:8000/v1</code></span>
-      </div>
-    </section>
-
-    <!-- ───────────────────────────────────────── 13 · ROADMAP ───────────────────────────────────── -->
-    <section class="slide" data-title="Roadmap">
-      <span class="section-tag">roadmap · next</span>
-      <h1 class="small">What ships <span class="hl">after</span> perfect context.</h1>
-
-      <div class="roadmap-grid" style="margin-top: 18px;">
-        <div class="card">
-          <div class="when">Q3</div>
-          <h3>Query by signature</h3>
-          <p class="sub">"find every async function that returns Result&lt;T, E&gt; and takes &amp;mut self"</p>
-        </div>
-        <div class="card">
-          <div class="when">Q3</div>
-          <h3>Query by pattern</h3>
-          <p class="sub">AST-shape matching across the call graph — refactor radar with teeth.</p>
-        </div>
-        <div class="card">
-          <div class="when">Q4</div>
-          <h3>LLM summaries + clustering</h3>
-          <p class="sub">"Functional modules" — semantic groups, written summaries per cluster.</p>
-        </div>
-        <div class="card">
-          <div class="when">2027</div>
-          <h3>Scale beyond 1M edges</h3>
-          <p class="sub">Subgraph restriction (k-hop frontier) · precomputed PPR vectors.</p>
-        </div>
-      </div>
-
-      <h3
-        style="font-size: 15px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .05em; margin: 28px 0 10px;">
-        CLI / NAPI / MCP surface · today</h3>
-      <div class="grid-3">
-        <div class="card">
-          <h3>JS CLI · <code
-              style="background: var(--bg-alt); padding: 2px 8px; border-radius: 5px; font-family: 'JetBrains Mono', monospace; font-size: 13px;">src/cli.cjs</code>
-          </h3>
-          <p class="sub" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.7;">index ·
-            graph · gen · bfs · graph-search<br />db-ingest · db-semantic-search · db-traverse · db-rag · ping · serve
-          </p>
-        </div>
-        <div class="card">
-          <h3>NAPI · <code
-              style="background: var(--bg-alt); padding: 2px 8px; border-radius: 5px; font-family: 'JetBrains Mono', monospace; font-size: 13px;">napi_bindings.rs</code>
-          </h3>
-          <p class="sub" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.7;">dbIngest ·
-            dbHybridSearch · dbSemanticSearch · dbTraverse · pingEmbedder<br />buildGraph · kHopBfs · filterEdgesByType
-            · findShortestPath · calculateCentrality · detectCycles · graphKeywordSearch</p>
-        </div>
-        <div class="card">
-          <h3>MCP · <code
-              style="background: var(--bg-alt); padding: 2px 8px; border-radius: 5px; font-family: 'JetBrains Mono', monospace; font-size: 13px;">mcp-server.mjs</code>
-          </h3>
-          <p class="sub" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.7;">search_kb
-            · traverse_kb · ping_embedder<br />(over stdio)</p>
-        </div>
-      </div>
-
-      <div class="footer-bar">
-        <span class="tip">Built for</span><span class="sep"></span>
-        <span>AI coding agents that need <strong style="color: var(--ink)">perfect context</strong> from a repo</span>
-      </div>
-    </section>
-
-    <!-- ───────────────────────────────────────── 14 · DEMO ──────────────────────────────────────── -->
-    <section class="slide" data-title="Demo">
-      <span class="badge"><span class="dot">▶</span> live demo</span>
-      <h1 class="small">See <span class="hl">UltraGraph-KB</span> in action.</h1>
-      <p class="lede" style="margin-bottom: 12px;">A full walkthrough — indexing, embedding, the graph viz, hybrid PPR retrieval, and the MCP handshake — in one take.</p>
-
-      <div class="video-wrap" id="video-wrap">
-        <iframe
-          id="yt-embed"
-          src="https://www.youtube-nocookie.com/embed/d4OgINrD27Y?rel=0&modestbranding=1&playsinline=1"
-          title="UltraGraph-KB demo"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen></iframe>
-        <a class="video-fallback" id="yt-fallback" href="https://youtu.be/d4OgINrD27Y" target="_blank" rel="noopener" hidden>
-          <div class="video-fallback-inner">
-            <div class="play-icon">▶</div>
-            <div class="fallback-title">Open demo on YouTube</div>
-            <div class="fallback-sub">Embeds are blocked when this file is opened via <code>file://</code>.<br/>Serve it (e.g. <code>python3 -m http.server</code>) or deploy via Firebase.</div>
+          <div class="card tinted">
+            <h3>Works with your AI agent</h3>
+            <p class="sub">Claude Desktop, Cursor, or opencode — one command wires it up, no
+              hand-edited JSON.</p>
+            <div class="cmd-chip">
+              <code>ug mcp install claude</code>
+              <button class="copy-btn" data-copy="ug mcp install claude">Copy</button>
+            </div>
           </div>
-        </a>
-      </div>
-
-      <div class="video-meta">
-        <a class="chip-link" href="https://youtu.be/d4OgINrD27Y" target="_blank" rel="noopener">
-          <span class="dot">▶</span> youtu.be/d4OgINrD27Y
-        </a>
-        <a class="chip-link" href="https://github.com/shoocstorm/ug" target="_blank" rel="noopener">
-          <span class="dot">★</span> github.com/shoocstorm/ug
-        </a>
+        </div>
       </div>
 
       <div class="footer-bar">
-        <span class="tip">Run it yourself</span><span class="sep"></span>
-        <span><code>git clone https://github.com/shoocstorm/ug</code> · <code>ug gen -i ./src --serve</code></span>
+        <span class="tip">Zero setup</span><span class="sep"></span>
+        <span>In-process ONNX embedder by default — no external endpoint required</span>
       </div>
     </section>
 
-    <!-- ───────────────────────────────────────── 15 · CLOSE ─────────────────────────────────────── -->
+    <!-- ───────────────────────────────────────── 7 · CLOSE ─────────────────────────────────────── -->
     <section class="slide title-slide" data-title="Try it">
       <div>
         <div class="brand">Try it</div>
-        <h1 style="font-size: 88px;">One command. <br /><span class="hl">Perfect context.</span></h1>
+        <h1 style="font-size: 88px;">One command. <br /><span class="hl">The right context.</span></h1>
 
         <div style="max-width: 820px; margin: 32px auto 0;">
+          <div class="terminal" style="margin-bottom: 16px;">
+            <div class="titlebar">
+              <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+              <div class="title">install</div>
+              <button class="copy-btn" data-copy="curl -fsSL https://ultra-graph.web.app/install.sh | sh">Copy</button>
+            </div>
+            <pre><span class="prompt">$</span> curl <span class="c-flag">-fsSL</span> https://ultra-graph.web.app/install.sh | sh</pre>
+          </div>
+
           <div class="terminal">
             <div class="titlebar">
               <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-              <div class="title">~/repo · zsh</div>
+              <div class="title">then, in any repo</div>
             </div>
-            <pre><span class="prompt">$</span> ug gen <span class="c-flag">-i</span> ~/.hermes/hermes-agent <span class="c-flag">-o</span> ugout/ugdb <span class="c-flag">--serve</span>
+            <pre><span class="prompt">$</span> ug gen <span class="c-flag">-i</span> ~/.hermes/hermes-agent <span class="c-flag">--serve</span>
 
 <span class="c-acc">▸</span> indexing                 <span class="c-num">9.27</span>s
 <span class="c-acc">▸</span> graph build              <span class="c-num">264</span>ms
@@ -1926,14 +1462,14 @@
         <div class="tag" style="margin-top: 36px;">
           UltraGraph-KB · <code
             style="background: var(--bg-alt); padding: 4px 10px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; color: var(--ink); font-size: 18px;">ug</code>
-          · perfect context, in seconds.
+          · the right context, in seconds.
         </div>
 
         <div class="video-meta" style="margin-top: 28px;">
           <a class="chip-link" href="https://github.com/shoocstorm/ug" target="_blank" rel="noopener">
             <span class="dot">★</span> github.com/shoocstorm/ug
           </a>
-          <a class="chip-link" href="https://youtu.be/d4OgINrD27Y" target="_blank" rel="noopener">
+          <a class="chip-link" href="https://youtu.be/3K-L7NSw9vs" target="_blank" rel="noopener">
             <span class="dot">▶</span> watch the demo
           </a>
         </div>
@@ -1996,6 +1532,36 @@
       });
 
       go(0);
+    })();
+
+    // Copy-to-clipboard for install/setup commands. Falls back to a hidden
+    // textarea + execCommand since the Clipboard API needs a secure context
+    // and this page is also opened directly via file://.
+    (function () {
+      document.querySelectorAll('.copy-btn[data-copy]').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const text = btn.dataset.copy;
+          try {
+            await navigator.clipboard.writeText(text);
+          } catch {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand('copy'); } catch {}
+            document.body.removeChild(ta);
+          }
+          const original = btn.textContent;
+          btn.textContent = 'Copied!';
+          btn.classList.add('copied');
+          setTimeout(() => {
+            btn.textContent = original;
+            btn.classList.remove('copied');
+          }, 1500);
+        });
+      });
     })();
 
     // YouTube embeds error out with code 153 on file:// origins.
