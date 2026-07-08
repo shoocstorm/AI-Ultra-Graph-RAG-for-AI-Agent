@@ -174,7 +174,7 @@ Single Axum process. Self-contained: `visualization.html` and `d3.v7.min.js` are
 
 Chain it from the gen pipeline:
 ```bash
-ug gen -i ./src --serve --watch   # index → graph → viz → ingest → live server
+ug gen -i ./src --serve   # index → graph → viz → ingest → live server
 ```
 
 ---
