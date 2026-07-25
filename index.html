@@ -1169,7 +1169,7 @@
           <div class="tag" style="margin-top: 10px;">A local-first knowledge-base generator that turns your codebase or document collection
             into a queryable <strong style="color: var(--ink)">Semantic Knowledge Graph</strong>.</div>
           <div class="meta" style="margin-top: 20px;">
-            <span class="badge"><span class="dot">&gt;_</span> rust + typescript</span>
+            <span class="badge"><span class="dot">&gt;_</span> pure rust — 10 mb binary</span>
             <a class="badge" href="https://github.com/shoocstorm/ug" target="_blank" rel="noopener"><span
                 class="dot">★</span> github.com/shoocstorm/ug</a>
           </div>
@@ -1365,7 +1365,7 @@
 
       <div class="footer-bar">
         <span class="tip">MCP-native</span><span class="sep"></span>
-        <span><code>search_kb</code> · <code>traverse_kb</code> · <code>find_symbol</code> · <code>list_projects</code> · <code>reindex</code> + more over stdio · try any of them with <code>ug mcp call</code>
+        <span><code>search</code> · <code>traverse</code> · <code>find_symbols</code> · <code>list_projects</code> · <code>reindex</code> + <code>project_overview</code> + more — try any with <code>ug mcp call</code>
       </div>
     </section>
 
@@ -1379,10 +1379,10 @@
           <div class="terminal">
             <div class="titlebar">
               <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-              <div class="title">mcp · tool call · search_kb</div>
+              <div class="title">mcp · tool call · search</div>
             </div>
             <pre>{
-  <span class="c-key">"name"</span>: <span class="c-str">"search_kb"</span>,
+  <span class="c-key">"name"</span>: <span class="c-str">"search"</span>,
   <span class="c-key">"arguments"</span>: {
     <span class="c-key">"query"</span>:    <span class="c-str">"how does auth work"</span>,
     <span class="c-key">"k"</span>:        <span class="c-num">8</span>,
@@ -1411,40 +1411,44 @@
             </div>
             <pre><span class="c-com"># See all available tools with descriptions:</span>
 <span class="prompt">$</span> ug mcp list
-<span class="c-acc">▸</span> search_kb         <span class="c-dim">PRIMARY KNOWLEDGE-BASE SEARCH</span>
-<span class="c-acc">▸</span> semantic_search_kb <span class="c-dim">Lightweight pure-vector lookup</span>
-<span class="c-acc">▸</span> traverse_kb        <span class="c-dim">Walk graph N hops from seed nodes</span>
-<span class="c-acc">▸</span> find_usages        <span class="c-dim">Inbound references to a node</span>
-<span class="c-acc">▸</span> find_symbol        <span class="c-dim">Exact-name symbol lookup</span>
-<span class="c-acc">▸</span> file_outline       <span class="c-dim">Indexed symbols in one file</span>
-<span class="c-acc">▸</span> get_code           <span class="c-dim">Full source for a node or file range</span>
-<span class="c-acc">▸</span> project_overview   <span class="c-dim">Node counts, biggest files</span>
-<span class="c-acc">▸</span> graph_schema       <span class="c-dim">Node & edge types in graph</span>
-<span class="c-acc">▸</span> list_projects      <span class="c-dim">Indexed projects on this machine</span>
-<span class="c-acc">▸</span> reindex            <span class="c-dim">Re-run index → graph → embed</span></pre>
+<span class="c-acc">▸</span> search            <span class="c-dim">GraphRAG search (PPR/MMR). The primary entry point.</span>
+<span class="c-acc">▸</span> semantic_search   <span class="c-dim">Lightweight pure-vector lookup</span>
+<span class="c-acc">▸</span> traverse          <span class="c-dim">Walk graph N hops from seed nodes</span>
+<span class="c-acc">▸</span> find_usages       <span class="c-dim">Inbound references to a node</span>
+<span class="c-acc">▸</span> find_symbols      <span class="c-dim">Multi-name symbol lookup (incl. docstrings)</span>
+<span class="c-acc">▸</span> file_outline      <span class="c-dim">Indexed symbols in one file</span>
+<span class="c-acc">▸</span> get_code          <span class="c-dim">Full source for a node or file range</span>
+<span class="c-acc">▸</span> project_overview  <span class="c-dim">Node counts, lang breakdown, complexity stats</span>
+<span class="c-acc">▸</span> graph_schema      <span class="c-dim">Node & edge types in graph</span>
+<span class="c-acc">▸</span> list_projects     <span class="c-dim">Indexed projects on this machine</span>
+<span class="c-acc">▸</span> reindex           <span class="c-dim">Re-run index → graph → embed</span></pre>
           </div>
 
           <div class="terminal compact">
             <div class="titlebar">
               <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
               <div class="title">call tools · test queries · see responses</div>
-              <button class="copy-btn" data-copy='ug mcp call find_symbol "{\"name\":\"run_mcp\"}"'>Copy</button>
+              <button class="copy-btn" data-copy='ug mcp call find_symbols "{\"name\":\"run_mcp\"}"'>Copy</button>
             </div>
-            <pre><span class="prompt">$</span> ug mcp call find_symbol <span class="c-str">'{"name":"authenticate"}'</span>
+            <pre><span class="prompt">$</span> ug mcp call find_symbols <span class="c-str">'{"name":"authenticate","include_docs":true}'</span>
 <span class="c-acc">▸</span> <span class="c-dim">[exact match]</span> function:src/auth.ts:42:authenticate
 <span class="c-acc">▸</span> <span class="c-dim">[exact match]</span> function:src/auth.ts:89:authenticateToken
 <span class="c-acc">▸</span> <span class="c-dim">[prefix]</span>   function:src/auth/middleware.ts:15:authenticateUser
 
-<span class="prompt">$</span> ug mcp call file_outline <span class="c-str">'{"file":"cli.mjs"}'</span>
-<span class="c-acc">▸</span> [12:45]  function  resolveDbAndRoot
-<span class="c-acc">▸</span> [89:123] function  runMcp
-<span class="c-acc">▸</span> [145:167] function  installMcpConfig
-<span class="c-acc">▸</span> … <span class="c-dim">23 total symbols</span>
+<span class="c-com"># Same tools available over HTTP:</span>
+<span class="prompt">$</span> GET  http://localhost:8080/api/tools          <span class="c-com"># discovery</span>
+<span class="prompt">$</span> POST http://localhost:8080/api/tools/search   <span class="c-com"># run any tool</span>
 
-<span class="prompt">$</span> ug mcp call get_code <span class="c-str">'{"nodeId":"function:cli.mjs:89:runMcp"}'</span>
-<span class="c-acc">▸</span> <span class="c-key">async function</span> <span class="c-fn">runMcp</span>(args, ctx) {
-<span class="c-acc">▸</span>   <span class="c-com">// Parse tool name from argv; MCP mode calls directly.</span>
-<span class="c-acc">▸</span>   <span class="c-key">const</span> toolName = args[<span class="c-num">2</span>];
+<span class="prompt">$</span> ug mcp call file_outline <span class="c-str">'{"file":"main.rs"}'</span>
+<span class="c-acc">▸</span> [12:45]  function  run_chat
+<span class="c-acc">▸</span> [89:123] function  run_active
+<span class="c-acc">▸</span> [145:167] function  run_serve
+<span class="c-acc">▸</span> … <span class="c-dim">27 total symbols</span>
+
+<span class="prompt">$</span> ug mcp call get_code <span class="c-str">'{"nodeId":"function:main.rs:89:run_active"}'</span>
+<span class="c-acc">▸</span> <span class="c-key">fn</span> <span class="c-fn">run_active</span>(args: &[<span class="c-key">String</span>]) {
+<span class="c-acc">▸</span>   <span class="c-com">// view or set the persisted active project</span>
+<span class="c-acc">▸</span>   <span class="c-key">let</span> positional = first_positional(args, &[]);
 <span class="c-acc">▸</span>   …
 <span class="c-acc">▸</span> }</pre>
           </div>
@@ -1467,7 +1471,7 @@
 
       <div class="footer-bar">
         <span class="tip">Zero setup</span><span class="sep"></span>
-        <span>In-process ONNX embedder · streaming chat · staleness detection · enhanced signatures</span>
+        <span>In-process ONNX embedder · HTTP API parity · <code>ug active</code> · <code>project_overview</code> with complexity stats</span>
       </div>
     </section>
 
@@ -1538,7 +1542,7 @@
       </div>
       <div class="footer-bar">
         <span class="tip">Last refreshed</span><span class="sep"></span>
-        <span>2026-07-19 · multi-project MCP · staleness auto-detect · docs + code KBs · <code>ug mcp list/call</code></span>
+        <span>2026-07-23 · pure Rust binary · canonical tool names (<code>search</code>/<code>traverse</code>) · HTTP API parity · <code>ug active</code> · <code>project_overview</code> stats</span>
       </div>
     </section>
 

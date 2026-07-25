@@ -657,9 +657,8 @@
       <h1>Perfect <span class="hl">context</span>,<br/>in <span class="hl">seconds</span>.</h1>
       <div class="tag">A local-first knowledge-base generator that turns any codebase into a queryable <strong style="color: var(--ink)">Semantic Knowledge Graph</strong>.</div>
       <div class="meta">
-        <span class="badge"><span class="dot">&gt;_</span> rust + typescript</span>
+        <span class="badge"><span class="dot">&gt;_</span> pure rust — 10 mb binary</span>
         <span class="badge alt"><span class="dot">●</span> all four phases shipped</span>
-        <span class="badge alt"><span class="dot">▲</span> overgraph storage · 2026-05-01</span>
       </div>
     </div>
     <div class="footer-bar">
@@ -713,34 +712,26 @@
 
   <!-- ───────────────────────────────────────── 3 · ARCHITECTURE ────────────────────────────────── -->
   <section class="slide" data-title="Architecture">
-    <span class="badge"><span class="dot">02</span> Hybrid architecture</span>
-    <h1 class="small">Rust saturates cores. <span class="hl">TypeScript</span> owns the API.</h1>
+    <span class="badge"><span class="dot">02</span> Pure Rust architecture</span>
+    <h1 class="small">Rust saturates cores. <span class="hl">Pure binary</span> — no runtime.</h1>
 
     <div class="stack-layers" style="margin-top: 16px;">
-      <div class="layer">
-        <div class="label">Interface <span class="sub">TypeScript · Node 20+</span></div>
-        <div class="chips">
-          <span class="chip">cli.cjs</span>
-          <span class="chip">mcp-server.mjs</span>
-          <span class="chip">pnpm</span>
-          <span class="chip">zod</span>
-        </div>
-      </div>
-      <div class="layer">
-        <div class="label">NAPI-RS Bridge <span class="sub">native .node module</span></div>
-        <div class="chips">
-          <span class="chip acc">napi_bindings.rs</span>
-          <span class="chip">zero-copy</span>
-        </div>
-      </div>
       <div class="layer core">
-        <div class="label">Core Engine <span class="sub">Rust · the turbo layer</span></div>
+        <div class="label">Core Engine <span class="sub">Rust · single 10 MB binary</span></div>
         <div class="chips">
+          <span class="chip">cli (axum)</span>
           <span class="chip">ignore + rayon</span>
           <span class="chip">tree-sitter</span>
           <span class="chip">blake3</span>
-          <span class="chip">axum + tower</span>
           <span class="chip acc">ppr + rrf</span>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="label">Interfaces <span class="sub">stdin/stdout MCP · embedded HTTP · Tauri desktop</span></div>
+        <div class="chips">
+          <span class="chip acc">ug mcp (stdio)</span>
+          <span class="chip acc">HTTP API</span>
+          <span class="chip">ug app (Tauri)</span>
         </div>
       </div>
       <div class="layer">
@@ -751,11 +742,19 @@
           <span class="chip">openai-compatible @ :8000</span>
         </div>
       </div>
+      <div class="layer">
+        <div class="label">Agent Protocol <span class="sub">one binary, three surfaces</span></div>
+        <div class="chips">
+          <span class="chip">MCP stdio</span>
+          <span class="chip">HTTP <code>/api/tools</code></span>
+          <span class="chip">CLI flags</span>
+        </div>
+      </div>
     </div>
 
     <div class="footer-bar">
-      <span class="tip">Why hybrid?</span><span class="sep"></span>
-      <span>Speed where it pays · flexibility where it matters.</span>
+      <span class="tip">No Node.js · no NAPI</span><span class="sep"></span>
+      <span>Pure Rust from index to API — <strong style="color: var(--ink)">10 MB</strong> static binary.</span>
     </div>
   </section>
 
@@ -769,7 +768,7 @@
         <li><strong>Parallel crawler</strong> — <code>rayon</code> over <code>ignore</code>, respects <code>.gitignore</code></li>
         <li><strong>Incremental indexing</strong> — <code>blake3</code> hashes → only re-parse changed files</li>
         <li><strong>AST extraction</strong> — TypeScript · Python · Markdown (CommonMark)</li>
-        <li><strong>NAPI bridge</strong> — one call: <code>index(path)</code> → structured JSON of nodes + edges</li>
+        <li><strong>Rust-first dispatch</strong> — <code>crawl()</code> → <code>parse_ast()</code> → structured nodes + edges, all in native code</li>
       </ul>
       <div class="terminal compact">
         <div class="titlebar"><div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="title">native/src/indexer.rs</div></div>
@@ -916,7 +915,7 @@
 
     <div class="footer-bar">
       <span class="tip">MCP-native</span><span class="sep"></span>
-      <span><code>search_kb</code> · <code>traverse_kb</code> · <code>ping_embedder</code> over stdio — drop-in for any MCP agent</span>
+      <span><code>search</code> · <code>traverse</code> · <code>find_symbols</code> over stdio or HTTP — drop-in for any MCP agent</span>
     </div>
   </section>
 
@@ -957,7 +956,7 @@
 
     <div class="footer-bar">
       <span class="tip">Exposed via</span><span class="sep"></span>
-      <span>MCP <code>search_kb</code> · NAPI <code>dbHybridSearch</code> · CLI <code>db-rag</code></span>
+      <span>MCP <code>search</code> · HTTP <code>POST /api/tools/search</code> · CLI <code>ug mcp call search</code></span>
     </div>
   </section>
 
@@ -1055,17 +1054,17 @@
     </div>
   </section>
 
-  <!-- ───────────────────────────────────────── 12 · MCP INTEGRATION ────────────────────────────── -->
-  <section class="slide" data-title="MCP Integration">
-    <span class="section-tag">MCP · drop-in for any agent</span>
+  <!-- ───────────────────────────────────────── 12 · MCP + HTTP INTEGRATION ─────────────────────── -->
+  <section class="slide" data-title="MCP + HTTP Integration">
+    <span class="section-tag">MCP + HTTP · drop-in for any agent</span>
     <h1 class="small">One tool call away from <span class="hl">perfect context</span>.</h1>
 
     <div class="two-col">
       <div>
         <div class="terminal">
-          <div class="titlebar"><div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="title">mcp · tool call · search_kb</div></div>
+          <div class="titlebar"><div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="title">mcp · tool call · search</div></div>
 <pre>{
-  <span class="c-key">"name"</span>: <span class="c-str">"search_kb"</span>,
+  <span class="c-key">"name"</span>: <span class="c-str">"search"</span>,
   <span class="c-key">"arguments"</span>: {
     <span class="c-key">"query"</span>:    <span class="c-str">"how does auth work"</span>,
     <span class="c-key">"k"</span>:        <span class="c-num">8</span>,
@@ -1074,24 +1073,32 @@
 }</pre>
         </div>
         <div class="terminal compact" style="margin-top: 16px;">
-          <div class="titlebar"><div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="title">curl · hybrid search</div></div>
-<pre><span class="prompt">$</span> curl <span class="c-flag">-X</span> POST <span class="c-flag">-H</span> <span class="c-str">"Content-Type: application/json"</span> \
-    http://localhost:8080/api/search/hybrid \
+          <div class="titlebar"><div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="title">HTTP · same tools, any client</div></div>
+<pre><span class="c-com"># discover available tools:</span>
+<span class="prompt">$</span> GET  http://localhost:8080/api/tools
+
+<span class="c-com"># call any tool by name:</span>
+<span class="prompt">$</span> curl <span class="c-flag">-X</span> POST <span class="c-flag">-H</span> <span class="c-str">"Content-Type: application/json"</span> \
+    http://localhost:8080/api/tools/search \
     <span class="c-flag">-d</span> <span class="c-str">'{"query":"oauth login flow","k":8,"strategy":"ppr"}'</span></pre>
         </div>
       </div>
       <div class="stack">
         <div class="card">
-          <h3><code style="background: var(--bg-alt); padding: 2px 8px; border-radius: 5px; font-family: 'JetBrains Mono', monospace; font-size: 14px;">search_kb</code></h3>
-          <p class="sub">Hybrid PPR/MMR retrieval. Returns ranked nodes with attached source snippets, token-budgeted.</p>
+          <h3><code style="background: var(--bg-alt); padding: 2px 8px; border-radius: 5px; font-family: 'JetBrains Mono', monospace; font-size: 14px;">search</code></h3>
+          <p class="sub">GraphRAG search (PPR/MMR). Returns ranked nodes with attached source snippets, token-budgeted. Unified name across CLI, MCP and HTTP.</p>
         </div>
         <div class="card">
-          <h3><code style="background: var(--bg-alt); padding: 2px 8px; border-radius: 5px; font-family: 'JetBrains Mono', monospace; font-size: 14px;">traverse_kb</code></h3>
-          <p class="sub">Edge-typed BFS over the DB. Filter by edge type, depth, direction.</p>
+          <h3><code style="background: var(--bg-alt); padding: 2px 8px; border-radius: 5px; font-family: 'JetBrains Mono', monospace; font-size: 14px;">traverse</code></h3>
+          <p class="sub">Edge-typed walk over the graph. Filter by edge type, depth, direction. Works on <code>graph.json</code> alone (no embedder needed).</p>
         </div>
         <div class="card">
-          <h3><code style="background: var(--bg-alt); padding: 2px 8px; border-radius: 5px; font-family: 'JetBrains Mono', monospace; font-size: 14px;">ping_embedder</code></h3>
-          <p class="sub">Health-check the local embedding endpoint. Fail fast, fail loud.</p>
+          <h3><code style="background: var(--bg-alt); padding: 2px 8px; border-radius: 5px; font-family: 'JetBrains Mono', monospace; font-size: 14px;">shortest_path</code></h3>
+          <p class="sub">Find the shortest path between two nodes. Also works <code>graph.json</code>-only.</p>
+        </div>
+        <div class="card">
+          <h3><code style="background: var(--bg-alt); padding: 2px 8px; border-radius: 5px; font-family: 'JetBrains Mono', monospace; font-size: 14px;">···</code></h3>
+          <p class="sub"><strong>11 tools</strong> in total — every surface exposes the same set. Old names (<code>search_kb</code>, <code>traverse_kb</code>, <code>find_symbol</code>) still work as aliases.</p>
         </div>
       </div>
     </div>
@@ -1130,19 +1137,19 @@
       </div>
     </div>
 
-    <h3 style="font-size: 15px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .05em; margin: 28px 0 10px;">CLI / NAPI / MCP surface · today</h3>
+    <h3 style="font-size: 15px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .05em; margin: 28px 0 10px;">Three surfaces, one core · today</h3>
     <div class="grid-3">
       <div class="card">
-        <h3>JS CLI · <code style="background: var(--bg-alt); padding: 2px 8px; border-radius: 5px; font-family: 'JetBrains Mono', monospace; font-size: 13px;">src/cli.cjs</code></h3>
-        <p class="sub" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.7;">index · graph · gen · bfs · graph-search<br/>db-ingest · db-semantic-search · db-traverse · db-rag · ping · serve</p>
+        <h3>CLI · <code style="background: var(--bg-alt); padding: 2px 8px; border-radius: 5px; font-family: 'JetBrains Mono', monospace; font-size: 13px;">ug</code></h3>
+        <p class="sub" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.7;">gen · index · graph · serve · chat<br/>list · active · rm · mcp · app · doctor</p>
       </div>
       <div class="card">
-        <h3>NAPI · <code style="background: var(--bg-alt); padding: 2px 8px; border-radius: 5px; font-family: 'JetBrains Mono', monospace; font-size: 13px;">napi_bindings.rs</code></h3>
-        <p class="sub" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.7;">dbIngest · dbHybridSearch · dbSemanticSearch · dbTraverse · pingEmbedder<br/>buildGraph · kHopBfs · filterEdgesByType · findShortestPath · calculateCentrality · detectCycles · graphKeywordSearch</p>
+        <h3>HTTP API · <code style="background: var(--bg-alt); padding: 2px 8px; border-radius: 5px; font-family: 'JetBrains Mono', monospace; font-size: 13px;">GET/POST /api/tools/*</code></h3>
+        <p class="sub" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.7;">search · semantic_search · traverse · find_symbols · find_usages · file_outline · get_code · project_overview · graph_schema · list_projects · reindex</p>
       </div>
       <div class="card">
-        <h3>MCP · <code style="background: var(--bg-alt); padding: 2px 8px; border-radius: 5px; font-family: 'JetBrains Mono', monospace; font-size: 13px;">mcp-server.mjs</code></h3>
-        <p class="sub" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.7;">search_kb · traverse_kb · ping_embedder<br/>(over stdio)</p>
+        <h3>MCP · <code style="background: var(--bg-alt); padding: 2px 8px; border-radius: 5px; font-family: 'JetBrains Mono', monospace; font-size: 13px;">ug mcp</code></h3>
+        <p class="sub" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.7;">Identical tool set over stdio.<br/>Install: <code>ug mcp install claude|cursor|windsurf|vscode|gemini</code></p>
       </div>
     </div>
 
@@ -1178,7 +1185,7 @@
     </div>
     <div class="footer-bar">
       <span class="tip">Last refreshed</span><span class="sep"></span>
-      <span>2026-05-13 · all four phases shipped · OverGraph migration complete</span>
+      <span>2026-07-23 · pure Rust binary · canonical tool names · HTTP API parity · <code>ug active</code> · <code>project_overview</code> stats · complexity metrics</span>
     </div>
   </section>
 
