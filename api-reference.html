@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>UltraGraph — API Reference</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:        #1F2937;
+    --ink-soft:   #334155;
+    --slate:      #64748B;
+    --slate-soft: #94A3B8;
+    --line:       #E2E8F0;
+    --bg:         #FFFFFF;
+    --bg-alt:     #F8FAFC;
+    --teal:       #14B8A6;
+    --teal-2:     #2DD4BF;
+    --teal-ink:   #0F766E;
+    --teal-wash:  rgba(20, 184, 166, .08);
+    --code-bg:    #0F172A;
+    --code-text:  #E2E8F0;
+    --code-dim:   #94A3B8;
+    --code-key:   #C084FC;
+    --code-str:   #34D399;
+    --code-num:   #FBBF24;
+    --code-fn:    #60A5FA;
+    --code-com:   #64748B;
+    --code-teal:  #5EEAD4;
+    --shadow-lg:  0 25px 50px -12px rgba(15, 23, 42, .18);
+    --shadow-md:  0 12px 28px -10px rgba(15, 23, 42, .14);
+    --shadow-sm:  0 2px 8px rgba(15, 23, 42, .06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body {
+    min-height: 100vh;
+    background:
+      radial-gradient(1100px 720px at 12% -10%, rgba(45, 212, 191, 0.13), transparent 60%),
+      radial-gradient(900px 620px at 100% 10%, rgba(20, 184, 166, 0.10), transparent 60%),
+      #FFFFFF;
+    background-attachment: fixed;
+  }
+
+  /* ── Header ── */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(255,255,255,.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+  }
+  .topbar .brand {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .topbar .brand img { width: 18px; height: 18px; }
+  .topbar .brand .hl { color: var(--teal); }
+  .topbar .back-link {
+    font-size: 13px;
+    color: var(--slate);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    transition: background .15s ease, border-color .15s ease;
+  }
+  .topbar .back-link:hover {
+    background: var(--teal-wash);
+    border-color: rgba(20, 184, 166, .3);
+    color: var(--teal-ink);
+  }
+
+  /* ── Tab bar ── */
+  .tab-bar {
+    position: sticky;
+    top: 60px;
+    z-index: 49;
+    background: rgba(255,255,255,.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    padding: 0 32px;
+  }
+  .tab-bar .tab {
+    padding: 14px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--slate);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color .15s ease, border-color .15s ease;
+    white-space: nowrap;
+    user-select: none;
+  }
+  .tab-bar .tab:hover { color: var(--ink); }
+  .tab-bar .tab.active {
+    color: var(--teal-ink);
+    border-bottom-color: var(--teal);
+  }
+
+  /* ── Content ── */
+  .container {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 40px 32px 80px;
+  }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .tab-content h1 {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -.02em;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+  .tab-content h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 32px 0 4px;
+    color: var(--ink);
+  }
+  .tab-content h2:first-child { margin-top: 0; }
+  .tab-content h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 24px 0 4px;
+    color: var(--ink-soft);
+  }
+  .tab-content p, .tab-content .desc {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--slate);
+    margin-bottom: 16px;
+  }
+  .tab-content p strong, .desc strong { color: var(--ink); font-weight: 600; }
+
+  /* ── Legend pills ── */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 16px 0;
+  }
+  .legend .pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: var(--teal-wash);
+    color: var(--teal-ink);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 500;
+  }
+  .legend .pill code { font-size: inherit; color: inherit; background: none; padding: 0; border: none; }
+
+  /* ── Tables ── */
+  .table-wrap {
+    overflow-x: auto;
+    margin-bottom: 20px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+  }
+  .table-wrap table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    background: #fff;
+  }
+  .table-wrap th, .table-wrap td {
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  .table-wrap th {
+    background: var(--bg-alt);
+    color: var(--ink-soft);
+    font-weight: 600;
+    font-size: 11.5px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  .table-wrap tr:last-child td { border-bottom: none; }
+  .table-wrap td code, .tab-content p code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    background: var(--bg-alt);
+    border: 1px solid var(--line);
+    padding: 1px 6px;
+    border-radius: 5px;
+    color: var(--ink);
+  }
+  .table-wrap td .mono { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; }
+  .table-wrap td .tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: var(--teal-wash);
+    color: var(--teal-ink);
+    padding: 1px 7px;
+    border-radius: 5px;
+    font-weight: 600;
+    margin: 1px 0;
+  }
+
+  /* ── Code block ── */
+  .code-block {
+    background: var(--code-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid #1E293B;
+  }
+  .code-block .titlebar {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    background: linear-gradient(180deg, #111B30, #0B1224);
+    border-bottom: 1px solid #1E293B;
+    justify-content: space-between;
+  }
+  .code-block .titlebar .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--code-dim);
+    letter-spacing: .02em;
+  }
+  .code-block pre {
+    margin: 0;
+    padding: 16px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.65;
+    overflow-x: auto;
+    color: var(--code-text);
+  }
+  .code-block pre .c-com { color: var(--code-com); font-style: italic; }
+  .code-block pre .c-key { color: var(--code-key); }
+  .code-block pre .c-str { color: var(--code-str); }
+  .code-block pre .c-num { color: var(--code-num); }
+  .code-block pre .c-fn  { color: var(--code-fn); }
+  .code-block pre .c-dim { color: var(--code-dim); }
+  .code-block pre .c-teal { color: var(--code-teal); }
+  .code-block pre .c-flag { color: #F472B6; }
+
+  .copy-btn {
+    background: rgba(45, 212, 191, .12);
+    color: var(--teal-2);
+    border: 1px solid rgba(45, 212, 191, .35);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    transition: background .15s ease;
+  }
+  .copy-btn:hover { background: rgba(45, 212, 191, .22); }
+  .copy-btn.copied { background: var(--teal); color: #06251F; border-color: var(--teal); }
+
+  /* ── Pipeline diagram ── */
+  .pipeline {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin: 20px 0;
+  }
+  .pipeline .box {
+    width: 100%;
+    max-width: 680px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: var(--shadow-sm);
+  }
+  .pipeline .box.accent {
+    background: linear-gradient(180deg, #fff, var(--teal-wash));
+    border-color: rgba(20, 184, 166, .4);
+  }
+  .pipeline .box h4 {
+    margin: 0 0 2px;
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .pipeline .box p {
+    margin: 0;
+    color: var(--slate);
+    font-size: 12.5px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .pipeline .arrow {
+    width: 2px;
+    height: 16px;
+    background: var(--teal);
+    border-radius: 2px;
+    position: relative;
+  }
+  .pipeline .arrow::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -2px;
+    transform: translateX(-50%) rotate(45deg);
+    width: 6px;
+    height: 6px;
+    border-right: 2px solid var(--teal);
+    border-bottom: 2px solid var(--teal);
+  }
+
+  /* ── Schema list ── */
+  .schema-item {
+    margin-bottom: 24px;
+  }
+  .schema-item h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink);
+  }
+  .schema-item p {
+    font-size: 13px;
+    color: var(--slate);
+    margin-bottom: 6px;
+  }
+
+  /* ── Storage arch ── */
+  .arch-diagram {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0;
+    font-size: 13px;
+  }
+  .arch-diagram .trait-box {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .arch-diagram .conn-row {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    justify-content: center;
+  }
+  .arch-diagram .impl-box {
+    background: #fff;
+    border: 1px solid var(--line);
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--teal-ink);
+    font-weight: 500;
+    box-shadow: var(--shadow-sm);
+  }
+  .arch-diagram .impl-box .sub {
+    display: block;
+    font-size: 11px;
+    color: var(--slate);
+    font-weight: 400;
+    margin-top: 2px;
+  }
+  .arch-diagram .v-arrow {
+    width: 2px;
+    height: 14px;
+    background: var(--slate-soft);
+  }
+  .arch-diagram .h-line {
+    height: 2px;
+    flex: 1;
+    max-width: 60px;
+    background: var(--slate-soft);
+  }
+  .arch-diagram .tee {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    width: 100%;
+    max-width: 500px;
+  }
+  .arch-diagram .tee .v-bar {
+    width: 2px;
+    height: 20px;
+    background: var(--slate-soft);
+    margin: 0 auto;
+  }
+  .arch-diagram .leaf-row {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+  }
+
+  .tag-head {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--teal-ink);
+    background: var(--teal-wash);
+    padding: 4px 10px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 700px) {
+    body { padding: 0; }
+    .topbar { padding: 0 16px; }
+    .tab-bar { padding: 0 12px; }
+    .tab-bar .tab { padding: 12px 14px; font-size: 12px; }
+    .container { padding: 24px 16px 60px; }
+    .table-wrap td, .table-wrap th { padding: 8px 10px; font-size: 12.5px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="brand" href="index.html">
+    <img src="/favicon.svg" alt="" /> Ultra<span class="hl">Graph</span>
+    <span style="font-weight:400;color:var(--slate);font-size:13px;margin-left:4px;">API Reference</span>
+  </a>
+  <a class="back-link" href="index.html">&larr; Back to home</a>
+</div>
+
+<div class="tab-bar" id="tabBar">
+  <div class="tab active" data-tab="cli">CLI Commands</div>
+  <div class="tab" data-tab="http">HTTP API</div>
+  <div class="tab" data-tab="mcp">MCP Tools</div>
+  <div class="tab" data-tab="storage">Storage</div>
+  <div class="tab" data-tab="pipeline">Pipeline &amp; Schemas</div>
+</div>
+
+<div class="container">
+
+<!-- ═══════════════════════════ CLI COMMANDS ═══════════════════════════ -->
+<div class="tab-content active" id="tab-cli">
+  <h1>CLI Commands</h1>
+  <p><code>ug</code> uses a flat subcommand model (no clap derive — manual arg parsing).</p>
+
+  <div class="legend">
+    <span class="pill"><strong>index.json</strong> = indexed-tree.json (output of <code>ug index</code>)</span>
+    <span class="pill"><strong>graph.json</strong> = output of <code>ug graph</code></span>
+    <span class="pill"><strong>ugdb/</strong> = OverGraph embedded DB directory</span>
+    <span class="pill"><strong>~/.ug/</strong> = project home directory</span>
+  </div>
+
+  <h2>1.1 Pipeline Commands</h2>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Command</th><th>Aliases</th><th>What it does</th><th>Key flags</th></tr>
+      <tr><td><code>ug gen</code></td><td>—</td><td>End-to-end pipeline: index → graph → ingest. Primary entry point.</td><td><code>-i</code> <code>-o</code> <code>-n</code> <code>-c</code> <code>--no-ingest</code> <code>--serve</code> <code>--model</code> <code>--base-url</code></td></tr>
+      <tr><td><code>ug index</code></td><td>—</td><td>Index a directory: parse source files into <code>FileNode</code>s. Writes <code>indexed-tree.json</code>.</td><td><code>-i</code> <code>-o</code> <code>-n</code> <code>-c</code></td></tr>
+      <tr><td><code>ug graph</code></td><td>—</td><td>Build graph from indexed tree: resolve cross-file imports. Writes <code>graph.json</code>.</td><td><code>-i</code> <code>-o</code> <code>-n</code></td></tr>
+      <tr><td><code>ug ingest</code></td><td>—</td><td>Embed graph nodes and write to knowledge stores (OverGraph / Neo4j).</td><td><code>-i</code> <code>-o</code> <code>-n</code> <code>--dest</code> <code>--prune</code> <code>--model</code></td></tr>
+    </table>
+  </div>
+
+  <h2>1.2 Graph Analysis (graph.json-backed, in-memory)</h2>
+  <p>All accept: <code>-n &lt;name&gt;</code>, <code>-i &lt;file&gt;</code>, <code>--json</code>, <code>-o &lt;file&gt;</code>.</p>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Command</th><th>Aliases</th><th>What it does</th><th>Key flags</th></tr>
+      <tr><td><code>ug graph_bfs</code></td><td><code>bfs</code></td><td>K-hop BFS from a node id / name / file path.</td><td><code>&lt;id&gt;</code> <code>-k</code> <code>-d</code> <code>--edge-type</code> <code>-t</code> <code>-f</code> <code>-l</code></td></tr>
+      <tr><td><code>ug graph_filter</code></td><td><code>filter</code></td><td>List edges by type / endpoint. No args: shows edge types + counts.</td><td><code>-t</code> <code>--from</code> <code>--to</code> <code>-f</code> <code>-l</code></td></tr>
+      <tr><td><code>ug graph_path</code></td><td><code>path</code>, <code>shortest_path</code></td><td>Find shortest directed path between two symbols.</td><td><code>&lt;source&gt;</code> <code>&lt;target&gt;</code> <code>--strict</code></td></tr>
+      <tr><td><code>ug graph_centrality</code></td><td><code>centrality</code></td><td>Rank nodes by degree &amp; betweenness centrality.</td><td><code>--top</code> <code>-t</code> <code>-f</code></td></tr>
+      <tr><td><code>ug graph_cycles</code></td><td><code>cycles</code></td><td>Detect dependency cycles.</td><td><code>-l</code> <code>--min-len</code> <code>--max-len</code> <code>-f</code> <code>--fail-on-cycle</code></td></tr>
+    </table>
+  </div>
+
+  <h2>1.3 Agent Tools</h2>
+  <p>Same params as their MCP counterparts. Accept <code>--json</code> output.</p>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Command</th><th>What it does</th><th>Key flags</th></tr>
+      <tr><td><code>ug find_symbols</code></td><td>Exact-name lookup (case-insensitive, ranked exact &gt; prefix &gt; substring).</td><td><code>-n</code> <code>-t</code> <code>-f</code> <code>-l</code> <code>--include-docs</code></td></tr>
+      <tr><td><code>ug graph_search</code></td><td>Same as find_symbols with <code>includeDocs: true</code> by default.</td><td>Same as find_symbols</td></tr>
+      <tr><td><code>ug file_outline</code></td><td>List indexed symbols in a file, in line order.</td><td><code>&lt;file&gt;</code> <code>-n</code> <code>--json</code></td></tr>
+      <tr><td><code>ug get_code</code></td><td>Read source for a node id or file/line range.</td><td><code>&lt;id&gt;</code> <code>-f</code> <code>--start-line</code> <code>--end-line</code> <code>--max-chars</code></td></tr>
+      <tr><td><code>ug find_usages</code></td><td>Find inbound references (callers / importers) to a symbol.</td><td><code>&lt;id&gt;</code> <code>--hops</code> <code>--edge-type</code> <code>-n</code> <code>--json</code></td></tr>
+      <tr><td><code>ug project_overview</code></td><td>Orient in the codebase: stats, biggest files, most depended-upon symbols.</td><td><code>-n</code> <code>--json</code></td></tr>
+      <tr><td><code>ug graph_schema</code></td><td>Node &amp; edge types with counts and connection info.</td><td><code>-n</code> <code>--json</code></td></tr>
+    </table>
+  </div>
+
+  <h2>1.4 Retrieval Commands (ugdb / Neo4j-backed)</h2>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Command</th><th>Aliases</th><th>What it does</th><th>Key flags</th></tr>
+      <tr><td><code>ug search</code></td><td><code>hybrid_search</code></td><td>GraphRAG: semantic search → graph expansion → PPR-ranked context.</td><td><code>&lt;query&gt;</code> <code>-k</code> <code>--filter</code> <code>--direction</code> <code>-t</code> <code>--max-chars</code></td></tr>
+      <tr><td><code>ug semantic_search</code></td><td>—</td><td>Pure vector search over embeddings (no graph context).</td><td><code>&lt;query&gt;</code> <code>-k</code> <code>--filter</code></td></tr>
+      <tr><td><code>ug traverse</code></td><td>—</td><td>K-hop BFS over the OverGraph edges table.</td><td><code>&lt;id&gt;...</code> <code>-k</code> <code>-n</code></td></tr>
+    </table>
+  </div>
+
+  <h2>1.5 Chat &amp; Tour</h2>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Command</th><th>What it does</th><th>Key flags</th></tr>
+      <tr><td><code>ug chat</code></td><td>RAG-grounded chat: hybrid retrieval → LLM completion. One-shot or interactive REPL.</td><td><code>"&lt;query&gt;"</code> <code>-k</code> <code>--direction</code> <code>-t</code> <code>--filter</code> <code>--think</code> <code>--chat-model</code> <code>--system</code> <code>--json</code></td></tr>
+      <tr><td><code>ug tour</code></td><td>Guided, narrated walkthrough — LLM plans stops, flies the camera in web UI.</td><td><code>"&lt;topic&gt;"</code> <code>-n</code> <code>--max-stops</code> <code>--no-llm</code> <code>--chat-model</code></td></tr>
+    </table>
+  </div>
+
+  <h2>1.6 Project Management</h2>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Command</th><th>What it does</th><th>Key flags</th></tr>
+      <tr><td><code>ug serve</code></td><td>Serve the visualization + REST API at <code>localhost:8080</code>. Default command with no args.</td><td><code>-p</code> <code>--host</code> <code>--watch</code> <code>--no-db</code> <code>-i</code> <code>--project</code> <code>--repo-root</code></td></tr>
+      <tr><td><code>ug app</code></td><td>Open the native desktop shell (starts server + window).</td><td>Same as <code>ug serve</code></td></tr>
+      <tr><td><code>ug api</code></td><td>List every HTTP endpoint <code>ug serve</code> exposes.</td><td><code>--json</code></td></tr>
+      <tr><td><code>ug list_projects</code></td><td>List generated projects under <code>~/.ug</code> with stats.</td><td>—</td></tr>
+      <tr><td><code>ug active</code></td><td>View or set the active project.</td><td><code>&lt;name&gt;</code></td></tr>
+      <tr><td><code>ug rm</code></td><td>Delete a project's data directory.</td><td><code>&lt;name&gt;</code></td></tr>
+      <tr><td><code>ug upgrade</code></td><td>Check GitHub for a new release and self-update.</td><td><code>--check</code></td></tr>
+      <tr><td><code>ug uninstall</code></td><td>Delete ALL indexed projects and uninstall ug.</td><td>—</td></tr>
+      <tr><td><code>ug config</code></td><td>View / persist defaults in <code>~/.ug/config.json</code>.</td><td><code>set</code> <code>get</code> <code>list</code></td></tr>
+      <tr><td><code>ug doctor</code></td><td>Show resolved project/db/embedder/chat config with source.</td><td><code>-n</code> <code>-d</code></td></tr>
+      <tr><td><code>ug mcp</code></td><td>MCP server / install / uninstall (see MCP Tools tab).</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <h2>1.7 MCP Subcommands</h2>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Command</th><th>What it does</th><th>Key flags</th></tr>
+      <tr><td><code>ug mcp</code></td><td>Run the stdio JSON-RPC MCP server (meant for AI agents).</td><td>—</td></tr>
+      <tr><td><code>ug mcp install &lt;agent&gt;</code></td><td>Register the MCP server in an agent's config. Agents: <code>claude</code>, <code>cursor</code>, <code>vscode</code>, <code>gemini</code>, <code>opencode</code>, etc.</td><td><code>--project</code> <code>--global</code></td></tr>
+      <tr><td><code>ug mcp uninstall &lt;agent&gt;</code></td><td>Remove the MCP server registration.</td><td><code>--project</code> <code>--global</code></td></tr>
+      <tr><td><code>ug mcp list</code></td><td>Print the tools this server advertises.</td><td>—</td></tr>
+      <tr><td><code>ug mcp call &lt;tool&gt; &lt;json&gt;</code></td><td>Invoke one tool directly from the command line.</td><td><code>&lt;tool&gt;</code> <code>&lt;json&gt;</code></td></tr>
+    </table>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════ HTTP API ═══════════════════════════ -->
+<div class="tab-content" id="tab-http">
+  <h1>HTTP API Routes</h1>
+  <p>The HTTP server (<code>ug serve</code>) is built on <strong>axum</strong>.</p>
+
+  <h2>2.2 Graph Data &amp; Health</h2>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Method</th><th>Path</th><th>What it does</th><th>Data source</th><th>503 when</th></tr>
+      <tr><td><code>GET</code></td><td><code>/graph.json</code></td><td>Serve the full graph.json (gzip/brotli compressed)</td><td>graph.json on disk</td><td>No graph loaded</td></tr>
+      <tr><td><code>GET</code></td><td><code>/healthz</code></td><td>Health check — returns <code>"ok"</code></td><td>—</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <h2>2.3 Project Management</h2>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Method</th><th>Path</th><th>What it does</th></tr>
+      <tr><td><code>GET</code></td><td><code>/api/projects</code></td><td>List all projects under ~/.ug with stats</td></tr>
+      <tr><td><code>POST</code></td><td><code>/api/projects/select</code></td><td>Switch the active project at runtime</td></tr>
+      <tr><td><code>POST</code></td><td><code>/api/projects/delete</code></td><td>Delete a project</td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/projects/staleness</code></td><td>Per-project staleness report (changed/deleted files vs graph.json mtime)</td></tr>
+    </table>
+  </div>
+
+  <h2>2.4 Generate / KB Manager</h2>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Method</th><th>Path</th><th>What it does</th></tr>
+      <tr><td><code>POST</code></td><td><code>/api/generate</code></td><td>Kick off <code>ug gen</code> as a background job. Streams log via SSE.</td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/generate/status</code></td><td>Check status of a gen job.</td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/browse-dir</code></td><td>List files/dirs for the KB Manager file picker.</td></tr>
+    </table>
+  </div>
+
+  <h2>2.5 Graph API (graph.json-backed, read-only)</h2>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Method</th><th>Path</th><th>What it does</th><th>503 when</th></tr>
+      <tr><td><code>GET</code></td><td><code>/api/capabilities</code></td><td>Server capabilities matrix: backends, models, features</td><td>—</td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/config</code></td><td>Read the active chat config</td><td>No chat config</td></tr>
+      <tr><td><code>POST</code></td><td><code>/api/config</code></td><td>Update the persisted chat config</td><td>—</td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/graph/stats</code></td><td>Node/edge counts, file stats</td><td>No graph</td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/graph/node/*id</code></td><td>Get one node by id</td><td>No graph / not found</td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/graph/search</code></td><td>Keyword search over node names</td><td>No graph</td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/graph/bfs/*id</code></td><td>K-hop BFS from a node seed</td><td>No graph</td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/graph/path</code></td><td>Shortest path between two nodes</td><td>No graph</td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/graph/filter</code></td><td>Filter edges by type/endpoint</td><td>No graph</td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/graph/centrality</code></td><td>Degree &amp; betweenness centrality</td><td>No graph</td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/graph/cycles</code></td><td>Detect dependency cycles</td><td>No graph</td></tr>
+    </table>
+  </div>
+
+  <h2>2.6 Agent Tool API</h2>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Method</th><th>Path</th><th>What it does</th></tr>
+      <tr><td><code>GET</code></td><td><code>/api/tools</code></td><td>List available agent tools with descriptions</td></tr>
+      <tr><td><code>POST</code></td><td><code>/api/tools/:tool</code></td><td>Run one agent tool (same params as MCP)</td></tr>
+    </table>
+  </div>
+
+  <h2>2.7 File Content</h2>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Method</th><th>Path</th><th>What it does</th><th>503 when</th></tr>
+      <tr><td><code>GET</code></td><td><code>/api/file</code></td><td>Read source file content for the Preview tab. Falls back to OverGraph stored code.</td><td>No project</td></tr>
+    </table>
+  </div>
+
+  <h2>2.8 Database API (OverGraph / Neo4j-backed)</h2>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Method</th><th>Path</th><th>What it does</th><th>503 when</th></tr>
+      <tr><td><code>GET</code></td><td><code>/api/db/node/*id</code></td><td>Get a node by id from the knowledge store</td><td>DB not opened</td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/db/traverse/*id</code></td><td>K-hop BFS using the DB edges table</td><td>DB not opened</td></tr>
+      <tr><td><code>POST</code></td><td><code>/api/search/semantic</code></td><td>Pure vector search</td><td>DB or embedder unavailable</td></tr>
+      <tr><td><code>POST</code></td><td><code>/api/search/hybrid</code></td><td>GraphRAG search (PPR/MMR)</td><td>DB or embedder unavailable</td></tr>
+    </table>
+  </div>
+
+  <h2>2.9 Chat &amp; Tour API</h2>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Method</th><th>Path</th><th>What it does</th><th>503 when</th></tr>
+      <tr><td><code>POST</code></td><td><code>/api/chat</code></td><td>RAG chat (non-streaming)</td><td>Chat endpoint not configured</td></tr>
+      <tr><td><code>POST</code></td><td><code>/api/chat/stream</code></td><td>RAG chat streaming (SSE)</td><td>Chat endpoint not configured</td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/chat/config</code></td><td>Get the server's default chat configuration</td><td>—</td></tr>
+      <tr><td><code>POST</code></td><td><code>/api/tour</code></td><td>Guided tour (non-streaming)</td><td>See tour opts</td></tr>
+      <tr><td><code>POST</code></td><td><code>/api/tour/stream</code></td><td>Guided tour streaming (SSE)</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <div class="code-block">
+    <div class="titlebar"><span class="label">quick test</span><button class="copy-btn" data-copy='curl http://localhost:8080/healthz'>Copy</button></div>
+    <pre><span class="c-com"># Health check</span>
+<span class="c-dim">$</span> curl http://localhost:8080/healthz
+<span class="c-teal">ok</span></pre>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ MCP TOOLS ═══════════════════════════ -->
+<div class="tab-content" id="tab-mcp">
+  <h1>Agent / MCP Tools</h1>
+
+  <h2>3.1 Advertised MCP Tools</h2>
+  <p>12 tools advertised over MCP <code>tools/list</code>, also available via CLI and HTTP <code>/api/tools/:tool</code>.</p>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Tool</th><th>What it does</th><th>Data source</th></tr>
+      <tr><td><code>search</code></td><td><strong>Primary KB search.</strong> RRF (vector + FTS) → Personalized PageRank → ranked context with snippets.</td><td>ugdb/Neo4j + graph.json</td></tr>
+      <tr><td><code>semantic_search</code></td><td>Lightweight pure-vector lookup — no graph expansion, no snippets.</td><td>ugdb/Neo4j + embedder</td></tr>
+      <tr><td><code>traverse</code></td><td>Walk graph N hops from seed node ids. Filters by edge type and direction.</td><td>graph.json (no DB needed)</td></tr>
+      <tr><td><code>find_usages</code></td><td>Inbound references to a node (callers, importers, subclasses).</td><td>graph.json</td></tr>
+      <tr><td><code>find_symbols</code></td><td>Exact-name symbol lookup (case-insensitive). Supports batch via array.</td><td>graph.json</td></tr>
+      <tr><td><code>file_outline</code></td><td>List indexed symbols in a file, in line order. Supports batch.</td><td>graph.json</td></tr>
+      <tr><td><code>get_code</code></td><td>Read source for a node id or file/line range.</td><td>ugdb + filesystem fallback</td></tr>
+      <tr><td><code>project_overview</code></td><td>Orient in the codebase: stats, biggest files, most depended-upon symbols.</td><td>graph.json</td></tr>
+      <tr><td><code>shortest_path</code></td><td>Find shortest directed edge path between two node ids.</td><td>graph.json</td></tr>
+      <tr><td><code>graph_schema</code></td><td>Node &amp; edge types present, with counts and connection shapes.</td><td>graph.json</td></tr>
+      <tr><td><code>list_projects</code></td><td>List every indexed project on this machine.</td><td><code>~/.ug/</code> scan</td></tr>
+      <tr><td><code>reindex</code></td><td>Re-run index → graph → embed pipeline. Incremental.</td><td>Repo source</td></tr>
+    </table>
+  </div>
+
+  <h2>3.3 Tool Aliases</h2>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Alias</th><th>Resolves to</th></tr>
+      <tr><td><code>search_kb</code>, <code>hybrid_search</code></td><td><code>search</code></td></tr>
+      <tr><td><code>graph_path</code>, <code>path</code></td><td><code>shortest_path</code></td></tr>
+      <tr><td><code>list</code></td><td><code>list_projects</code></td></tr>
+      <tr><td><code>find_symbol</code></td><td><code>find_symbols</code></td></tr>
+      <tr><td><code>graph_search</code></td><td><code>find_symbols</code> (sets <code>includeDocs: true</code>)</td></tr>
+    </table>
+  </div>
+
+  <h2>3.4 Chat Tool Denylist</h2>
+  <p><code>reindex</code> and <code>list_projects</code> are excluded from OpenAI-compatible tool schemas — the LLM should not reindex or list projects mid-conversation.</p>
+
+  <div class="code-block">
+    <div class="titlebar"><span class="label">mcp · call a tool</span><button class="copy-btn" data-copy='ug mcp call find_symbols "{&quot;name&quot;:&quot;run_serve&quot;}"'>Copy</button></div>
+    <pre><span class="c-dim">$</span> ug mcp call find_symbols <span class="c-str">'{"name":"authenticate","include_docs":true}'</span>
+<span class="c-teal">▸</span> <span class="c-dim">[exact match]</span> function:src/auth.ts:42:authenticate
+<span class="c-teal">▸</span> <span class="c-dim">[exact match]</span> function:src/auth.ts:89:authenticateToken
+<span class="c-teal">▸</span> <span class="c-dim">[prefix]</span>   function:src/auth/middleware.ts:15:authenticateUser
+
+<span class="c-com"># Same tools over HTTP:</span>
+<span class="c-dim">$</span> GET  http://localhost:8080/api/tools
+<span class="c-dim">$</span> POST http://localhost:8080/api/tools/search</pre>
+  </div>
+
+  <div class="code-block">
+    <div class="titlebar"><span class="label">install mcp for your agent</span><button class="copy-btn" data-copy="ug mcp install claude">Copy</button></div>
+    <pre><span class="c-dim">$</span> ug mcp install claude         <span class="c-com"># Claude Desktop (global or project)</span>
+<span class="c-dim">$</span> ug mcp install claude-desk    <span class="c-com"># Claude Desktop (global only)</span>
+<span class="c-dim">$</span> ug mcp install cursor          <span class="c-com"># Cursor</span>
+<span class="c-dim">$</span> ug mcp install windsurf        <span class="c-com"># Windsurf</span>
+<span class="c-dim">$</span> ug mcp install vscode          <span class="c-com"># VS Code</span>
+<span class="c-dim">$</span> ug mcp install gemini          <span class="c-com"># Gemini CLI</span>
+<span class="c-dim">$</span> ug mcp install opencode        <span class="c-com"># OpenCode</span></pre>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ STORAGE ═══════════════════════════ -->
+<div class="tab-content" id="tab-storage">
+  <h1>Storage Backends</h1>
+
+  <h2>4.1 Architecture</h2>
+  <div class="arch-diagram">
+    <div class="trait-box">KnowledgeStore trait (store.rs)</div>
+    <div class="v-arrow"></div>
+    <div class="leaf-row">
+      <div class="impl-box">OverGraph<span class="sub">embedded engine · db.rs</span></div>
+      <div class="impl-box">Neo4j<span class="sub">remote Bolt · backends/neo4j.rs</span></div>
+      <div class="impl-box" style="opacity:.55;">Future<span class="sub">pluggable</span></div>
+    </div>
+  </div>
+
+  <h2>4.2 StoreSpec</h2>
+  <p>Two variants, created from env vars or <code>--dest</code> flags:</p>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Variant</th><th>Connection</th><th>Environment variables</th></tr>
+      <tr><td><code>Overgraph { path, embedding_dim }</code></td><td>Local embedded database engine</td><td><code>UG_DEST=overgraph</code> (default)</td></tr>
+      <tr><td><code>Neo4j { uri, user, password, database, embedding_dim }</code></td><td>Remote Neo4j via Bolt protocol</td><td><code>UG_DEST=neo4j</code>, <code>UG_NEO4J_URI</code>, <code>UG_NEO4J_USER</code>, <code>UG_NEO4J_PASSWORD</code></td></tr>
+    </table>
+  </div>
+
+  <h2>4.3 KnowledgeStore Trait Methods</h2>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Method</th><th>What it does</th></tr>
+      <tr><td><code>embedding_dim()</code></td><td>Return the vector dimension</td></tr>
+      <tr><td><code>upsert_nodes(rows)</code></td><td>Write / replace node rows (with embeddings)</td></tr>
+      <tr><td><code>upsert_edges(rows)</code></td><td>Write / replace edges</td></tr>
+      <tr><td><code>vector_search(query, k, filter)</code></td><td>Dense vector search (cosine distance)</td></tr>
+      <tr><td><code>hybrid_search(query, sparse, text, k, filter)</code></td><td>Dense + keyword fusion search</td></tr>
+      <tr><td><code>traverse(start, max_hops, edge_types, direction)</code></td><td>K-hop graph traversal</td></tr>
+      <tr><td><code>nodes_by_ids(ids)</code></td><td>Bulk read nodes by id</td></tr>
+      <tr><td><code>personalized_pagerank(seeds, direction, edge_types, ...)</code></td><td>PPR computation</td></tr>
+      <tr><td><code>prune_nodes_absent_from(keep)</code></td><td>Delete nodes not in the given set</td></tr>
+      <tr><td colspan="2" style="color:var(--slate);font-size:12.5px;">… plus <code>count_nodes</code>, <code>count_edges</code>, <code>nodes_for_upsert</code>, <code>fetch_node</code>, <code>backend_name</code>, <code>supports_native_ppr</code></td></tr>
+    </table>
+  </div>
+
+  <h2>4.4 OverGraph (db.rs)</h2>
+  <p>The default embedded backend. Uses the <code>overgraph</code> crate's <code>DatabaseEngine</code>.</p>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Property</th><th>Detail</th></tr>
+      <tr><td>Storage location</td><td><code>&lt;project-dir&gt;/ugdb/</code> (alongside <code>graph.json</code>)</td></tr>
+      <tr><td>Vector index</td><td>HNSW index over dense <code>f32</code> embeddings (cosine similarity)</td></tr>
+      <tr><td>Full-text index</td><td>FNV-hashed sparse keyword vectors</td></tr>
+      <tr><td>Node keying</td><td>Flat id space → internal <code>u64</code> ids</td></tr>
+      <tr><td>Schema file</td><td><code>ug-meta.json</code> records the embedding dimension</td></tr>
+    </table>
+  </div>
+
+  <h2>4.5 Neo4j (backends/neo4j.rs)</h2>
+  <p>Alternative remote backend. Connects via the Bolt protocol.</p>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Property</th><th>Detail</th></tr>
+      <tr><td>Connection</td><td>Env vars: <code>UG_NEO4J_URI</code>, <code>UG_NEO4J_USER</code>, <code>UG_NEO4J_PASSWORD</code>, <code>UG_NEO4J_DATABASE</code></td></tr>
+      <tr><td>Vector index</td><td>Neo4j native vector index (label-based, cosine)</td></tr>
+      <tr><td>Node keying</td><td>Label <code>GraphNode</code>, unique constraint on <code>id</code></td></tr>
+      <tr><td>PPR</td><td>Via Graph Data Science plugin (<code>gds.pageRank.stream</code>)</td></tr>
+    </table>
+  </div>
+
+  <h2>4.6 StoreSet (fan-out)</h2>
+  <p>When <code>--dest overgraph,neo4j</code> is specified, both backends are opened as a <code>StoreSet</code>. Writes fan out to all stores; reads pick the primary.</p>
+
+  <h2>4.7 Other Storage Modules</h2>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Module</th><th>File</th><th>What it does</th></tr>
+      <tr><td><code>text.rs</code></td><td><code>storage/text.rs</code></td><td>Builds embedding text: name + signature + docstring + snippet</td></tr>
+      <tr><td><code>embed.rs</code></td><td><code>storage/embed.rs</code></td><td>Remote embedder client (OpenAI-compatible), auto-probes dimension</td></tr>
+      <tr><td><code>embed_local.rs</code></td><td><code>storage/embed_local.rs</code></td><td>Local embedder via fastembed-rs (in-process, no external service)</td></tr>
+      <tr><td><code>query.rs</code></td><td><code>storage/query.rs</code></td><td>High-level search: <code>search_kb</code>, <code>semantic_search</code>, <code>rrf_search</code>, <code>mmr_rerank</code></td></tr>
+      <tr><td><code>ingest.rs</code></td><td><code>storage/ingest.rs</code></td><td>Embedding + write pipeline: <code>ingest_graph</code>, <code>plan_incremental_ingest</code></td></tr>
+      <tr><td><code>ppr.rs</code></td><td><code>storage/ppr.rs</code></td><td>Wraps PPR: <code>run_ppr</code>, <code>default_edge_type_weights</code></td></tr>
+      <tr><td><code>source.rs</code></td><td><code>storage/source.rs</code></td><td>Captures node source code from filesystem</td></tr>
+      <tr><td><code>types_registry.rs</code></td><td><code>storage/types_registry.rs</code></td><td>Stable string ↔ u32 mapping for node/edge types</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ PIPELINE & SCHEMAS ═══════════════════════════ -->
+<div class="tab-content" id="tab-pipeline">
+  <h1>Pipeline &amp; Schemas</h1>
+
+  <h2>5.1 Pipeline Flow</h2>
+
+  <div class="pipeline">
+    <div class="box">
+      <h4>ug index</h4>
+      <p>Source files → <code>indexed-tree.json</code> (FileNode[] + FolderNode[] + dependencies)</p>
+    </div>
+    <div class="arrow"></div>
+    <div class="box">
+      <h4>ug graph</h4>
+      <p><code>indexed-tree.json</code> → <code>graph.json</code> (GraphNode[] + GraphEdge[] + stats)</p>
+    </div>
+    <div class="arrow"></div>
+    <div class="box accent">
+      <h4>ug ingest</h4>
+      <p><code>graph.json</code> → ugdb/Neo4j (embedded nodes + edges + FTS)</p>
+    </div>
+  </div>
+
+  <p><strong>One-step:</strong> <code>ug gen</code> runs index → graph → ingest sequentially.<br />
+  <strong>Step-by-step:</strong> <code>ug index && ug graph && ug ingest</code>.<br />
+  <strong>With viz:</strong> <code>ug gen --serve</code> or <code>ug serve</code>.</p>
+
+  <h2>5.2 index.json Schema (<code>IndexResult</code>)</h2>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Field</th><th>Type</th><th>Contents</th></tr>
+      <tr><td><code>files</code></td><td><code>Vec&lt;FileNode&gt;</code></td><td>One per source file. Contains parsed symbols, imports, exports</td></tr>
+      <tr><td><code>folders</code></td><td><code>Vec&lt;FolderNode&gt;</code></td><td>File-system folder hierarchy with classification, README summaries</td></tr>
+      <tr><td><code>dependencies</code></td><td><code>Vec&lt;Dependency&gt;</code></td><td>From <code>package.json</code></td></tr>
+      <tr><td><code>stats</code></td><td><code>IndexStats</code></td><td>totalFiles, cachedFiles, totalSymbols, totalFolders, totalLines, indexingTimeMs, lastIndexedAt, repoRoot</td></tr>
+    </table>
+  </div>
+
+  <h2>5.3 graph.json Schema (<code>GraphData</code>)</h2>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Field</th><th>Type</th><th>Contents</th></tr>
+      <tr><td><code>nodes</code></td><td><code>Vec&lt;GraphNode&gt;</code></td><td>All symbols + files + folders + deps. Id format: <code>{type}:{file}:{line}:{name}</code></td></tr>
+      <tr><td><code>edges</code></td><td><code>Vec&lt;GraphEdge&gt;</code></td><td>Directed edges. Types: Calls, Extends, Implements, References, Contains, Imports, Exports, Requires, Uses, DependsOn</td></tr>
+      <tr><td><code>stats</code></td><td><code>Option&lt;IndexStats&gt;</code></td><td>Copied from index.json for self-contained graph</td></tr>
+    </table>
+  </div>
+
+  <h2>5.4 Pipeline Steps</h2>
+
+  <h3>1. Index (<code>indexer.rs</code>)</h3>
+  <p>Discovers files with supported extensions via <code>scan_files()</code>. For each file: tree-sitter parse → symbol extraction → import/export resolution. Supported languages: Rust, TypeScript/TSX, JavaScript, Python, Java, Markdown, PDF, Office docs. Cache: blake3 content hashes in <code>cache.json</code>. Output: <code>indexed-tree.json</code>.</p>
+
+  <h3>2. Graph (<code>graph.rs</code>)</h3>
+  <p>Reads <code>IndexResult</code>. Creates folder nodes → file nodes → symbol nodes. Resolves cross-file imports (path joins, extension permutations, basename fallback). Creates edges: Calls, Extends, Implements, References, Contains, Imports, Exports, Requires, Uses, DependsOn. Output: <code>graph.json</code>.</p>
+
+  <h3>3. Ingest (<code>storage/ingest.rs</code>)</h3>
+  <p>Reads <code>GraphData</code>, builds embedding text for each node (name + signature + docstring + related names + folder context + source snippet). Generates sparse keyword vectors. Incremental: diffs incoming vs stored nodes by content hash. Embeds only new/changed nodes in batches. Upserts nodes + edges to all configured backends. Output: embedded nodes and edges in ugdb/ or Neo4j.</p>
+
+  <div class="code-block">
+    <div class="titlebar"><span class="label">run the full pipeline</span><button class="copy-btn" data-copy="ug gen -i ./my-repo --serve">Copy</button></div>
+    <pre><span class="c-dim">$</span> ug gen <span class="c-flag">-i</span> ./my-repo <span class="c-flag">--serve</span>
+<span class="c-teal">▸</span> indexing    <span class="c-num">9.27</span>s
+<span class="c-teal">▸</span> graph build <span class="c-num">264</span>ms
+<span class="c-teal">▸</span> embeddings  <span class="c-num">618</span>s
+<span class="c-teal">▸</span> node write  <span class="c-num">993</span>ms
+<span class="c-teal">▸</span> edge write  <span class="c-num">215</span>ms
+<span class="c-teal">▸</span> listening on http://127.0.0.1:8080</pre>
+  </div>
+
+</div>
+
+</div><!-- /container -->
+
+<script>
+(function() {
+  // ── Tab switching ──
+  const tabs = document.querySelectorAll('#tabBar .tab');
+  const contents = {};
+  document.querySelectorAll('.tab-content').forEach(el => {
+    contents[el.id.replace('tab-', '')] = el;
+  });
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const id = tab.dataset.tab;
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      Object.values(contents).forEach(c => c.classList.remove('active'));
+      if (contents[id]) contents[id].classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // ── Copy buttons ──
+  document.querySelectorAll('.copy-btn[data-copy]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const text = btn.dataset.copy;
+      try { await navigator.clipboard.writeText(text); }
+      catch {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch {}
+        document.body.removeChild(ta);
+      }
+      const orig = btn.textContent;
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = orig;
+        btn.classList.remove('copied');
+      }, 1500);
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

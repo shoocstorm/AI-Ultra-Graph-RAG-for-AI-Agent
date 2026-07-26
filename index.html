@@ -1196,7 +1196,7 @@
       <div class="footer-bar">
         <span class="tip">Tip</span> <span class="sep"></span>
         <span>navigate with</span> <span class="kbd">←</span> <span class="kbd">→</span> <span class="sep"></span>
-        <span>jump with</span> <span class="kbd">1</span>–<span class="kbd">7</span>
+        <span>jump with</span> <span class="kbd">1</span>–<span class="kbd">8</span>
       </div>
     </section>
 
@@ -1369,7 +1369,97 @@
       </div>
     </section>
 
-    <!-- ───────────────────────────────────────── 6 · MCP INTEGRATION ────────────────────────────── -->
+    <!-- ───────────────────────────────────────── 6 · GUIDED TOUR ─────────────────────────────────── -->
+    <section class="slide" data-title="Guided Tour">
+      <span class="badge"><span class="dot">🎬</span> Guided graph tours</span>
+      <h1 class="small">LLM-narrated walkthroughs. <span class="hl">Flies the camera</span> in the web UI.</h1>
+      <p class="lede">GraphRAG picks the nodes that matter for your question, an LLM "tour guide" orders
+        them into a narrative, and the result is an ordered itinerary bound to real graph nodes — ready to
+        explore <strong>stop by stop</strong>.</p>
+
+      <div class="two-col">
+        <div>
+          <div class="terminal">
+            <div class="titlebar">
+              <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+              <div class="title">ug tour · guided walkthrough</div>
+              <button class="copy-btn" data-copy='ug tour "how does authentication work?"'>Copy</button>
+            </div>
+            <pre><span class="prompt">$</span> ug tour <span class="c-str">"how does authentication work?"</span>
+
+<span class="c-acc">❯</span> Auth Flow · from login to session
+
+  This tour traces a request from the login
+  endpoint through credential validation, token
+  issuance, and middleware enforcement.
+
+<span class="c-acc">  ●</span> <span class="c-dim">Stop 1/5</span> · <span class="c-key">login handler</span> <span class="c-dim">(Function)</span>
+     src/auth/login.ts:42
+     POST /login — validates email + password
+<span class="c-dim">     │ pub async fn login(…)</span>
+
+  <span class="c-dim">  │  → calls</span>
+<span class="c-acc">  ●</span> <span class="c-dim">Stop 2/5</span> · <span class="c-key">verify_credentials</span> <span class="c-dim">(Function)</span>
+     src/auth/verify.ts:18
+     Looks up the user by email, bcrypt-compares
+     the password hash, returns the user profile.
+
+<span class="c-dim">  │  → calls</span>
+<span class="c-acc">  ●</span> <span class="c-dim">Stop 3/5</span> · <span class="c-key">issue_token</span> <span class="c-dim">(Function)</span>
+     src/auth/jwt.ts:55
+     Signs a JWT with user claims and a 24h expiry.
+
+<span class="c-dim">  │  → extends</span>
+<span class="c-acc">  ●</span> <span class="c-dim">Stop 4/5</span> · <span class="c-key">AuthMiddleware</span> <span class="c-dim">(Class)</span>
+     src/auth/middleware.ts:12
+     Extracts the Bearer token, verifies the
+     signature, attaches the user to the request.
+
+<span class="c-acc">  ●</span> <span class="c-dim">Stop 5/5</span> · <span class="c-key">SessionStore</span> <span class="c-dim">(Class)</span>
+     src/auth/session.ts:89
+     Redis-backed session store with auto-refresh.
+
+  ✦ That's the auth pipeline — from the HTTP
+     handler through credential checks, token
+     signing, and middleware enforcement.</pre>
+          </div>
+        </div>
+        <div>
+          <ul class="feat">
+            <li><strong>GraphRAG-powered retrieval</strong> — PPR picks the right nodes for your question</li>
+            <li><strong>LLM tour guide</strong> — orders stops into a coherent narrative, narrates each stop</li>
+            <li><strong>Web UI camera</strong> — flies the graph visualization stop to stop in <code>ug serve</code></li>
+            <li><strong>SSE streaming</strong> — real-time progress from retrieval → planning → narration</li>
+            <li><strong>CLI + API parity</strong> — <code>ug tour</code> and <code>POST /api/tour</code>, identical results</li>
+            <li><strong>No-LLM fallback</strong> — <code>--no-llm</code> emits a ranked itinerary without a guide</li>
+          </ul>
+          <div class="terminal compact" style="margin-top: 16px;">
+            <div class="titlebar">
+              <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+              <div class="title">api · streamed tour</div>
+              <button class="copy-btn" data-copy='curl -X POST http://localhost:8080/api/tour -H "Content-Type: application/json" -d '"'"'{"query":"auth flow","stream":true}'"'"''>Copy</button>
+            </div>
+            <pre><span class="prompt">$</span> curl <span class="c-flag">-X</span> POST http://localhost:8080/api/tour \
+  <span class="c-flag">-H</span> <span class="c-str">"Content-Type: application/json"</span> \
+  <span class="c-flag">-d</span> <span class="c-str">'{"query":"auth flow","stream":true}'</span>
+
+<span class="c-dim">event: progress</span>
+<span class="c-dim">data: {"phase":"retrieved","candidates":14}</span>
+<span class="c-dim">event: progress</span>
+<span class="c-dim">data: {"phase":"writing","chars":924}</span>
+<span class="c-dim">event: tour</span>
+<span class="c-dim">data: { … full Tour JSON … }</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bar">
+        <span class="tip">Try it</span><span class="sep"></span>
+        <span><code>ug tour "how does this codebase work?"</code> — or <code>ug tour -h</code> for all options</span>
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────── 7 · MCP INTEGRATION ────────────────────────────── -->
     <section class="slide" data-title="MCP Integration">
       <span class="section-tag">MCP · drop-in for your AI agent</span>
       <h1 class="small">One tool call away from <span class="hl">the right context</span>.</h1>
@@ -1481,47 +1571,64 @@
         <div class="brand">Try it</div>
         <h1 style="font-size: 88px;">One command. <br /><span class="hl">The right context.</span></h1>
 
-        <div style="max-width: 820px; margin: 32px auto 0;">
-          <p style="text-align: center; color: var(--slate); margin-bottom: 24px; font-size: 15px;">Install in one command — works everywhere</p>
+        <div style="max-width: 1020px; margin: 18px auto 0;">
+          <div class="grid-2">
+            <div class="stack">
+              <p style="text-align: center; color: var(--slate); margin: 0 0 8px; font-size: 13px;">Install or upgrade in one command</p>
+              <div class="terminal compact">
+                <div class="titlebar">
+                  <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+                  <div class="title">install</div>
+                  <button class="copy-btn" data-copy="curl -fsSL https://ultra-graph.web.app/install.sh | sh">Copy</button>
+                </div>
+                <pre><span class="prompt">$</span> curl <span class="c-flag">-fsSL</span> https://ultra-graph.web.app/install.sh | sh</pre>
+              </div>
+              <div class="terminal compact">
+                <div class="titlebar">
+                  <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+                  <div class="title">upgrade</div>
+                  <button class="copy-btn" data-copy="ug upgrade">Copy</button>
+                </div>
+                <pre><span class="prompt">$</span> ug upgrade
 
-          <div class="terminal" style="margin-bottom: 16px;">
-            <div class="titlebar">
-              <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-              <div class="title">install</div>
-              <button class="copy-btn" data-copy="curl -fsSL https://ultra-graph.web.app/install.sh | sh">Copy</button>
+▸ Current version v0.1.4 — checking latest release...
+▸ Downloading v0.1.6 (ultragraph-macos-arm64.tar.gz)...
+  <span class="c-num">19.5</span> / <span class="c-num">19.5</span> MB (<span class="c-num">100</span>%)
+▸ Installing to ~/.local/share/ultragraph/.ug...
+
+<span class="c-acc">✓</span> Upgraded to v0.1.6
+  ug version 0.1.6
+  (restart any running `ug serve` / MCP server to pick it up)</pre>
+              </div>
             </div>
-            <pre><span class="prompt">$</span> curl <span class="c-flag">-fsSL</span> https://ultra-graph.web.app/install.sh | sh</pre>
-          </div>
-
-          <p style="text-align: center; color: var(--slate); margin: 24px 0; font-size: 15px;">Then, index any repo in seconds</p>
-
-          <div class="terminal" style="margin-bottom: 16px;">
-            <div class="titlebar">
-              <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-              <div class="title">index & serve</div>
-            </div>
-            <pre><span class="prompt">$</span> ug gen <span class="c-flag">-i</span> ~/.hermes/hermes-agent <span class="c-flag">--serve</span>
+            <div class="stack">
+              <p style="text-align: center; color: var(--slate); margin: 0 0 8px; font-size: 13px;">Index, serve, and explore your knowledge base</p>
+              <div class="terminal compact">
+                <div class="titlebar">
+                  <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+                  <div class="title">index & serve</div>
+                </div>
+                <pre><span class="prompt">$</span> ug gen <span class="c-flag">-i</span> ~/.hermes/hermes-agent 
 
 <span class="c-acc">▸</span> indexing                 <span class="c-num">9.27</span>s
 <span class="c-acc">▸</span> graph build              <span class="c-num">264</span>ms
 <span class="c-acc">▸</span> embeddings (41,619)      <span class="c-num">618</span>s
 <span class="c-acc">▸</span> node write               <span class="c-num">993</span>ms
 <span class="c-acc">▸</span> edge write (95,071)      <span class="c-num">215</span>ms
-<span class="c-acc">▸</span> listening on             <span class="c-str">http://localhost:8080</span></pre>
-          </div>
-
-          <p style="text-align: center; color: var(--slate); margin: 24px 0; font-size: 15px;">Launch the desktop app — visual knowledge base explorer</p>
-
-          <div class="terminal" style="margin-bottom: 16px;">
-            <div class="titlebar">
-              <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-              <div class="title">desktop app</div>
-              <button class="copy-btn" data-copy="ug app">Copy</button>
-            </div>
-            <pre><span class="prompt">$</span> ug app
+<span class="c-acc">▸</span> Run `ug serve` & view at  <span class="c-str">http://localhost:8080</span></pre>
+              </div>
+              <div class="terminal compact">
+                <div class="titlebar">
+                  <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+                  <div class="title">desktop app</div>
+                  <button class="copy-btn" data-copy="ug app">Copy</button>
+                </div>
+                <pre><span class="prompt">$</span> ug app
 
 <span class="c-acc">▸</span> opening knowledge base manager window…
 <span class="c-acc">▸</span> choose a project or generate a new one</pre>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1538,11 +1645,14 @@
           <a class="chip-link" href="https://youtu.be/3K-L7NSw9vs" target="_blank" rel="noopener">
             <span class="dot">▶</span> watch the demo
           </a>
+          <a class="chip-link" href="api-reference.html">
+            <span class="dot">⎔</span> API reference
+          </a>
         </div>
       </div>
       <div class="footer-bar">
         <span class="tip">Last refreshed</span><span class="sep"></span>
-        <span>2026-07-23 · pure Rust binary · canonical tool names (<code>search</code>/<code>traverse</code>) · HTTP API parity · <code>ug active</code> · <code>project_overview</code> stats</span>
+        <span>2026-07-25 · pure Rust binary · canonical tool names (<code>search</code>/<code>traverse</code>) · HTTP API parity · <code>ug tour</code> guided walkthroughs · SSE streaming · <code>ug active</code> · <code>project_overview</code> stats</span>
       </div>
     </section>
 
