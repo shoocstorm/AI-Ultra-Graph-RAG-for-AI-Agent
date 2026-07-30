@@ -1169,7 +1169,7 @@
           <div class="tag" style="margin-top: 10px;">A local-first knowledge-base generator that turns your codebase or document collection
             into a queryable <strong style="color: var(--ink)">Semantic Knowledge Graph</strong>.</div>
           <div class="meta" style="margin-top: 20px;">
-            <span class="badge"><span class="dot">&gt;_</span> pure rust — 10 mb binary</span>
+            <span class="badge"><span class="dot">&gt;_</span> pure rust — cli, web, desktop</span>
             <a class="badge" href="https://github.com/shoocstorm/ug" target="_blank" rel="noopener"><span
                 class="dot">★</span> github.com/shoocstorm/ug</a>
           </div>
@@ -1365,7 +1365,93 @@
 
       <div class="footer-bar">
         <span class="tip">MCP-native</span><span class="sep"></span>
-        <span><code>search</code> · <code>traverse</code> · <code>find_symbols</code> · <code>list_projects</code> · <code>reindex</code> + <code>project_overview</code> + more — try any with <code>ug mcp call</code>
+        <span><code>search</code> · <code>traverse</code> · <code>find_symbols</code> · <code>code_query</code> · <code>regen</code> + <code>project_overview</code> + more — try any with <code>ug mcp call</code>
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────── 6 · REPO STATISTICS ─────────────────────────────── -->
+    <section class="slide" data-title="Repo Statistics">
+      <span class="badge"><span class="dot">📊</span> ug query · whole-repo statistics</span>
+      <h1 class="small">"How many?" in <span class="hl">one call</span>, not one grep per file.</h1>
+      <p class="lede">Counting, ranking, distribution and blast-radius questions run as aggregations over the
+        indexed graph — <strong>33 named presets</strong>, or raw GQL when none fits. What an agent would
+        otherwise answer by reading the whole repo, at a <strong>thousandth</strong> of the tokens.</p>
+
+      <div class="two-col">
+        <div>
+          <div class="terminal">
+            <div class="titlebar">
+              <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+              <div class="title">ug query · where the long functions cluster</div>
+              <button class="copy-btn" data-copy="ug query long_functions_by_folder">Copy</button>
+            </div>
+            <pre><span class="prompt">$</span> ug query long_functions_by_folder
+
+<span class="c-dim">folder                          count   avg_loc</span>
+<span class="c-acc">▸</span> native/src                       28     162.4
+<span class="c-acc">▸</span> native/src/vis/js                10     140.2
+<span class="c-acc">▸</span> native/src/indexer/languages      4     140.2
+<span class="c-acc">▸</span> native/src/indexer                2     127.5
+
+<span class="c-dim">rows 1–4 of 4 · 47 graph matches before grouping</span>
+<span class="c-dim">coverage: loc 2697/2821 (96%) · is_test 2805/2821 (99%)</span></pre>
+          </div>
+
+          <div class="terminal compact" style="margin-top: 12px;">
+            <div class="titlebar">
+              <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+              <div class="title">blast radius · before you refactor</div>
+              <button class="copy-btn" data-copy="ug query impact --arg target=src/storage/store.rs">Copy</button>
+            </div>
+            <pre><span class="prompt">$</span> ug query impact <span class="c-flag">--arg</span> target=src/storage/store.rs
+
+<span class="c-dim">file                        dependents  test_paths</span>
+<span class="c-acc">▸</span> src/storage/db.rs                   22        0
+<span class="c-acc">▸</span> src/storage/ingest.rs               15        0
+<span class="c-acc">▸</span> src/main.rs                          9        4
+
+<span class="c-dim">next: rerun with range "4-21"</span></pre>
+          </div>
+        </div>
+
+        <div>
+          <div class="terminal">
+            <div class="titlebar">
+              <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+              <div class="title">ug query --list · 33 questions, by category</div>
+              <button class="copy-btn" data-copy="ug query --list">Copy</button>
+            </div>
+            <pre><span class="c-com">census</span>      repo_census · biggest_files · language_breakdown
+            where_to_start
+<span class="c-com">size</span>        long_functions(min_loc) · god_classes
+            param_bloat(min_params) · deep_nesting(min_depth)
+<span class="c-com">docs</span>        comment_coverage · undocumented_hotspots
+            undercommented_complexity
+<span class="c-com">dead code</span>   dead_code · orphan_files · duplicate_names
+<span class="c-com">arch</span>        dependency_fanin · coupling_matrix
+            layering_violations(from_prefix, to_prefix)
+<span class="c-com">tests</span>       test_ratio · untested_symbols · retest_scope(target)
+<span class="c-com">risk</span>        impact(target) · impact_summary(target) · risky_symbols</pre>
+          </div>
+
+          <div class="terminal compact" style="margin-top: 12px;">
+            <div class="titlebar">
+              <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+              <div class="title">no preset fits? write the query</div>
+              <button class="copy-btn" data-copy='ug query --gql "MATCH (n:Function) WHERE n.params > 6 RETURN n.folder AS f, count(*) AS c ORDER BY c DESC"'>Copy</button>
+            </div>
+            <pre><span class="prompt">$</span> ug query <span class="c-flag">--gql</span> <span class="c-str">"MATCH (n:Function)
+    WHERE n.params &gt; 6
+    RETURN n.folder AS f, count(*) AS c
+    ORDER BY c DESC"</span></pre>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="footer-bar">
+        <span class="tip">No embedder needed</span><span class="sep"></span>
+        <span>Reads the OverGraph store directly — every answer prints the coverage of the properties it touched, so a zero over an unpopulated field can't pass as a finding</span>
       </div>
     </section>
 
@@ -1460,35 +1546,40 @@
     </section>
 
     <!-- ───────────────────────────────────────── 7 · MCP INTEGRATION ────────────────────────────── -->
-    <section class="slide" data-title="MCP Integration">
-      <span class="section-tag">MCP · drop-in for your AI agent</span>
-      <h1 class="small">One tool call away from <span class="hl">the right context</span>.</h1>
+    <section class="slide" data-title="Agent Integration">
+      <span class="section-tag">Agents · CLI skill or MCP, your choice</span>
+      <h1 class="small">Two ways in. <span class="hl">One command</span> to wire either.</h1>
 
       <div style="display: flex; gap: 24px; margin-top: 8px; flex: 1; min-height: 0;">
         <div style="display: flex; flex-direction: column; gap: 12px; flex: 1;">
           <div class="terminal">
             <div class="titlebar">
               <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-              <div class="title">mcp · tool call · search</div>
+              <div class="title">ug connect · pick how your agent reaches ug</div>
+              <button class="copy-btn" data-copy="ug connect claude">Copy</button>
             </div>
-            <pre>{
-  <span class="c-key">"name"</span>: <span class="c-str">"search"</span>,
-  <span class="c-key">"arguments"</span>: {
-    <span class="c-key">"query"</span>:    <span class="c-str">"how does auth work"</span>,
-    <span class="c-key">"k"</span>:        <span class="c-num">8</span>,
-    <span class="c-key">"strategy"</span>: <span class="c-str">"ppr"</span>
-  }
-}</pre>
+            <pre><span class="prompt">$</span> ug connect claude
+
+<span class="c-acc">❯</span> How should your agent reach ug?
+   <span class="c-num">1</span>) cli    <span class="c-dim">the agent runs `ug` directly — recommended</span>
+   <span class="c-num">2</span>) mcp    <span class="c-dim">MCP server only — tool calls over the protocol</span>
+   <span class="c-num">3</span>) both   <span class="c-dim">both, and let the agent choose</span>
+
+<span class="c-com"># or say it up front — nine agents supported:</span>
+<span class="prompt">$</span> ug connect cursor <span class="c-flag">--cli</span>     <span class="c-com"># skill only (recommended)</span>
+<span class="prompt">$</span> ug connect vscode <span class="c-flag">--mcp</span>     <span class="c-com"># MCP server entry only</span>
+<span class="prompt">$</span> ug disconnect claude         <span class="c-com"># remove either</span></pre>
           </div>
 
           <div class="terminal compact">
             <div class="titlebar">
               <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-              <div class="title">curl · hybrid search</div>
+              <div class="title">mcp · tool call · search</div>
             </div>
-            <pre><span class="prompt">$</span> curl <span class="c-flag">-X</span> POST <span class="c-flag">-H</span> <span class="c-str">"Content-Type: application/json"</span> \
-    http://localhost:8080/api/search/hybrid \
-    <span class="c-flag">-d</span> <span class="c-str">'{"query":"oauth login flow","k":8,"strategy":"ppr"}'</span></pre>
+            <pre>{
+  <span class="c-key">"name"</span>: <span class="c-str">"search"</span>,
+  <span class="c-key">"arguments"</span>: { <span class="c-key">"query"</span>: <span class="c-str">"how does auth work"</span>, <span class="c-key">"k"</span>: <span class="c-num">8</span> }
+}</pre>
           </div>
         </div>
 
@@ -1499,69 +1590,42 @@
               <div class="title">explore mcp tools · learn what each does</div>
               <button class="copy-btn" data-copy="ug mcp list">Copy</button>
             </div>
-            <pre><span class="c-com"># See all available tools with descriptions:</span>
-<span class="prompt">$</span> ug mcp list
-<span class="c-acc">▸</span> search            <span class="c-dim">GraphRAG search (PPR/MMR). The primary entry point.</span>
+            <pre><span class="prompt">$</span> ug mcp list
+<span class="c-acc">▸</span> search            <span class="c-dim">GraphRAG search (PPR). The primary entry point.</span>
 <span class="c-acc">▸</span> semantic_search   <span class="c-dim">Lightweight pure-vector lookup</span>
 <span class="c-acc">▸</span> traverse          <span class="c-dim">Walk graph N hops from seed nodes</span>
 <span class="c-acc">▸</span> find_usages       <span class="c-dim">Inbound references to a node</span>
 <span class="c-acc">▸</span> find_symbols      <span class="c-dim">Multi-name symbol lookup (incl. docstrings)</span>
 <span class="c-acc">▸</span> file_outline      <span class="c-dim">Indexed symbols in one file</span>
 <span class="c-acc">▸</span> get_code          <span class="c-dim">Full source for a node or file range</span>
-<span class="c-acc">▸</span> project_overview  <span class="c-dim">Node counts, lang breakdown, complexity stats</span>
+<span class="c-acc">▸</span> project_overview  <span class="c-dim">Counts, biggest files, hotspot symbols</span>
+<span class="c-acc">▸</span> shortest_path     <span class="c-dim">How two symbols are connected</span>
+<span class="c-acc">▸</span> code_query        <span class="c-dim">Whole-repo stats: counts, distributions, blast radius</span>
 <span class="c-acc">▸</span> graph_schema      <span class="c-dim">Node & edge types in graph</span>
 <span class="c-acc">▸</span> list_projects     <span class="c-dim">Indexed projects on this machine</span>
-<span class="c-acc">▸</span> reindex           <span class="c-dim">Re-run index → graph → embed</span></pre>
+<span class="c-acc">▸</span> regen             <span class="c-dim">Re-run index → graph → embed</span></pre>
           </div>
 
           <div class="terminal compact">
             <div class="titlebar">
               <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
               <div class="title">call tools · test queries · see responses</div>
-              <button class="copy-btn" data-copy='ug mcp call find_symbols "{\"name\":\"run_mcp\"}"'>Copy</button>
+              <button class="copy-btn" data-copy='ug mcp call find_symbols "{\"name\":\"authenticate\"}"'>Copy</button>
             </div>
-            <pre><span class="prompt">$</span> ug mcp call find_symbols <span class="c-str">'{"name":"authenticate","include_docs":true}'</span>
-<span class="c-acc">▸</span> <span class="c-dim">[exact match]</span> function:src/auth.ts:42:authenticate
-<span class="c-acc">▸</span> <span class="c-dim">[exact match]</span> function:src/auth.ts:89:authenticateToken
-<span class="c-acc">▸</span> <span class="c-dim">[prefix]</span>   function:src/auth/middleware.ts:15:authenticateUser
+            <pre><span class="prompt">$</span> ug mcp call find_symbols <span class="c-str">'{"name":"authenticate"}'</span>
+<span class="c-acc">▸</span> <span class="c-dim">[exact]</span>  function:src/auth.ts:authenticate
+<span class="c-acc">▸</span> <span class="c-dim">[prefix]</span> function:src/auth/middleware.ts:authenticateUser
 
-<span class="c-com"># Same tools available over HTTP:</span>
+<span class="c-com"># Same tools over HTTP:</span>
 <span class="prompt">$</span> GET  http://localhost:8080/api/tools          <span class="c-com"># discovery</span>
-<span class="prompt">$</span> POST http://localhost:8080/api/tools/search   <span class="c-com"># run any tool</span>
-
-<span class="prompt">$</span> ug mcp call file_outline <span class="c-str">'{"file":"main.rs"}'</span>
-<span class="c-acc">▸</span> [12:45]  function  run_chat
-<span class="c-acc">▸</span> [89:123] function  run_active
-<span class="c-acc">▸</span> [145:167] function  run_serve
-<span class="c-acc">▸</span> … <span class="c-dim">27 total symbols</span>
-
-<span class="prompt">$</span> ug mcp call get_code <span class="c-str">'{"nodeId":"function:main.rs:89:run_active"}'</span>
-<span class="c-acc">▸</span> <span class="c-key">fn</span> <span class="c-fn">run_active</span>(args: &[<span class="c-key">String</span>]) {
-<span class="c-acc">▸</span>   <span class="c-com">// view or set the persisted active project</span>
-<span class="c-acc">▸</span>   <span class="c-key">let</span> positional = first_positional(args, &[]);
-<span class="c-acc">▸</span>   …
-<span class="c-acc">▸</span> }</pre>
-          </div>
-
-          <div class="terminal compact">
-            <div class="titlebar">
-              <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-              <div class="title">wire up your ai agent · one command</div>
-              <button class="copy-btn" data-copy="ug mcp install claude">Copy</button>
-            </div>
-            <pre><span class="prompt">$</span> ug mcp install claude         <span class="c-com"># Claude Desktop (global or project)</span>
-<span class="prompt">$</span> ug mcp install claude-desk    <span class="c-com"># Claude Desktop (global only)</span>
-<span class="prompt">$</span> ug mcp install cursor          <span class="c-com"># Cursor (project or global)</span>
-<span class="prompt">$</span> ug mcp install windsurf        <span class="c-com"># Windsurf (global: ~/.codeium/)</span>
-<span class="prompt">$</span> ug mcp install vscode          <span class="c-com"># VS Code (.vscode/mcp.json)</span>
-<span class="prompt">$</span> ug mcp install gemini          <span class="c-com"># Gemini CLI</span></pre>
+<span class="prompt">$</span> POST http://localhost:8080/api/tools/search   <span class="c-com"># run any tool</span></pre>
           </div>
         </div>
       </div>
 
       <div class="footer-bar">
         <span class="tip">Zero setup</span><span class="sep"></span>
-        <span>In-process ONNX embedder · HTTP API parity · <code>ug active</code> · <code>project_overview</code> with complexity stats</span>
+        <span>Nine agents · <code>--cli</code> installs a skill that teaches <code>ug --help</code> and <code>ug query --list</code> — no idle context, never out of date</span>
       </div>
     </section>
 

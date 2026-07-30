@@ -531,6 +531,7 @@
       <tr><td><code>ug search</code></td><td><code>hybrid_search</code></td><td>GraphRAG: semantic search → graph expansion → PPR-ranked context.</td><td><code>&lt;query&gt;</code> <code>-k</code> <code>--filter</code> <code>--direction</code> <code>-t</code> <code>--max-chars</code></td></tr>
       <tr><td><code>ug semantic_search</code></td><td>—</td><td>Pure vector search over embeddings (no graph context).</td><td><code>&lt;query&gt;</code> <code>-k</code> <code>--filter</code></td></tr>
       <tr><td><code>ug traverse</code></td><td>—</td><td>K-hop BFS over the OverGraph edges table.</td><td><code>&lt;id&gt;...</code> <code>-k</code> <code>-n</code></td></tr>
+      <tr><td><code>ug query</code></td><td>—</td><td><strong>Whole-repo statistics</strong>: counts, groups, distributions, blast radius. 33 named presets or raw GQL. Needs the db but <strong>no embedder</strong>.</td><td><code>&lt;preset&gt;</code> <code>-a k=v</code> <code>-g/--gql</code> <code>-k</code> <code>-r/--range</code> <code>--list</code></td></tr>
     </table>
   </div>
 
@@ -550,7 +551,7 @@
       <tr><td><code>ug serve</code></td><td>Serve the visualization + REST API at <code>localhost:8080</code>. Default command with no args.</td><td><code>-p</code> <code>--host</code> <code>--watch</code> <code>--no-db</code> <code>-i</code> <code>--project</code> <code>--repo-root</code></td></tr>
       <tr><td><code>ug app</code></td><td>Open the native desktop shell (starts server + window).</td><td>Same as <code>ug serve</code></td></tr>
       <tr><td><code>ug api</code></td><td>List every HTTP endpoint <code>ug serve</code> exposes.</td><td><code>--json</code></td></tr>
-      <tr><td><code>ug list_projects</code></td><td>List generated projects under <code>~/.ug</code> with stats.</td><td>—</td></tr>
+      <tr><td><code>ug list</code></td><td>List generated projects under <code>~/.ug</code> with stats. Aliases: <code>ls</code>, <code>list_projects</code>.</td><td>—</td></tr>
       <tr><td><code>ug active</code></td><td>View or set the active project.</td><td><code>&lt;name&gt;</code></td></tr>
       <tr><td><code>ug rm</code></td><td>Delete a project's data directory.</td><td><code>&lt;name&gt;</code></td></tr>
       <tr><td><code>ug upgrade</code></td><td>Check GitHub for a new release and self-update.</td><td><code>--check</code></td></tr>
@@ -561,13 +562,13 @@
     </table>
   </div>
 
-  <h2>1.7 MCP Subcommands</h2>
+  <h2>1.7 Connecting an Agent &amp; MCP Subcommands</h2>
   <div class="table-wrap">
     <table>
       <tr><th>Command</th><th>What it does</th><th>Key flags</th></tr>
       <tr><td><code>ug mcp</code></td><td>Run the stdio JSON-RPC MCP server (meant for AI agents).</td><td>—</td></tr>
-      <tr><td><code>ug mcp install &lt;agent&gt;</code></td><td>Register the MCP server in an agent's config. Agents: <code>claude</code>, <code>cursor</code>, <code>vscode</code>, <code>gemini</code>, <code>opencode</code>, etc.</td><td><code>--project</code> <code>--global</code></td></tr>
-      <tr><td><code>ug mcp uninstall &lt;agent&gt;</code></td><td>Remove the MCP server registration.</td><td><code>--project</code> <code>--global</code></td></tr>
+      <tr><td><code>ug connect &lt;agent&gt;</code><br><span class="c-dim">alias <code>ug mcp install</code></span></td><td>Connect an AI agent — the <strong>CLI skill</strong> (<code>--cli</code>, recommended), the <strong>MCP server</strong> (<code>--mcp</code>), or both (<code>--both</code>). Asks when not given; picking one removes the other. Agents: <code>claude</code>, <code>claude-desk</code>, <code>cursor</code>, <code>windsurf</code>, <code>vscode</code>, <code>gemini</code>, <code>codex</code>, <code>hermes</code>, <code>opencode</code>.</td><td><code>--cli</code> <code>--mcp</code> <code>--both</code> <code>--project</code> <code>--global</code></td></tr>
+      <tr><td><code>ug disconnect &lt;agent&gt;</code><br><span class="c-dim">alias <code>ug mcp uninstall</code></span></td><td>Remove the agent skill and the MCP server registration.</td><td><code>--project</code> <code>--global</code></td></tr>
       <tr><td><code>ug mcp list</code></td><td>Print the tools this server advertises.</td><td>—</td></tr>
       <tr><td><code>ug mcp call &lt;tool&gt; &lt;json&gt;</code></td><td>Invoke one tool directly from the command line.</td><td><code>&lt;tool&gt;</code> <code>&lt;json&gt;</code></td></tr>
     </table>
@@ -681,7 +682,7 @@
   <h1>Agent / MCP Tools</h1>
 
   <h2>3.1 Advertised MCP Tools</h2>
-  <p>12 tools advertised over MCP <code>tools/list</code>, also available via CLI and HTTP <code>/api/tools/:tool</code>.</p>
+  <p>13 tools advertised over MCP <code>tools/list</code>, also available via CLI and HTTP <code>/api/tools/:tool</code>.</p>
   <div class="table-wrap">
     <table>
       <tr><th>Tool</th><th>What it does</th><th>Data source</th></tr>
@@ -694,9 +695,10 @@
       <tr><td><code>get_code</code></td><td>Read source for a node id or file/line range.</td><td>ugdb + filesystem fallback</td></tr>
       <tr><td><code>project_overview</code></td><td>Orient in the codebase: stats, biggest files, most depended-upon symbols.</td><td>graph.json</td></tr>
       <tr><td><code>shortest_path</code></td><td>Find shortest directed edge path between two node ids.</td><td>graph.json</td></tr>
+      <tr><td><code>code_query</code></td><td><strong>Whole-repo statistics</strong> — counts, groups, distributions, blast radius, in one call. Named preset or raw GQL.</td><td>ugdb (no embedder)</td></tr>
       <tr><td><code>graph_schema</code></td><td>Node &amp; edge types present, with counts and connection shapes.</td><td>graph.json</td></tr>
       <tr><td><code>list_projects</code></td><td>List every indexed project on this machine.</td><td><code>~/.ug/</code> scan</td></tr>
-      <tr><td><code>reindex</code></td><td>Re-run index → graph → embed pipeline. Incremental.</td><td>Repo source</td></tr>
+      <tr><td><code>regen</code></td><td>Re-run index → graph → embed pipeline. Incremental.</td><td>Repo source</td></tr>
     </table>
   </div>
 
@@ -713,7 +715,7 @@
   </div>
 
   <h2>3.4 Chat Tool Denylist</h2>
-  <p><code>reindex</code> and <code>list_projects</code> are excluded from OpenAI-compatible tool schemas — the LLM should not reindex or list projects mid-conversation.</p>
+  <p><code>regen</code> and <code>list_projects</code> are excluded from OpenAI-compatible tool schemas — the LLM should not regenerate the index or list projects mid-conversation.</p>
 
   <div class="code-block">
     <div class="titlebar"><span class="label">mcp · call a tool</span><button class="copy-btn" data-copy='ug mcp call find_symbols "{&quot;name&quot;:&quot;run_serve&quot;}"'>Copy</button></div>
@@ -728,14 +730,16 @@
   </div>
 
   <div class="code-block">
-    <div class="titlebar"><span class="label">install mcp for your agent</span><button class="copy-btn" data-copy="ug mcp install claude">Copy</button></div>
-    <pre><span class="c-dim">$</span> ug mcp install claude         <span class="c-com"># Claude Desktop (global or project)</span>
-<span class="c-dim">$</span> ug mcp install claude-desk    <span class="c-com"># Claude Desktop (global only)</span>
-<span class="c-dim">$</span> ug mcp install cursor          <span class="c-com"># Cursor</span>
-<span class="c-dim">$</span> ug mcp install windsurf        <span class="c-com"># Windsurf</span>
-<span class="c-dim">$</span> ug mcp install vscode          <span class="c-com"># VS Code</span>
-<span class="c-dim">$</span> ug mcp install gemini          <span class="c-com"># Gemini CLI</span>
-<span class="c-dim">$</span> ug mcp install opencode        <span class="c-com"># OpenCode</span></pre>
+    <div class="titlebar"><span class="label">connect your agent</span><button class="copy-btn" data-copy="ug connect claude">Copy</button></div>
+    <pre><span class="c-com"># Asks whether the agent should use the ug CLI, this MCP server, or both.</span>
+<span class="c-dim">$</span> ug connect claude              <span class="c-com"># Claude Code / Desktop</span>
+<span class="c-dim">$</span> ug connect cursor <span class="c-teal">--cli</span>        <span class="c-com"># CLI skill only (recommended)</span>
+<span class="c-dim">$</span> ug connect vscode <span class="c-teal">--mcp</span>        <span class="c-com"># MCP server entry only</span>
+<span class="c-dim">$</span> ug connect gemini <span class="c-teal">--both</span>       <span class="c-com"># both, agent chooses</span>
+<span class="c-dim">$</span> ug disconnect claude           <span class="c-com"># remove either</span>
+
+<span class="c-com"># Also: claude-desk, windsurf, codex, hermes, opencode.</span>
+<span class="c-com"># `ug mcp install` / `ug mcp uninstall` are the same commands.</span></pre>
   </div>
 </div>
 
