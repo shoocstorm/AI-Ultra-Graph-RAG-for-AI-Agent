@@ -1274,7 +1274,7 @@
       </div>
 
       <div style="margin-top: 18px; display: flex; justify-content: center;">
-        <img src="UG-KB-Explorer.png" alt="UltraGraph Explorer" style="max-width: 70%; height: auto; border-radius: 14px; box-shadow: var(--shadow-md); border: 1px solid var(--line);" />
+        <img src="UG-Graph-Walk.png" alt="UltraGraph Explorer" style="max-width: 70%; height: auto; border-radius: 14px; box-shadow: var(--shadow-md); border: 1px solid var(--line);" />
       </div>
 
       <div class="footer-bar">
@@ -1545,6 +1545,63 @@
       </div>
     </section>
 
+    <!-- ───────────────────────────────────────── 6 · GRAPH WALK ─────────────────────────────────── -->
+    <section class="slide" data-title="Graph Walk">
+      <span class="badge"><span class="dot">⚡</span> Graph Walk · animated BFS</span>
+      <h1 class="small">Watch the graph <span class="hl">light up</span>, hop by hop.</h1>
+      <p class="lede">Pick a seed node, choose a hop radius and direction — the canvas isolates to the BFS
+        frontier <strong>one hop at a time</strong>. Edges stream outward first, then each frontier ignites in
+        its own colour with a ripple from the seed. The same N-hop walk behind the <code>graph</code> channel
+        of hybrid search.</p>
+
+      <div class="two-col">
+        <div>
+          <div class="terminal">
+            <div class="titlebar">
+              <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+              <div class="title">graph walk · playback card</div>
+            </div>
+            <pre><span class="c-acc">❯</span> walk · from <span class="c-key">authenticate</span> <span class="c-dim">(Function)</span>
+   src/auth/login.ts:42 — seed, click any node to change it
+
+<span class="c-acc">●</span> <span class="c-dim">hop 1</span>  <span class="c-acc">streaming →</span>  4 nodes · 3 calls
+<span class="c-acc">●</span> <span class="c-dim">hop 2</span>  <span class="c-acc">ignited</span>     11 nodes · 8 calls · 2 extends
+<span class="c-acc">●</span> <span class="c-dim">hop 3</span>  <span class="c-dim">queued</span>      23 nodes · 14 calls · 4 extends · 3 imports
+
+<span class="c-dim">reached 38 · 29 edges · 3/5 hops</span>
+<span class="c-dim">space play/pause · ← → step · s speed · r rotate · d details · esc exit</span></pre>
+          </div>
+
+          <div class="terminal compact" style="margin-top: 16px;">
+            <div class="titlebar">
+              <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+              <div class="title">same walk · same semantics as traverse</div>
+            </div>
+            <pre><span class="prompt">$</span> ug traverse <span class="c-str">"function:src/auth/login.ts:42:authenticate"</span> <span class="c-flag">-k</span> <span class="c-num">3</span>
+<span class="c-acc">▸</span> hop 1   4 nodes  · calls
+<span class="c-acc">▸</span> hop 2  11 nodes  · calls + extends
+<span class="c-acc">▸</span> hop 3  23 nodes  · calls + extends + imports</pre>
+          </div>
+        </div>
+
+        <div>
+          <ul class="feat">
+            <li><strong>Pick a seed</strong> — type a function, class or file, or click any node on the canvas</li>
+            <li><strong>Hop radius &amp; direction</strong> — 1–5 hops · outbound, inbound, or both</li>
+            <li><strong>Edge-type filters</strong> — walk only Calls, Imports, Extends… with per-type tallies</li>
+            <li><strong>Edges stream, frontiers ignite</strong> — a two-phase animated beat per hop, colour-coded from the seed</li>
+            <li><strong>Media-player controls</strong> — play/pause, step hop by hop, 0.5×–2× speed, auto-rotate on finish</li>
+            <li><strong>Recent walks</strong> — replay any walk from history instantly, no recompute</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bar">
+        <span class="tip">No LLM needed</span><span class="sep"></span>
+        <span>Computed in the browser over <code>graph.json</code> alone — the same N-hop walk as the <code>traverse</code> tool and <code>POST /api/db/traverse</code></span>
+      </div>
+    </section>
+
     <!-- ───────────────────────────────────────── 7 · MCP INTEGRATION ────────────────────────────── -->
     <section class="slide" data-title="Agent Integration">
       <span class="section-tag">Agents · CLI skill or MCP, your choice</span>
@@ -1716,7 +1773,7 @@
       </div>
       <div class="footer-bar">
         <span class="tip">Last refreshed</span><span class="sep"></span>
-        <span>2026-07-25 · pure Rust binary · canonical tool names (<code>search</code>/<code>traverse</code>) · HTTP API parity · <code>ug tour</code> guided walkthroughs · SSE streaming · <code>ug active</code> · <code>project_overview</code> stats</span>
+        <span>2026-08-02 · pure Rust binary · canonical tool names (<code>search</code>/<code>traverse</code>) · HTTP API parity · <code>ug tour</code> guided walkthroughs · Graph Walk animated BFS · SSE streaming · <code>ug active</code> · <code>project_overview</code> stats</span>
       </div>
     </section>
 
