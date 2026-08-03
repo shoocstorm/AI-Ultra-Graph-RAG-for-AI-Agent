@@ -14,7 +14,7 @@
 ### Core value proposition
 1. **Seconds, not minutes** — saturates CPU cores during indexing.
 2. **Zero-latency traversal** — embedded graph DB, no external server.
-3. **Graph-aware retrieval** — Personalized PageRank, not naive vector search.
+3. **Graph-aware retrieval** — Personalized PageRank, not simple vector search.
 4. **Speaks MCP** — drop-in for any Model Context Protocol agent.
 
 ---
@@ -243,7 +243,7 @@ On **MacBook Pro M5 Max · 18-core · 40-GPU · 128 GB**, indexing `~/.hermes/he
 ## 10. Suggested Slide Order (for the agent)
 
 1. **Title** — UltraGraph-KB · *Perfect context, in seconds.*
-2. **The problem** — naive RAG fails on codebases: a wrong top-1 vector hit poisons the whole answer.
+2. **The problem** — Traditional RAG fails on codebases: a wrong top-1 vector hit poisons the whole answer.
 3. **The architecture** — Rust engine + TS interface + embedded OverGraph (use the §2 diagram).
 4. **Phase 1** — turbo indexer (numbers: parallel crawl, blake3 cache, AST → JSON).
 5. **Phase 1 extended** — richer edges + docstrings + folder hierarchy (use §4 table).

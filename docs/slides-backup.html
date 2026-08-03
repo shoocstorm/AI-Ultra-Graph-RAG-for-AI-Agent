@@ -671,7 +671,7 @@
   <!-- ───────────────────────────────────────── 2 · PROBLEM ─────────────────────────────────────── -->
   <section class="slide" data-title="The Problem">
     <span class="badge"><span class="dot">01</span> The problem</span>
-    <h1>Naive RAG <span class="hl">fails</span> on codebases.</h1>
+    <h1>Traditional RAG <span class="hl">fails</span> on codebases.</h1>
     <p class="lede">One wrong top-1 vector hit poisons the whole neighborhood. Most real questions span <strong>five or more nodes</strong> — there is no single seed.</p>
 
     <div class="three-fail">
@@ -694,7 +694,7 @@
 
     <div style="margin-top: 24px;">
       <div class="terminal compact" style="max-width: 920px;">
-        <div class="titlebar"><div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="title">naive-rag.failure.log</div></div>
+        <div class="titlebar"><div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="title">traditional-rag.failure.log</div></div>
 <pre><span class="c-com"># query: "how does auth work"</span>
 <span class="c-com"># top-1 vector hit:</span>
 <span class="c-key">→</span> <span class="c-str">src/utils/passwordHash.ts</span>   <span class="c-com">// adjacent, not central</span>
