@@ -3,513 +3,907 @@
 
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=1280, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>UltraGraph — The right context, in seconds.</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('ug-theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
     rel="stylesheet" />
   <style>
     :root {
-      --ink: #1F2937;
-      --ink-soft: #334155;
-      --slate: #64748B;
-      --slate-soft: #94A3B8;
-      --line: #E2E8F0;
-      --bg: #FFFFFF;
-      --bg-alt: #F8FAFC;
-      --teal: #14B8A6;
-      --teal-2: #2DD4BF;
-      --teal-ink: #0F766E;
-      --teal-wash: rgba(20, 184, 166, .08);
-      --code-bg: #0F172A;
-      --code-bg-2: #0B1224;
-      --code-line: #1E293B;
-      --code-text: #E2E8F0;
-      --code-dim: #94A3B8;
-      --code-key: #C084FC;
-      --code-str: #34D399;
-      --code-num: #FBBF24;
-      --code-fn: #60A5FA;
-      --code-com: #64748B;
-      --shadow-lg: 0 25px 50px -12px rgba(15, 23, 42, .18);
-      --shadow-md: 0 12px 28px -10px rgba(15, 23, 42, .14);
-      --shadow-sm: 0 2px 8px rgba(15, 23, 42, .06);
+      --bg: #0E1216;
+      --bg-2: #141A20;
+      --bg-deep: #0A0D11;
+      --panel: rgba(255, 255, 255, .04);
+      --panel-2: rgba(255, 255, 255, .06);
+      --line: rgba(255, 255, 255, .09);
+      --line-strong: rgba(255, 255, 255, .16);
+      --ink: #F4F1EA;
+      --ink-soft: #CFC9BD;
+      --slate: #8E9AA6;
+      --slate-2: #6B7681;
+      --teal: #2DD4BF;
+      --teal-deep: #14B8A6;
+      --teal-ink: #06231B;
+      --teal-wash: rgba(45, 212, 191, .12);
+      --nav-bg: rgba(14, 18, 22, .72);
+      --cmp: #0C1014;
+      --cmp-2: #151C24;
+      --grid: rgba(45, 212, 191, .07);
+      --glow-teal: rgba(45, 212, 191, .13);
+      --glow-blue: rgba(96, 165, 250, .08);
+      --glow-deep: rgba(20, 184, 166, .10);
+      --shadow: 0 30px 80px -30px rgba(0, 0, 0, .7);
+      --serif: 'Fraunces', Georgia, serif;
+      --sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+
+    html[data-theme="light"] {
+      --bg: #F6F4EE;
+      --bg-2: #EEEAE0;
+      --bg-deep: #FFFFFF;
+      --panel: rgba(23, 32, 43, .04);
+      --panel-2: rgba(23, 32, 43, .06);
+      --line: rgba(23, 32, 43, .10);
+      --line-strong: rgba(23, 32, 43, .20);
+      --ink: #16242B;
+      --ink-soft: #2E3F49;
+      --slate: #5A6C78;
+      --slate-2: #8B99A3;
+      --teal: #0D9488;
+      --teal-deep: #0F766E;
+      --teal-ink: #06231B;
+      --teal-wash: rgba(13, 148, 136, .10);
+      --nav-bg: rgba(246, 244, 238, .8);
+      --cmp: #0B1224;
+      --cmp-2: #111A2E;
+      --glow-teal: rgba(13, 148, 136, .10);
+      --glow-blue: rgba(59, 130, 246, .07);
+      --glow-deep: rgba(15, 118, 110, .08);
+      --shadow: 0 30px 80px -35px rgba(23, 32, 43, .35);
+    }
+
+    html {
+      color-scheme: dark;
+    }
+
+    html[data-theme="light"] {
+      color-scheme: light;
     }
 
     * {
       box-sizing: border-box;
     }
 
-    html,
-    body {
-      height: 100%;
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
       margin: 0;
-      font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      font-family: var(--sans);
       color: var(--ink);
       background:
-        radial-gradient(900px 600px at 12% -10%, rgba(45, 212, 191, .14), transparent 60%),
-        radial-gradient(900px 700px at 110% 10%, rgba(96, 165, 250, .10), transparent 55%),
-        radial-gradient(800px 700px at 50% 120%, rgba(20, 184, 166, .08), transparent 60%),
-        linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+        radial-gradient(900px 500px at 8% -5%, var(--glow-teal), transparent 55%),
+        radial-gradient(900px 600px at 100% 0%, var(--glow-blue), transparent 50%),
+        radial-gradient(1000px 700px at 50% 110%, var(--glow-deep), transparent 60%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg-deep) 55%, var(--bg) 100%);
       background-attachment: fixed;
-      overflow: hidden;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
 
-    .deck {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
+    ::selection {
+      background: rgba(45, 212, 191, .28);
+      color: var(--ink);
     }
 
-    .slide {
-      position: absolute;
+    a {
+      color: inherit;
+    }
+
+    .grain {
+      position: fixed;
       inset: 0;
-      display: none;
-      padding: 64px 88px 96px;
-      flex-direction: column;
-      justify-content: flex-start;
-      animation: fadeUp .35s ease both;
+      pointer-events: none;
+      z-index: 1;
+      opacity: .5;
+      mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
     }
 
-    .slide.active {
+    .wrap {
+      position: relative;
+      z-index: 2;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* — Nav — */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background: var(--nav-bg);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 14px 24px;
       display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
     }
 
-    @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(8px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--mono);
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: .02em;
+      text-decoration: none;
     }
 
-    /* — Slide chrome — */
-    .badge {
+    .brand .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--teal);
+      box-shadow: 0 0 0 4px rgba(45, 212, 191, .18), 0 0 20px rgba(45, 212, 191, .6);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      font-size: 13.5px;
+      color: var(--slate);
+      padding: 7px 12px;
+      border-radius: 999px;
+      transition: color .15s ease, background .15s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--ink);
+      background: var(--panel);
+    }
+
+    .nav-cta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      font-family: var(--mono);
+      font-size: 12.5px;
+      font-weight: 500;
+      text-decoration: none;
+      padding: 9px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--line-strong);
+      color: var(--ink);
+      background: var(--panel);
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 8px 16px;
-      border-radius: 999px;
-      background: #0F172A;
-      color: #fff;
-      font-size: 13px;
-      font-weight: 500;
-      letter-spacing: .02em;
-      box-shadow: var(--shadow-sm);
-      align-self: flex-start;
     }
 
-    .badge .dot {
-      color: var(--teal-2);
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 700;
+    .btn:hover {
+      transform: translateY(-1px);
+      background: var(--panel-2);
+      border-color: var(--teal);
     }
 
-    .badge.alt {
-      background: var(--teal-wash);
-      color: var(--teal-ink);
+    .btn.primary {
+      background: linear-gradient(180deg, var(--teal), var(--teal-deep));
+      border-color: transparent;
+      color: #06251F;
     }
 
-    .badge.alt .dot {
+    .btn.primary:hover {
+      background: linear-gradient(180deg, #4DE6CE, var(--teal-deep));
+    }
+
+    .theme-toggle {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      border: 1px solid var(--line-strong);
+      background: var(--panel);
+      color: var(--ink-soft);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease, color .15s ease;
+    }
+
+    .theme-toggle:hover {
+      transform: translateY(-1px);
+      background: var(--panel-2);
+      border-color: var(--teal);
       color: var(--teal);
     }
 
-    a.badge {
-      text-decoration: none;
-      transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+    .theme-toggle svg {
+      width: 17px;
+      height: 17px;
     }
 
-    a.badge:hover {
-      transform: translateY(-1px);
-      box-shadow: var(--shadow-md);
+    .theme-toggle .moon {
+      display: none;
     }
 
-    /* — YouTube embed — */
-    .video-wrap {
-      position: relative;
-      width: 100%;
-      max-width: 1040px;
-      margin: 8px auto 0;
-      aspect-ratio: 16 / 9;
-      border-radius: 18px;
-      overflow: hidden;
-      box-shadow: var(--shadow-lg);
+    html[data-theme="light"] .theme-toggle .sun {
+      display: none;
+    }
+
+    html[data-theme="light"] .theme-toggle .moon {
+      display: block;
+    }
+
+    @media (max-width: 760px) {
+      .nav-links {
+        display: none;
+      }
+    }
+
+    /* — Hero — */
+    .hero {
+      padding: 110px 0 70px;
+    }
+
+    .hero .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--teal);
+      border: 1px solid rgba(45, 212, 191, .28);
+      background: var(--teal-wash);
+      padding: 7px 14px;
+      border-radius: 999px;
+      margin-bottom: 30px;
+    }
+
+    .hero .eyebrow .spark {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--teal);
+      box-shadow: 0 0 12px var(--teal);
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: clamp(46px, 7vw, 84px);
+      line-height: 1.02;
+      letter-spacing: -.02em;
+      margin: 0 0 26px;
+      max-width: 860px;
+    }
+
+    h1 .hl {
+      font-style: italic;
+      color: var(--teal);
+    }
+
+    .hero .lede {
+      font-size: 19px;
+      line-height: 1.6;
+      color: var(--ink-2);
+      max-width: 620px;
+      margin: 0 0 34px;
+    }
+
+    .hero .lede strong {
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .hero-cta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+
+    .hero-cta .ghost {
+      color: var(--ink-2);
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .micro {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--slate);
       border: 1px solid var(--line);
+      background: var(--panel);
+      padding: 7px 12px;
+      border-radius: 999px;
+    }
+
+    .micro .sep {
+      color: var(--teal);
+    }
+
+    /* — Section scaffolding — */
+    section {
+      padding: 90px 0;
+    }
+
+    .sec-head {
+      max-width: 680px;
+      margin-bottom: 44px;
+    }
+
+    .sec-tag {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .sec-head h2 {
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: clamp(30px, 4.4vw, 46px);
+      line-height: 1.05;
+      letter-spacing: -.01em;
+      margin: 0 0 16px;
+    }
+
+    .sec-head h2 em {
+      font-style: italic;
+      color: var(--teal);
+    }
+
+    .sec-head p {
+      color: var(--slate);
+      font-size: 16.5px;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .sec-head p strong {
+      color: var(--ink-2);
+    }
+
+    /* — What it is — */
+    .what-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, var(--panel-2), var(--panel));
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 26px;
+      position: relative;
+      overflow: hidden;
+      transition: transform .2s ease, border-color .2s ease;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(300px 160px at 20% -20%, rgba(45, 212, 191, .14), transparent 70%);
+      opacity: 0;
+      transition: opacity .2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: var(--line-strong);
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card .ic {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--teal-wash);
+      border: 1px solid rgba(45, 212, 191, .25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 18px;
+      color: var(--teal);
+    }
+
+    .card h3 {
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: 20px;
+      margin: 0 0 10px;
+      position: relative;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--slate);
+      font-size: 14.5px;
+      line-height: 1.6;
+      position: relative;
+    }
+
+    @media (max-width: 820px) {
+      .what-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* — How it works — */
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      align-items: stretch;
+    }
+
+    .step {
+      position: relative;
+      padding: 0 22px;
+    }
+
+    .step:not(:first-child)::before {
+      content: '';
+      position: absolute;
+      left: -1px;
+      top: 8px;
+      bottom: 8px;
+      width: 1px;
+      background: linear-gradient(180deg, transparent, var(--line-strong), transparent);
+    }
+
+    .step .n {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 44px;
+      color: var(--teal);
+      line-height: 1;
+      display: block;
+      margin-bottom: 14px;
+    }
+
+    .step h3 {
+      font-size: 17px;
+      font-weight: 600;
+      margin: 0 0 10px;
+    }
+
+    .step p {
+      color: var(--slate);
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .step .cmd {
+      margin-top: 16px;
+      background: var(--cmp);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 13px;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      color: var(--teal);
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 820px) {
+      .flow {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .step:not(:first-child)::before {
+        display: none;
+      }
+    }
+
+    /* — Features — */
+    .feat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px 18px;
+    }
+
+    .feat {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 20px 22px;
+      transition: border-color .2s ease, transform .2s ease;
+    }
+
+    .feat:hover {
+      border-color: var(--line-strong);
+      transform: translateY(-2px);
+    }
+
+    .feat .check {
+      flex-shrink: 0;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--teal-wash);
+      border: 1px solid rgba(45, 212, 191, .3);
+      color: var(--teal);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+    }
+
+    .feat h3 {
+      margin: 0 0 6px;
+      font-size: 15.5px;
+      font-weight: 600;
+    }
+
+    .feat p {
+      margin: 0;
+      color: var(--slate);
+      font-size: 13.5px;
+      line-height: 1.55;
+    }
+
+    @media (max-width: 780px) {
+      .feat-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* — Video — */
+    .video-frame {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--line-strong);
+      box-shadow: var(--shadow);
       background: #000;
     }
-    .video-wrap iframe {
+
+    .video-frame iframe {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       border: 0;
     }
-    .video-fallback {
+
+    .video-frame[data-offline] iframe {
+      display: none;
+    }
+
+    .video-poster {
       position: absolute;
       inset: 0;
-      display: flex;
+      display: none;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      text-decoration: none;
-      color: #E2E8F0;
-      background:
-        radial-gradient(600px 320px at 50% 40%, rgba(20, 184, 166, .25), transparent 70%),
-        linear-gradient(180deg, #0F172A, #0B1224);
+      gap: 16px;
       padding: 32px;
+      color: var(--ink);
+      background:
+        radial-gradient(520px 300px at 50% 32%, rgba(45, 212, 191, .20), transparent 70%),
+        radial-gradient(420px 260px at 80% 100%, rgba(96, 165, 250, .10), transparent 70%),
+        linear-gradient(180deg, var(--bg-2), var(--bg));
     }
-    .video-fallback[hidden] { display: none; }
-    .video-fallback-inner { max-width: 560px; }
-    .video-fallback .play-icon {
-      width: 84px; height: 84px;
-      margin: 0 auto 18px;
-      border-radius: 50%;
-      background: var(--teal);
-      color: #fff;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 32px;
-      box-shadow: 0 0 0 8px rgba(20, 184, 166, .18), 0 18px 40px rgba(20, 184, 166, .35);
-      transition: transform .2s ease;
-    }
-    .video-fallback:hover .play-icon { transform: scale(1.06); }
-    .fallback-title { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 8px; }
-    .fallback-sub { font-size: 13px; color: var(--slate-soft); line-height: 1.6; }
-    .fallback-sub code {
-      font-family: 'JetBrains Mono', monospace;
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.12);
-      color: var(--teal-2);
-      padding: 1px 6px; border-radius: 5px; font-size: 12px;
-    }
-    .video-meta {
+
+    .video-frame[data-offline] .video-poster {
       display: flex;
-      gap: 14px;
+    }
+
+    .video-poster .play-ring {
+      width: 92px;
+      height: 92px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, var(--teal), var(--teal-deep));
+      color: #06231B;
+      display: flex;
       align-items: center;
       justify-content: center;
-      margin-top: 18px;
-      flex-wrap: wrap;
+      font-size: 28px;
+      box-shadow: 0 0 0 12px rgba(45, 212, 191, .14), 0 24px 60px rgba(45, 212, 191, .3);
     }
-    .video-meta .chip-link {
+
+    .video-poster .t {
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: clamp(20px, 3vw, 26px);
+    }
+
+    .video-poster .s {
+      color: var(--slate);
+      font-size: 13.5px;
+      line-height: 1.65;
+      max-width: 480px;
+    }
+
+    .video-poster .s code {
+      font-family: var(--mono);
+      color: var(--teal);
+      background: rgba(45, 212, 191, .08);
+      border: 1px solid rgba(45, 212, 191, .2);
+      padding: 1px 6px;
+      border-radius: 5px;
+      font-size: 12px;
+    }
+
+    .video-poster .cmd-line {
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      color: var(--teal);
+      background: rgba(11, 18, 36, .85);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 9px 14px;
+    }
+
+    .video-poster .cmd-line .ps {
+      color: var(--slate-2);
+    }
+
+    .screen-caption {
+      margin-top: 16px;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .chip-link {
+      font-family: var(--mono);
+      font-size: 12.5px;
+      color: var(--ink-2);
+      text-decoration: none;
+      border: 1px solid var(--line);
+      background: var(--panel);
       padding: 8px 14px;
       border-radius: 999px;
-      background: #fff;
-      border: 1px solid var(--line);
-      color: var(--ink-soft);
-      font-size: 13px;
-      font-family: 'JetBrains Mono', monospace;
-      text-decoration: none;
-      box-shadow: var(--shadow-sm);
-      transition: transform .15s ease, background .15s ease;
-    }
-    .video-meta .chip-link:hover {
-      transform: translateY(-1px);
-      background: var(--teal-wash);
-      color: var(--teal-ink);
-      border-color: rgba(20, 184, 166, .3);
-    }
-    .video-meta .chip-link .dot {
-      color: var(--teal);
-      font-weight: 700;
-    }
-
-    h1 {
-      font-size: 76px;
-      line-height: 1.04;
-      letter-spacing: -.025em;
-      font-weight: 800;
-      margin: 28px 0 18px;
-      color: var(--ink);
-    }
-
-    h1.small {
-      font-size: 56px;
-    }
-
-    h1 .hl {
-      color: var(--teal);
-    }
-
-    h1 .ink-soft {
-      color: var(--ink-soft);
-      font-weight: 700;
-    }
-
-    h2 {
-      font-size: 44px;
-      line-height: 1.1;
-      letter-spacing: -.02em;
-      font-weight: 800;
-      margin: 22px 0 12px;
-    }
-
-    h2 .hl {
-      color: var(--teal);
-    }
-
-    .lede {
-      font-size: 22px;
-      line-height: 1.45;
-      color: var(--slate);
-      max-width: 980px;
-      margin: 0 0 22px;
-      font-weight: 400;
-    }
-
-    .lede strong {
-      color: var(--ink);
-      font-weight: 600;
-    }
-
-    .footer-bar {
-      position: absolute;
-      left: 50%;
-      bottom: 28px;
-      transform: translateX(-50%);
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 10px 18px;
-      border-radius: 999px;
-      background: rgba(248, 250, 252, .75);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid var(--line);
-      color: var(--slate);
-      font-size: 13px;
-      box-shadow: var(--shadow-sm);
-      max-width: calc(100% - 64px);
-    }
-
-    .footer-bar .tip {
-      color: var(--ink-soft);
-      font-weight: 500;
-    }
-
-    .footer-bar .sep {
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background: var(--slate-soft);
-    }
-
-    .footer-bar .arch-link {
+      transition: border-color .15s ease, color .15s ease, transform .15s ease;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 5px 12px;
-      border-radius: 999px;
-      background: var(--teal-wash);
-      border: 1px solid rgba(20, 184, 166, .28);
-      color: var(--teal-ink);
-      font-weight: 600;
-      font-size: 12.5px;
-      text-decoration: none;
-      transition: background .15s ease, transform .15s ease, border-color .15s ease;
+      gap: 7px;
     }
-    .footer-bar .arch-link svg {
-      width: 14px;
-      height: 14px;
+
+    .chip-link .dot {
+      color: var(--teal);
     }
-    .footer-bar .arch-link .arrow {
-      font-size: 13px;
-      line-height: 1;
-    }
-    .footer-bar .arch-link:hover {
-      background: rgba(20, 184, 166, .14);
-      border-color: rgba(20, 184, 166, .45);
+
+    .chip-link:hover {
+      border-color: var(--teal);
+      color: var(--ink);
       transform: translateY(-1px);
     }
 
-    .footer-bar code {
-      font-family: 'JetBrains Mono', monospace;
-      background: #fff;
-      border: 1px solid var(--line);
-      padding: 2px 8px;
-      border-radius: 6px;
-      color: var(--ink);
-      font-size: 12px;
+    /* — Feature showcase (images) — */
+    .showcase {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 26px;
     }
 
-    .hud {
-      position: fixed;
-      right: 24px;
-      bottom: 24px;
-      display: flex;
-      gap: 8px;
+    .showcase-item {
+      display: grid;
+      grid-template-columns: 1.25fr .9fr;
+      gap: 34px;
       align-items: center;
-      z-index: 50;
     }
 
-    .hud .pill {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      color: var(--slate);
-      background: rgba(255, 255, 255, .7);
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      padding: 6px 12px;
-      backdrop-filter: blur(8px);
+    .showcase-item.flip .gframe {
+      order: 2;
     }
 
-    .hud button {
-      width: 32px;
-      height: 32px;
-      border-radius: 999px;
-      background: #fff;
-      border: 1px solid var(--line);
-      color: var(--ink);
-      cursor: pointer;
-      font-size: 14px;
-      box-shadow: var(--shadow-sm);
-      transition: transform .15s ease, background .15s ease;
+    .gframe {
+      position: relative;
+      border-radius: 20px;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(45, 212, 191, .6), rgba(96, 165, 250, .35), rgba(45, 212, 191, .15));
+      box-shadow: var(--shadow);
     }
 
-    .hud button:hover {
-      background: var(--teal-wash);
-      transform: translateY(-1px);
+    .gframe::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(45, 212, 191, .9), transparent 40%, rgba(96, 165, 250, .5));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
     }
 
-    .progress {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--teal-2), var(--teal));
-      width: 0%;
-      transition: width .3s ease;
-      z-index: 100;
-    }
-
-    /* — Layout helpers — */
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 32px;
-    }
-
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-    }
-
-    .grid-4 {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-    }
-
-    .row {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .stack {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .center-block {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      flex: 1;
-    }
-
-    /* — Cards — */
-    .card {
-      background: #fff;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 22px 24px;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .card.tinted {
-      background: linear-gradient(180deg, #fff, var(--teal-wash));
-      border-color: rgba(20, 184, 166, .25);
-    }
-
-    .card h3 {
-      font-size: 18px;
-      margin: 0 0 8px;
-      letter-spacing: -.01em;
-    }
-
-    .card .num {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 36px;
-      font-weight: 700;
-      color: var(--teal-ink);
-      line-height: 1;
-      margin: 4px 0 6px;
-    }
-
-    .card .sub {
-      font-size: 13px;
-      color: var(--slate);
-    }
-
-    .kbd {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      color: var(--ink);
-      background: #fff;
-      border: 1px solid var(--line);
-      border-bottom-width: 2px;
-      padding: 2px 8px;
-      border-radius: 6px;
-    }
-
-    /* — Code window — */
-    .terminal {
-      background: var(--code-bg);
-      border-radius: 16px;
-      box-shadow: var(--shadow-lg);
+    .gframe .inner {
+      border-radius: 19px;
       overflow: hidden;
-      color: var(--code-text);
-      border: 1px solid #1E293B;
+      background: var(--bg-2);
+    }
+
+    .gframe img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .showcase-copy .tag {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .showcase-copy h3 {
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: clamp(22px, 3vw, 30px);
+      margin: 0 0 12px;
+    }
+
+    .showcase-copy h3 em {
+      font-style: italic;
+      color: var(--teal);
+    }
+
+    .showcase-copy p {
+      color: var(--slate);
+      font-size: 15px;
+      line-height: 1.6;
+      margin: 0 0 8px;
+    }
+
+    .showcase-copy .cmd {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--cmp);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px 13px;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      color: var(--teal);
+      margin-top: 6px;
+    }
+
+    .showcase-copy .cmd .ps {
+      color: var(--slate-2);
+    }
+
+    @media (max-width: 820px) {
+      .showcase-item {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+
+      .showcase-item:nth-child(even) .gframe {
+        order: 0;
+      }
+    }
+
+    /* — Get started — */
+    .start-panel {
+      background:
+        radial-gradient(700px 400px at 80% -20%, rgba(45, 212, 191, .12), transparent 60%),
+        linear-gradient(180deg, var(--panel-2), var(--panel));
+      border: 1px solid var(--line-strong);
+      border-radius: 22px;
+      padding: 48px;
+      text-align: center;
+    }
+
+    .start-panel h2 {
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: clamp(28px, 4vw, 40px);
+      margin: 0 0 12px;
+    }
+
+    .start-panel h2 em {
+      font-style: italic;
+      color: var(--teal);
+    }
+
+    .start-panel .sub {
+      color: var(--slate);
+      font-size: 15.5px;
+      margin: 0 auto 30px;
+      max-width: 560px;
+      line-height: 1.6;
+    }
+
+    .terminal {
+      background: var(--cmp);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      text-align: left;
+      max-width: 560px;
+      margin: 0 auto 22px;
+      box-shadow: 0 20px 60px -20px rgba(0, 0, 0, .7);
     }
 
     .terminal .titlebar {
       display: flex;
       align-items: center;
-      padding: 12px 16px;
-      background: linear-gradient(180deg, #111B30, #0B1224);
-      border-bottom: 1px solid var(--code-line);
+      gap: 8px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
       position: relative;
     }
 
     .terminal .lights {
       display: flex;
-      gap: 7px;
+      gap: 6px;
     }
 
     .terminal .lights span {
-      width: 12px;
-      height: 12px;
+      width: 11px;
+      height: 11px;
       border-radius: 50%;
-      display: inline-block;
-      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .2);
     }
 
     .terminal .lights .r {
@@ -524,1316 +918,404 @@
       background: #28C840;
     }
 
-    .terminal .title {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      color: var(--code-dim);
-      letter-spacing: .02em;
+    .terminal .t {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      color: var(--slate-2);
+      margin-left: 6px;
     }
 
-    .terminal pre,
-    .terminal .body {
-      margin: 0;
-      padding: 18px 22px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 14px;
-      line-height: 1.65;
-      white-space: pre;
-      overflow-x: auto;
-    }
-
-    .terminal.compact pre {
-      font-size: 13px;
-      padding: 14px 18px;
-    }
-
-    .copy-btn {
-      background: rgba(45, 212, 191, .12);
-      color: var(--teal-2);
-      border: 1px solid rgba(45, 212, 191, .35);
-      border-radius: 6px;
-      padding: 5px 12px;
-      font-family: 'JetBrains Mono', monospace;
+    .terminal .copy-btn {
+      margin-left: auto;
+      font-family: var(--mono);
       font-size: 11px;
-      letter-spacing: .02em;
+      color: var(--teal);
+      background: var(--teal-wash);
+      border: 1px solid rgba(45, 212, 191, .3);
+      border-radius: 6px;
+      padding: 5px 10px;
       cursor: pointer;
-      transition: background .15s ease, color .15s ease;
-      flex-shrink: 0;
+      transition: background .15s ease;
     }
 
-    .copy-btn:hover {
+    .terminal .copy-btn:hover {
       background: rgba(45, 212, 191, .22);
     }
 
-    .copy-btn.copied {
+    .terminal .copy-btn.copied {
       background: var(--teal);
-      color: #06251F;
-      border-color: var(--teal);
+      color: #06231B;
     }
 
-    .terminal .titlebar .copy-btn {
-      position: absolute;
-      right: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-    }
-
-    .cmd-chip {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 12px;
-      background: var(--code-bg);
-      border-radius: 10px;
-      padding: 10px 14px;
-    }
-
-    .cmd-chip code {
-      font-family: 'JetBrains Mono', monospace;
+    .terminal pre {
+      margin: 0;
+      padding: 16px 18px;
+      font-family: var(--mono);
       font-size: 13px;
-      color: var(--code-text);
+      line-height: 1.7;
+      color: var(--ink);
+      overflow-x: auto;
     }
 
-    .c-key {
-      color: var(--code-key);
+    .terminal .prompt {
+      color: var(--teal);
     }
 
-    .c-str {
-      color: var(--code-str);
+    .terminal .dim {
+      color: var(--slate-2);
     }
 
-    .c-num {
-      color: var(--code-num);
+    .terminal .ok {
+      color: var(--teal);
     }
 
-    .c-fn {
-      color: var(--code-fn);
-    }
-
-    .c-com {
-      color: var(--code-com);
+    .terminal .cmt {
+      color: var(--slate-2);
       font-style: italic;
     }
 
-    .c-dim {
-      color: var(--code-dim);
-    }
-
-    .c-flag {
-      color: #F472B6;
-    }
-
-    .c-acc {
-      color: var(--teal-2);
-    }
-
-    .prompt {
-      color: var(--teal-2);
-    }
-
-    /* — Tables — */
-    table.t {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-      font-size: 14px;
-      background: #fff;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      overflow: hidden;
-      box-shadow: var(--shadow-sm);
-    }
-
-    table.t th,
-    table.t td {
-      text-align: left;
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--line);
-    }
-
-    table.t th {
-      background: var(--bg-alt);
-      color: var(--ink-soft);
-      font-weight: 600;
-      font-size: 12px;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-    }
-
-    table.t tr:last-child td {
-      border-bottom: none;
-    }
-
-    table.t td.mono,
-    table.t th.mono {
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    table.t td .pillv {
-      display: inline-block;
-      background: var(--teal-wash);
-      color: var(--teal-ink);
-      padding: 2px 8px;
-      border-radius: 6px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .num-after,
-    .num-before {
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 600;
-    }
-
-    .num-before {
-      color: var(--slate);
-      text-decoration: line-through;
-      text-decoration-color: rgba(100, 116, 139, .45);
-    }
-
-    .num-after {
-      color: var(--teal-ink);
-    }
-
-    /* — Edge weight ladder (motif) — */
-    .ladder {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      width: 100%;
-    }
-
-    .ladder .rung {
-      display: grid;
-      grid-template-columns: 130px 1fr 70px;
-      align-items: center;
-      gap: 14px;
-      font-size: 14px;
-    }
-
-    .ladder .rung .name {
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--ink);
-      font-weight: 600;
-    }
-
-    .ladder .rung .bar {
-      height: 10px;
-      border-radius: 999px;
-      background: linear-gradient(90deg, var(--teal), var(--teal-2));
-      box-shadow: inset 0 0 0 1px rgba(15, 23, 42, .04);
-    }
-
-    .ladder .rung .bar.dim {
-      background: linear-gradient(90deg, #CBD5E1, #94A3B8);
-    }
-
-    .ladder .rung .val {
-      text-align: right;
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--slate);
-    }
-
-    /* — Pipeline blocks (PPR diagram) — */
-    .pipe {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      width: 100%;
-    }
-
-    .pipe .block {
-      width: 100%;
-      max-width: 720px;
-      background: #fff;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 16px 22px;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .pipe .block.accent {
-      background: linear-gradient(180deg, #fff, var(--teal-wash));
-      border-color: rgba(20, 184, 166, .4);
-    }
-
-    .pipe .block h4 {
-      margin: 0 0 4px;
-      font-size: 16px;
-      color: var(--ink);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .pipe .block h4 .tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      color: var(--teal-ink);
-      background: var(--teal-wash);
-      padding: 2px 8px;
-      border-radius: 6px;
-    }
-
-    .pipe .block p {
-      margin: 0;
-      color: var(--slate);
+    .arrow-btn {
+      font-family: var(--mono);
       font-size: 13px;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .pipe .arrow {
-      width: 2px;
-      height: 22px;
-      background: linear-gradient(180deg, var(--teal), var(--teal-2));
-      border-radius: 2px;
-      position: relative;
-    }
-
-    .pipe .arrow::after {
-      content: '';
-      position: absolute;
-      left: 50%;
-      bottom: -4px;
-      transform: translateX(-50%) rotate(45deg);
-      width: 8px;
-      height: 8px;
-      border-right: 2px solid var(--teal);
-      border-bottom: 2px solid var(--teal);
-    }
-
-    /* — Architecture stack — */
-    .stack-layers {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      width: 100%;
-      max-width: 920px;
-      margin: 0 auto;
-    }
-
-    .layer {
-      display: grid;
-      grid-template-columns: 220px 1fr;
-      align-items: center;
-      gap: 18px;
-      padding: 16px 20px;
-      background: #fff;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .layer .label {
-      font-size: 14px;
-      color: var(--ink-soft);
+      color: #06231B;
+      background: linear-gradient(180deg, var(--teal), var(--teal-deep));
+      text-decoration: none;
+      border-radius: 12px;
+      padding: 13px 22px;
       font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      box-shadow: 0 16px 40px -14px rgba(45, 212, 191, .55);
+      transition: transform .15s ease, box-shadow .15s ease;
     }
 
-    .layer .label .sub {
-      display: block;
-      color: var(--slate);
-      font-weight: 400;
-      font-size: 12px;
-      margin-top: 2px;
+    .arrow-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 22px 50px -14px rgba(45, 212, 191, .7);
     }
 
-    .layer .chips {
+    /* — Footer — */
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 44px 0 60px;
+    }
+
+    .footer-inner {
       display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
       flex-wrap: wrap;
-      gap: 8px;
     }
 
-    .chip {
-      font-family: 'JetBrains Mono', monospace;
+    footer .tagline {
+      font-family: var(--mono);
       font-size: 12px;
-      background: var(--bg-alt);
-      color: var(--ink-soft);
-      border: 1px solid var(--line);
-      padding: 4px 10px;
-      border-radius: 8px;
+      color: var(--slate-2);
     }
 
-    .chip.acc {
-      background: var(--teal-wash);
-      color: var(--teal-ink);
-      border-color: rgba(20, 184, 166, .25);
-    }
-
-    .layer.core {
-      background: linear-gradient(180deg, #0F172A, #0B1224);
-      color: #fff;
-      border-color: #1E293B;
-    }
-
-    .layer.core .label {
-      color: #fff;
-    }
-
-    .layer.core .label .sub {
-      color: var(--slate-soft);
-    }
-
-    .layer.core .chip {
-      background: rgba(255, 255, 255, .06);
-      color: #E2E8F0;
-      border-color: rgba(255, 255, 255, .10);
-    }
-
-    .layer.core .chip.acc {
-      background: rgba(45, 212, 191, .16);
-      color: var(--teal-2);
-      border-color: rgba(45, 212, 191, .30);
-    }
-
-    /* — Big number — */
-    .stat {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      background: #fff;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 24px;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .stat .big {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 56px;
-      font-weight: 700;
-      color: var(--ink);
-      line-height: 1;
-      letter-spacing: -.02em;
-    }
-
-    .stat .big .unit {
+    footer .tagline .dot {
       color: var(--teal);
-      font-size: 28px;
-      margin-left: 4px;
     }
 
-    .stat .lbl {
-      color: var(--slate);
-      font-size: 13px;
-      margin-top: 8px;
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .7s ease, transform .7s ease;
     }
 
-    .stat .delta {
-      margin-top: 12px;
-      font-size: 12px;
-      color: var(--teal-ink);
-      background: var(--teal-wash);
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-weight: 600;
-    }
-
-    /* — Title slide — */
-    .title-slide {
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding-top: 0;
-    }
-
-    .title-slide .brand {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 16px;
-      color: var(--slate);
-      letter-spacing: .2em;
-      text-transform: uppercase;
-      margin-bottom: 18px;
-    }
-
-    .title-slide h1 {
-      font-size: 116px;
-      line-height: .98;
-      letter-spacing: -.04em;
-      margin: 0;
-    }
-
-    .title-slide .tag {
-      margin-top: 28px;
-      font-size: 26px;
-      color: var(--slate);
-      font-weight: 400;
-    }
-
-    .title-slide .meta {
-      margin-top: 44px;
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .node-thumb {
-      position: absolute;
-      right: 88px;
-      bottom: 96px;
-      width: 92px;
-      height: 92px;
-      opacity: .55;
-    }
-
-    .node-thumb svg {
-      width: 100%;
-      height: 100%;
-    }
-
-    /* — list bullets — */
-    ul.feat {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    ul.feat li {
-      padding-left: 26px;
-      position: relative;
-      color: var(--ink-soft);
-      font-size: 16px;
-      line-height: 1.5;
-    }
-
-    ul.feat li::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 9px;
-      width: 14px;
-      height: 2px;
-      background: var(--teal);
-      border-radius: 2px;
-    }
-
-    ul.feat li strong {
-      color: var(--ink);
-      font-weight: 600;
-    }
-
-    ul.feat li code {
-      font-family: 'JetBrains Mono', monospace;
-      background: var(--bg-alt);
-      border: 1px solid var(--line);
-      padding: 1px 6px;
-      border-radius: 5px;
-      font-size: 13px;
-      color: var(--ink);
-    }
-
-    /* — Section title style — */
-    .section-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 13px;
-      color: var(--teal-ink);
-      background: var(--teal-wash);
-      padding: 6px 14px;
-      border-radius: 999px;
-      align-self: flex-start;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-      font-weight: 600;
-    }
-
-    .two-col {
-      display: grid;
-      grid-template-columns: 1.05fr 1fr;
-      gap: 40px;
-      align-items: start;
-      margin-top: 14px;
-    }
-
-    .three-fail {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin-top: 14px;
-    }
-
-    .three-fail .card {
-      padding: 18px;
-    }
-
-    .three-fail .idx {
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--teal);
-      font-size: 13px;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-
-    .three-fail h3 {
-      font-size: 15px;
-      margin: 0 0 6px;
-    }
-
-    .three-fail p {
-      margin: 0;
-      color: var(--slate);
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    /* — Compression visual — */
-    .compress {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      max-width: 720px;
-    }
-
-    .compress .row-c {
-      display: grid;
-      grid-template-columns: 90px 1fr 130px;
-      align-items: center;
-      gap: 14px;
-      font-size: 14px;
-    }
-
-    .compress .row-c .lbl {
-      color: var(--ink-soft);
-      font-weight: 600;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 13px;
-    }
-
-    .compress .row-c .bar {
-      height: 18px;
-      background: var(--bg-alt);
-      border-radius: 6px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .compress .row-c .bar .fill {
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      background: linear-gradient(90deg, #94A3B8, #64748B);
-      border-radius: 6px;
-    }
-
-    .compress .row-c .bar .fill.t {
-      background: linear-gradient(90deg, var(--teal-2), var(--teal));
-    }
-
-    .compress .row-c .val {
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--slate);
-      font-size: 13px;
-      text-align: right;
-    }
-
-    .roadmap-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-    }
-
-    .roadmap-grid .card .when {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      color: var(--teal-ink);
-      background: var(--teal-wash);
-      padding: 2px 8px;
-      border-radius: 6px;
-      display: inline-block;
-      margin-bottom: 8px;
-      font-weight: 600;
+    .reveal.in {
+      opacity: 1;
+      transform: translateY(0);
     }
   </style>
 </head>
 
 <body>
-  <div class="progress" id="progress"></div>
-  <div class="deck" id="deck">
+  <div class="grain"></div>
 
-    <!-- ───────────────────────────────────────── 1 · DEMO + TITLE ───────────────────────────────── -->
-    <section class="slide title-slide active" data-title="Demo">
-      <div class="two-col" style="align-items: center; column-gap: 56px;">
-        <div>
-          <div class="brand"><img src="/favicon.svg" alt="" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 6px;" />UltraGraph · <span style="color: var(--teal)">ug</span></div>
-          <h1 style="font-size: 56px; line-height: 1.08;">The <span class="hl">right context</span>, in <span
-              class="hl">seconds</span>.</h1>
-          <div class="tag" style="margin-top: 10px;">A local-first knowledge-base generator that turns your codebase or document collection
-            into a queryable <strong style="color: var(--ink)">Semantic Knowledge Graph</strong>.</div>
-          <div class="meta" style="margin-top: 20px;">
-            <span class="badge"><span class="dot">&gt;_</span> pure rust — cli, web, desktop</span>
-            <a class="badge" href="https://github.com/shoocstorm/ug" target="_blank" rel="noopener"><span
-                class="dot">★</span> github.com/shoocstorm/ug</a>
-          </div>
-        </div>
-        <div>
-          <div class="video-wrap" id="video-wrap" style="max-width: 100%; margin: 0;">
-            <iframe id="yt-embed"
-              src="https://www.youtube-nocookie.com/embed/9Je4T8h1YX8?rel=0&modestbranding=1&playsinline=1"
-              title="UltraGraph demo"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-            <a class="video-fallback" id="yt-fallback" href="https://youtu.be/9Je4T8h1YX8" target="_blank"
-              rel="noopener" hidden>
-              <div class="video-fallback-inner">
-                <div class="play-icon">▶</div>
-                <div class="fallback-title">Open demo on YouTube</div>
-                <div class="fallback-sub">Embeds are blocked when this file is opened via <code>file://</code>.<br />Serve
-                  it (e.g. <code>python3 -m http.server</code>) or deploy via Firebase.</div>
-              </div>
-            </a>
-          </div>
-        </div>
+  <nav>
+    <div class="nav-inner">
+      <a class="brand" href="#top"><span class="dot"></span>UltraGraph</a>
+      <div class="nav-links">
+        <a href="#what">What it is</a>
+        <a href="#how">How it works</a>
+        <a href="#features">Features</a>
+        <a href="#showcase">In action</a>
+        <a href="#demo">Demo</a>
       </div>
-      <div class="footer-bar">
-        <span class="tip">Tip</span> <span class="sep"></span>
-        <span>navigate with</span> <span class="kbd">←</span> <span class="kbd">→</span> <span class="sep"></span>
-        <span>jump with</span> <span class="kbd">1</span>–<span class="kbd">8</span>
+      <div class="nav-cta">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle color theme">
+          <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+          <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <a class="btn" href="https://github.com/shoocstorm/ug" target="_blank" rel="noopener">★ GitHub</a>
+        <a class="btn primary" href="#get-started">Get started</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="wrap" id="top">
+
+    <!-- HERO -->
+    <header class="hero">
+      <span class="eyebrow"><span class="spark"></span> ug · UltraGraph</span>
+      <h1>The right <span class="hl">context</span>, in <span class="hl">seconds</span>.</h1>
+      <p class="lede">UltraGraph turns your codebase or documents into a <strong>queryable knowledge graph</strong>.
+        Ask anything, and it walks the graph — not just one file — to hand you the context an answer actually needs.</p>
+      <div class="hero-cta">
+        <a class="btn primary" href="#get-started">Install ug</a>
+        <a class="btn ghost" href="#demo">Watch the 2-minute demo</a>
+      </div>
+      <div class="hero-meta">
+        <span class="micro"><span class="sep">›</span> pure Rust — CLI, web &amp; desktop</span>
+        <span class="micro"><span class="sep">›</span> local-first, zero external services</span>
+        <span class="micro"><span class="sep">›</span> 7 languages indexed</span>
+      </div>
+    </header>
+
+    <!-- WHAT IT IS -->
+    <section id="what">
+      <div class="sec-head reveal">
+        <span class="sec-tag">What it is</span>
+        <h2>Your code, understood as <em>one connected graph</em>.</h2>
+        <p>Code is full of relationships — a function calls another, a class extends one, a file imports ten more.
+          <strong>UltraGraph captures all of that</strong>, so answers come from real structure, not isolated chunks.</p>
+      </div>
+      <div class="what-grid">
+        <div class="card reveal">
+          <div class="ic">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8 7l8 0M7 8l0 8M17 8l0 8M8 17l8 0"/></svg>
+          </div>
+          <h3>One graph, not chunks</h3>
+          <p>Files, symbols, and the relationships between them live in a single indexed graph. Nothing is pulled out of context.</p>
+        </div>
+        <div class="card reveal">
+          <div class="ic">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 17l4-6 4 3 4-7"/></svg>
+          </div>
+          <h3>Answers follow structure</h3>
+          <p>When you ask a question, it walks outward from the relevant parts — surfacing the whole neighborhood an answer needs.</p>
+        </div>
+        <div class="card reveal">
+          <div class="ic">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg>
+          </div>
+          <h3>Local &amp; instant</h3>
+          <p>Runs on your machine in seconds. Pick up a repo or a document collection and ask meaningful questions immediately.</p>
+        </div>
       </div>
     </section>
 
-    <!-- ───────────────────────────────────────── 2 · PROBLEM ─────────────────────────────────────── -->
-    <section class="slide" data-title="The Problem">
-      <span class="badge"><span class="dot">01</span> The problem</span>
-      <h1>Traditional RAG <span class="hl">fails</span> on codebases.</h1>
-      <p class="lede">One wrong top-1 vector hit poisons the whole neighborhood. Most real questions span <strong>five
-          or more nodes</strong> — there is no single seed.</p>
-
-      <div class="three-fail">
-        <div class="card">
-          <div class="idx">FAILURE · 01</div>
-          <h3>Errors compound</h3>
-          <p>A wrong top-1 vector hit taints every downstream expansion. The seed is the answer's blast radius.</p>
+    <!-- HOW IT WORKS -->
+    <section id="how">
+      <div class="sec-head reveal">
+        <span class="sec-tag">How it works</span>
+        <h2>Three steps. <em>No setup drama.</em></h2>
+        <p>Point it at any project or document folder and ug does the rest.</p>
+      </div>
+      <div class="flow">
+        <div class="step reveal">
+          <span class="n">01</span>
+          <h3>Index</h3>
+          <p>ug scans your codebase, builds the graph, and embeds every node automatically. Cached, so re-runs are near-instant.</p>
+          <div class="cmd">ug gen</div>
         </div>
-        <div class="card">
-          <div class="idx">FAILURE · 02</div>
-          <h3>No single seed exists</h3>
-          <p>"How does auth work?" lives across handlers, middleware, configs, types — at least five nodes, none
-            privileged.</p>
+        <div class="step reveal">
+          <span class="n">02</span>
+          <h3>Serve</h3>
+          <p>One local web app with a live graph view, a search bar, and a chat UI. No servers to configure.</p>
+          <div class="cmd">ug serve</div>
         </div>
-        <div class="card">
-          <div class="idx">FAILURE · 03</div>
-          <h3>MMR ≠ relevance</h3>
-          <p>MMR optimizes diversity, not answer quality. The rerank step is a heuristic, not a retrieval signal.</p>
+        <div class="step reveal">
+          <span class="n">03</span>
+          <h3>Ask</h3>
+          <p>Ask anything — "how does auth work?" — and get grounded, connected answers an agent can act on.</p>
+          <div class="cmd">search "auth flow"</div>
         </div>
       </div>
+    </section>
 
-      <div style="margin-top: 24px;">
-        <div class="terminal compact" style="max-width: 920px;">
+    <!-- DEMO -->
+    <section id="demo">
+      <div class="sec-head reveal">
+        <span class="sec-tag">See it</span>
+        <h2>Seconds, <em>not setups</em>.</h2>
+        <p>A quick walkthrough of indexing a repo and exploring the graph.</p>
+      </div>
+      <div class="video-frame reveal" id="videoFrame">
+        <iframe
+          src="https://www.youtube-nocookie.com/embed/9Je4T8h1YX8?rel=0&modestbranding=1&playsinline=1"
+          title="UltraGraph demo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        <div class="video-poster">
+          <div class="play-ring">▶</div>
+          <div class="t">Demo available when this page is served</div>
+          <div class="s">The video embeds play in the browser and can't stream from a plain <code>file://</code>. Open this folder with a local server to watch it right here.</div>
+          <div class="cmd-line"><span class="ps">$</span> python3 -m http.server</div>
+        </div>
+      </div>
+      <div class="screen-caption reveal">
+        <a class="chip-link" href="UG-Proj-List.png"><span class="dot">⎔</span> Project list</a>
+        <a class="chip-link" href="UG-Graph-Walk.gif"><span class="dot">◎</span> Graph walk</a>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="features">
+      <div class="sec-head reveal">
+        <span class="sec-tag">Features</span>
+        <h2>Built for developers who <em>move fast</em>.</h2>
+        <p>Everything you need to go from repo to reliable answers — without a knot of infrastructure.</p>
+      </div>
+      <div class="feat-grid">
+        <div class="feat reveal">
+          <div class="check">✓</div>
+          <div><h3>Works for code &amp; docs</h3><p>Source code or markdown/PDF collections both index into the same graph model.</p></div>
+        </div>
+        <div class="feat reveal">
+          <div class="check">✓</div>
+          <div><h3>7 languages out of the box</h3><p>TypeScript, JavaScript, Python, Java, Rust, Markdown and PDF.</p></div>
+        </div>
+        <div class="feat reveal">
+          <div class="check">✓</div>
+          <div><h3>GraphRAG search</h3><p>A structure-guided walk that surfaces the whole neighborhood, not a single top-1 hit.</p></div>
+        </div>
+        <div class="feat reveal">
+          <div class="check">✓</div>
+          <div><h3>Agent-ready via MCP</h3><p>Wire any AI agent in one command and give it tools like search, traverse and find_symbols.</p></div>
+        </div>
+        <div class="feat reveal">
+          <div class="check">✓</div>
+          <div><h3>Whole-repo statistics</h3><p>Counts, rankings and blast-radius answers with <code>ug query</code> — no reading every file.</p></div>
+        </div>
+        <div class="feat reveal">
+          <div class="check">✓</div>
+          <div><h3>Zero setup</h3><p>One binary ships the graph view, REST API and chat UI. Nothing extra to install.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SHOWCASE -->
+    <section id="showcase">
+      <div class="sec-head reveal">
+        <span class="sec-tag">In action</span>
+        <h2>Three features, <em>straight from the UI</em>.</h2>
+        <p>Real screens of the graph web app — the things you'll use every day.</p>
+      </div>
+
+      <div class="showcase">
+
+        <div class="showcase-item reveal">
+          <div class="gframe">
+            <div class="inner"><img src="UG-Hybrid-Search.png" alt="Hybrid Search in the UltraGraph web app" loading="lazy" /></div>
+          </div>
+          <div class="showcase-copy">
+            <span class="tag">Feature 01 · Hybrid Search</span>
+            <h3>Ask a question, get the <em>neighborhood</em>.</h3>
+            <p>Type a natural-language query and Hybrid Search hashes out the whole picture — not a single file. It blends vector and keyword retrieval, then walks the graph toward every part of the answer.</p>
+            <div class="cmd"><span class="ps">$</span> ug search "how does auth work"</div>
+          </div>
+        </div>
+
+        <div class="showcase-item flip reveal">
+          <div class="gframe">
+            <div class="inner"><img src="UG-Graph-Walk.png" alt="Graph Walk — animated breadth-first search in UltraGraph" loading="lazy" /></div>
+          </div>
+          <div class="showcase-copy">
+            <span class="tag">Feature 02 · Graph Walk</span>
+            <h3>Watch relationships <em>light up</em>, hop by hop.</h3>
+            <p>Pick any node, choose a radius, and the graph expands one hop at a time — edges stream outward and each frontier ignites in its own colour. It's the same walk agents use to traverse.</p>
+            <div class="cmd"><span class="ps">$</span> ug traverse ::authenticate -k 3</div>
+          </div>
+        </div>
+
+        <div class="showcase-item reveal">
+          <div class="gframe">
+            <div class="inner"><img src="UG-Guided-Tour.png" alt="Guided Tour — narrated walkthrough in UltraGraph" loading="lazy" /></div>
+          </div>
+          <div class="showcase-copy">
+            <span class="tag">Feature 03 · Guided Tour</span>
+            <h3>A narrated <em>walkthrough</em> of any question.</h3>
+            <p>GraphRAG picks the nodes that matter, an LLM guide turns them into a story, and the web UI flies the camera stop by stop. Explore your codebase the way you'd be walked through it.</p>
+            <div class="cmd"><span class="ps">$</span> ug tour "authentication flow"</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- GET STARTED -->
+    <section id="get-started">
+      <div class="start-panel reveal">
+        <span class="sec-tag">Get started</span>
+        <h2>Install it in <em>one line</em>.</h2>
+        <p class="sub">Then point ug at any project and start asking questions in seconds.</p>
+        <div class="terminal">
           <div class="titlebar">
             <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-            <div class="title">traditional-rag.failure.log</div>
+            <span class="t">install.sh</span>
+            <button class="copy-btn" data-copy="curl -fsSL https://ultra-graph.web.app/install.sh | sh">Copy</button>
           </div>
-          <pre><span class="c-com"># query: "how does auth work"</span>
-<span class="c-com"># top-1 vector hit:</span>
-<span class="c-key">→</span> <span class="c-str">src/utils/passwordHash.ts</span>   <span class="c-com">// adjacent, not central</span>
-<span class="c-com"># BFS expansion seeded from above:</span>
-<span class="c-key">→</span> crypto.ts · bcrypt-wrapper.ts · hash-helpers.ts   <span class="c-flag">// missing: oauth, middleware, session</span>
-<span class="c-com"># MMR rerank: picked 3 "diverse" hash utilities. Answer never recovers.</span></pre>
+          <pre><span class="prompt">$</span> curl -fsSL https://ultra-graph.web.app/install.sh | sh
+<span class="ok">✓</span> <span class="dim">UltraGraph installed · type</span> <span class="ok">ug</span> <span class="dim">to begin</span></pre>
         </div>
-      </div>
-
-      <div class="footer-bar">
-        <span class="tip">The fix →</span><span class="sep"></span>
-        <span>RRF seed pool · Personalized PageRank · token-budgeted assembly</span>
+        <a class="arrow-btn" href="https://github.com/shoocstorm/ug" target="_blank" rel="noopener">Start with a repo <span>→</span></a>
       </div>
     </section>
 
-    <!-- ───────────────────────────────────────── 3 · THE SOLUTION ────────────────────────────────── -->
-    <section class="slide" data-title="The Solution">
-      <span class="badge"><span class="dot">02</span> The solution</span>
-      <h1 class="small">One graph. Every relationship. <span class="hl">Grounded answers.</span></h1>
-      <p class="lede">UltraGraph indexes your codebase into a single structural graph, then lets that structure
-        guide retrieval — so one relevant hit surfaces the whole neighborhood an answer needs, not just its
-        nearest vector neighbors.</p>
-
-      <div class="grid-3" style="margin-top: 18px;">
-        <div class="card tinted">
-          <h3>One graph, not isolated chunks</h3>
-          <p class="sub">Files, symbols, and every relationship between them — calls, imports, extends — land in
-            a single queryable graph. Nothing is retrieved in isolation.</p>
-        </div>
-        <div class="card tinted">
-          <h3>Retrieval follows structure</h3>
-          <p class="sub">Personalized PageRank walks outward from every relevant seed at once, surfacing the
-            neighborhood an answer actually needs — not a lone top-1 hit.</p>
-        </div>
-        <div class="card tinted">
-          <h3>Local-first, zero setup</h3>
-          <p class="sub">Runs on your machine in seconds — no external services required, ready for any AI
-            agent via MCP.</p>
-        </div>
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-inner">
+        <a class="brand" href="#top"><span class="dot"></span>UltraGraph</a>
+        <span class="tagline"><span class="dot">·</span> ug — the right context, in seconds.</span>
+        <a class="chip-link" href="api-reference.html"><span class="dot">⎔</span> API reference</a>
       </div>
-
-      <div style="margin-top: 18px; display: flex; justify-content: center;">
-        <img src="UG-Graph-Walk.gif" alt="UltraGraph Explorer" style="max-width: 70%; height: auto; border-radius: 14px; box-shadow: var(--shadow-md); border: 1px solid var(--line);" />
-      </div>
-
-      <div class="footer-bar">
-        <span class="tip">How</span><span class="sep"></span>
-        <span>Structure-first indexing → graph-aware retrieval → local, zero-setup runtime</span>
-        <span class="sep"></span>
-        <a class="arch-link" href="architecture.html" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8 7l8 0M7 8l0 8M17 8l0 8M8 17l8 0"/></svg>
-          View full diagram
-          <span class="arrow">↗</span>
-        </a>
-      </div>
-    </section>
-
-    <!-- ───────────────────────────────────────── 4 · INDEX, GRAPH & SERVE ────────────────────────── -->
-    <section class="slide" data-title="Index, Graph & Serve">
-      <span class="section-tag">Index → Graph → Serve · in seconds</span>
-      <h1 class="small">A repo becomes a graph, <span class="hl">instantly viewable</span>.</h1>
-
-      <div class="two-col">
-        <ul class="feat">
-          <li><strong>Parallel, incremental indexing</strong> — <code>.gitignore</code>-aware, <code>blake3</code>-cached
-          </li>
-          <li><strong>Artifact filtering built in</strong> — <code>*.min.js</code>, <code>*.bundle.js</code>, <code>dist/</code>
-            skipped by default; add your own via <code>UG_IGNORE="vendor/,*.generated.ts"</code></li>
-          <li><strong>Docs KB, code KB, or mixed</strong> — markdown/PDF/Office document collections and source
-            repos index into the same graph model</li>
-          <li><strong>7 languages</strong> — TypeScript, JavaScript, Python, Java, Rust, Markdown, PDF</li>
-          <li><strong>9 structural edge types</strong> + K-hop BFS, centrality, cycles, shortest path</li>
-          <li><strong>One binary serves it all</strong> — visualization + full REST API + chat UI, zero setup</li>
-          <li><strong>Smart staleness detection</strong> — automatic warnings when index falls out of sync with source</li>
-          <li><strong>Enhanced symbol context</strong> — rich signatures and descriptions for better code understanding</li>
-        </ul>
-        <div>
-          <div class="terminal compact">
-            <div class="titlebar">
-              <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-              <div class="title">~/repo · zsh</div>
-            </div>
-            <pre><span class="prompt">$</span> ug gen <span class="c-flag">--serve</span>
-<span class="c-com"># index → graph → ingest → viz → live server</span>
-<span class="c-acc">▸</span> listening on http://127.0.0.1:8080</pre>
-          </div>          
-        </div>
-      </div>
-
-      <div style="margin-top: 18px; display: flex; justify-content: center;">
-        <img src="UG-Proj-List.png" alt="UltraGraph project list" style="max-width: 80%; height: auto; border-radius: 14px; box-shadow: var(--shadow-md); border: 1px solid var(--line);" />
-      </div>
-
-      <div class="footer-bar">
-        <span class="tip">Spec target</span><span class="sep"></span>
-        <span>&lt; 5 s / 1,000 files · pre-compressed once, served forever from RAM</span>
-      </div>
-    </section>
-
-    <!-- ───────────────────────────────────────── 5 · STORAGE, GRAPHRAG & PERFORMANCE ──────────────── -->
-    <section class="slide" data-title="Storage & GraphRAG">
-      <span class="badge"><span class="dot">★</span> Semantic storage + retrieval</span>
-      <h1 class="small">Many seeds. <span class="hl">One walk.</span> Token-budgeted answer.</h1>
-      <p class="lede">Every node is embedded and written into OverGraph as it's ingested — vector + full-text
-        indexes, built automatically. At query time, <strong>Personalized PageRank seeded by RRF</strong>
-        (HippoRAG-style) replaces the old <em>vector top-1 → BFS → MMR rerank</em> cascade.</p>
-
-      <div class="pipe" style="margin-top: 14px;">
-        <div class="block">
-          <h4><span class="tag">stage 1</span> RRF seed pool · vector + FTS</h4>
-          <p>top-16 hits → weighted personalization vector (not fixed BFS roots)</p>
-        </div>
-        <div class="arrow"></div>
-        <div class="block accent">
-          <h4><span class="tag">stage 2</span> Personalized PageRank</h4>
-          <p>random walk + restart, edge-type weighted — calls &gt; extends &gt; imports &gt; … &gt; contains</p>
-        </div>
-        <div class="arrow"></div>
-        <div class="block">
-          <h4><span class="tag">stage 3</span> Token-budgeted assembly</h4>
-          <p>top-K by PPR · attach snippets · apply char budget</p>
-        </div>
-      </div>
-
-      <div style="margin-top: 18px; display: flex; justify-content: center;">
-        <a class="badge alt" href="https://github.com/bhensley5/overgraph" target="_blank" rel="noopener" style="gap: 10px; padding: 10px 22px; font-size: 14px;">
-          <span class="dot">⚡</span> Powered by <strong>OverGraph</strong> — high-performance graph vector DB
-          <span style="font-weight: 400; opacity: .7;">↗</span>
-        </a>
-      </div>
-
-      <div class="footer-bar">
-        <span class="tip">MCP-native</span><span class="sep"></span>
-        <span><code>search</code> · <code>traverse</code> · <code>find_symbols</code> · <code>code_query</code> · <code>regen</code> + <code>project_overview</code> + more — try any with <code>ug mcp call</code>
-      </div>
-    </section>
-
-    <!-- ───────────────────────────────────────── 6 · REPO STATISTICS ─────────────────────────────── -->
-    <section class="slide" data-title="Repo Statistics">
-      <span class="badge"><span class="dot">📊</span> ug query · whole-repo statistics</span>
-      <h1 class="small">"How many?" in <span class="hl">one call</span>, not one grep per file.</h1>
-      <p class="lede">Counting, ranking, distribution and blast-radius questions run as aggregations over the
-        indexed graph — <strong>33 named presets</strong>, or raw GQL when none fits. What an agent would
-        otherwise answer by reading the whole repo, at a <strong>thousandth</strong> of the tokens.</p>
-
-      <div class="two-col">
-        <div>
-          <div class="terminal">
-            <div class="titlebar">
-              <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-              <div class="title">ug query · where the long functions cluster</div>
-              <button class="copy-btn" data-copy="ug query long_functions_by_folder">Copy</button>
-            </div>
-            <pre><span class="prompt">$</span> ug query long_functions_by_folder
-
-<span class="c-dim">folder                          count   avg_loc</span>
-<span class="c-acc">▸</span> native/src                       28     162.4
-<span class="c-acc">▸</span> native/src/vis/js                10     140.2
-<span class="c-acc">▸</span> native/src/indexer/languages      4     140.2
-<span class="c-acc">▸</span> native/src/indexer                2     127.5
-
-<span class="c-dim">rows 1–4 of 4 · 47 graph matches before grouping</span>
-<span class="c-dim">coverage: loc 2697/2821 (96%) · is_test 2805/2821 (99%)</span></pre>
-          </div>
-
-          <div class="terminal compact" style="margin-top: 12px;">
-            <div class="titlebar">
-              <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-              <div class="title">blast radius · before you refactor</div>
-              <button class="copy-btn" data-copy="ug query impact --arg target=src/storage/store.rs">Copy</button>
-            </div>
-            <pre><span class="prompt">$</span> ug query impact <span class="c-flag">--arg</span> target=src/storage/store.rs
-
-<span class="c-dim">file                        dependents  test_paths</span>
-<span class="c-acc">▸</span> src/storage/db.rs                   22        0
-<span class="c-acc">▸</span> src/storage/ingest.rs               15        0
-<span class="c-acc">▸</span> src/main.rs                          9        4
-
-<span class="c-dim">next: rerun with range "4-21"</span></pre>
-          </div>
-        </div>
-
-        <div>
-          <div class="terminal">
-            <div class="titlebar">
-              <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-              <div class="title">ug query --list · 33 questions, by category</div>
-              <button class="copy-btn" data-copy="ug query --list">Copy</button>
-            </div>
-            <pre><span class="c-com">census</span>      repo_census · biggest_files · language_breakdown
-            where_to_start
-<span class="c-com">size</span>        long_functions(min_loc) · god_classes
-            param_bloat(min_params) · deep_nesting(min_depth)
-<span class="c-com">docs</span>        comment_coverage · undocumented_hotspots
-            undercommented_complexity
-<span class="c-com">dead code</span>   dead_code · orphan_files · duplicate_names
-<span class="c-com">arch</span>        dependency_fanin · coupling_matrix
-            layering_violations(from_prefix, to_prefix)
-<span class="c-com">tests</span>       test_ratio · untested_symbols · retest_scope(target)
-<span class="c-com">risk</span>        impact(target) · impact_summary(target) · risky_symbols</pre>
-          </div>
-
-          <div class="terminal compact" style="margin-top: 12px;">
-            <div class="titlebar">
-              <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-              <div class="title">no preset fits? write the query</div>
-              <button class="copy-btn" data-copy='ug query --gql "MATCH (n:Function) WHERE n.params > 6 RETURN n.folder AS f, count(*) AS c ORDER BY c DESC"'>Copy</button>
-            </div>
-            <pre><span class="prompt">$</span> ug query <span class="c-flag">--gql</span> <span class="c-str">"MATCH (n:Function)
-    WHERE n.params &gt; 6
-    RETURN n.folder AS f, count(*) AS c
-    ORDER BY c DESC"</span></pre>
-          </div>
-
-        </div>
-      </div>
-
-      <div class="footer-bar">
-        <span class="tip">No embedder needed</span><span class="sep"></span>
-        <span>Reads the OverGraph store directly — every answer prints the coverage of the properties it touched, so a zero over an unpopulated field can't pass as a finding</span>
-      </div>
-    </section>
-
-    <!-- ───────────────────────────────────────── 6 · GUIDED TOUR ─────────────────────────────────── -->
-    <section class="slide" data-title="Guided Tour">
-      <span class="badge"><span class="dot">🎬</span> Guided graph tours</span>
-      <h1 class="small">LLM-narrated walkthroughs. <span class="hl">Flies the camera</span> in the web UI.</h1>
-      <p class="lede">GraphRAG picks the nodes that matter for your question, an LLM "tour guide" orders
-        them into a narrative, and the result is an ordered itinerary bound to real graph nodes — ready to
-        explore <strong>stop by stop</strong>.</p>
-
-      <div class="two-col">
-        <div>
-          <div class="terminal">
-            <div class="titlebar">
-              <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-              <div class="title">ug tour · guided walkthrough</div>
-              <button class="copy-btn" data-copy='ug tour "how does authentication work?"'>Copy</button>
-            </div>
-            <pre><span class="prompt">$</span> ug tour <span class="c-str">"how does authentication work?"</span>
-
-<span class="c-acc">❯</span> Auth Flow · from login to session
-
-  This tour traces a request from the login
-  endpoint through credential validation, token
-  issuance, and middleware enforcement.
-
-<span class="c-acc">  ●</span> <span class="c-dim">Stop 1/5</span> · <span class="c-key">login handler</span> <span class="c-dim">(Function)</span>
-     src/auth/login.ts:42
-     POST /login — validates email + password
-<span class="c-dim">     │ pub async fn login(…)</span>
-
-  <span class="c-dim">  │  → calls</span>
-<span class="c-acc">  ●</span> <span class="c-dim">Stop 2/5</span> · <span class="c-key">verify_credentials</span> <span class="c-dim">(Function)</span>
-     src/auth/verify.ts:18
-     Looks up the user by email, bcrypt-compares
-     the password hash, returns the user profile.
-
-<span class="c-dim">  │  → calls</span>
-<span class="c-acc">  ●</span> <span class="c-dim">Stop 3/5</span> · <span class="c-key">issue_token</span> <span class="c-dim">(Function)</span>
-     src/auth/jwt.ts:55
-     Signs a JWT with user claims and a 24h expiry.
-
-<span class="c-dim">  │  → extends</span>
-<span class="c-acc">  ●</span> <span class="c-dim">Stop 4/5</span> · <span class="c-key">AuthMiddleware</span> <span class="c-dim">(Class)</span>
-     src/auth/middleware.ts:12
-     Extracts the Bearer token, verifies the
-     signature, attaches the user to the request.
-
-<span class="c-acc">  ●</span> <span class="c-dim">Stop 5/5</span> · <span class="c-key">SessionStore</span> <span class="c-dim">(Class)</span>
-     src/auth/session.ts:89
-     Redis-backed session store with auto-refresh.
-
-  ✦ That's the auth pipeline — from the HTTP
-     handler through credential checks, token
-     signing, and middleware enforcement.</pre>
-          </div>
-        </div>
-        <div>
-          <ul class="feat">
-            <li><strong>GraphRAG-powered retrieval</strong> — PPR picks the right nodes for your question</li>
-            <li><strong>LLM tour guide</strong> — orders stops into a coherent narrative, narrates each stop</li>
-            <li><strong>Web UI camera</strong> — flies the graph visualization stop to stop in <code>ug serve</code></li>
-            <li><strong>SSE streaming</strong> — real-time progress from retrieval → planning → narration</li>
-            <li><strong>CLI + API parity</strong> — <code>ug tour</code> and <code>POST /api/tour</code>, identical results</li>
-            <li><strong>No-LLM fallback</strong> — <code>--no-llm</code> emits a ranked itinerary without a guide</li>
-          </ul>
-          <div class="terminal compact" style="margin-top: 16px;">
-            <div class="titlebar">
-              <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-              <div class="title">api · streamed tour</div>
-              <button class="copy-btn" data-copy='curl -X POST http://localhost:8080/api/tour -H "Content-Type: application/json" -d '"'"'{"query":"auth flow","stream":true}'"'"''>Copy</button>
-            </div>
-            <pre><span class="prompt">$</span> curl <span class="c-flag">-X</span> POST http://localhost:8080/api/tour \
-  <span class="c-flag">-H</span> <span class="c-str">"Content-Type: application/json"</span> \
-  <span class="c-flag">-d</span> <span class="c-str">'{"query":"auth flow","stream":true}'</span>
-
-<span class="c-dim">event: progress</span>
-<span class="c-dim">data: {"phase":"retrieved","candidates":14}</span>
-<span class="c-dim">event: progress</span>
-<span class="c-dim">data: {"phase":"writing","chars":924}</span>
-<span class="c-dim">event: tour</span>
-<span class="c-dim">data: { … full Tour JSON … }</span></pre>
-          </div>
-        </div>
-      </div>
-
-      <div class="footer-bar">
-        <span class="tip">Try it</span><span class="sep"></span>
-        <span><code>ug tour "how does this codebase work?"</code> — or <code>ug tour -h</code> for all options</span>
-      </div>
-    </section>
-
-    <!-- ───────────────────────────────────────── 6 · GRAPH WALK ─────────────────────────────────── -->
-    <section class="slide" data-title="Graph Walk">
-      <span class="badge"><span class="dot">⚡</span> Graph Walk · animated BFS</span>
-      <h1 class="small">Watch the graph <span class="hl">light up</span>, hop by hop.</h1>
-      <p class="lede">Pick a seed node, choose a hop radius and direction — the canvas isolates to the BFS
-        frontier <strong>one hop at a time</strong>. Edges stream outward first, then each frontier ignites in
-        its own colour with a ripple from the seed. The same N-hop walk behind the <code>graph</code> channel
-        of hybrid search.</p>
-
-      <div class="two-col">
-        <div>
-          <div class="terminal">
-            <div class="titlebar">
-              <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-              <div class="title">graph walk · playback card</div>
-            </div>
-            <pre><span class="c-acc">❯</span> walk · from <span class="c-key">authenticate</span> <span class="c-dim">(Function)</span>
-   src/auth/login.ts:42 — seed, click any node to change it
-
-<span class="c-acc">●</span> <span class="c-dim">hop 1</span>  <span class="c-acc">streaming →</span>  4 nodes · 3 calls
-<span class="c-acc">●</span> <span class="c-dim">hop 2</span>  <span class="c-acc">ignited</span>     11 nodes · 8 calls · 2 extends
-<span class="c-acc">●</span> <span class="c-dim">hop 3</span>  <span class="c-dim">queued</span>      23 nodes · 14 calls · 4 extends · 3 imports
-
-<span class="c-dim">reached 38 · 29 edges · 3/5 hops</span>
-<span class="c-dim">space play/pause · ← → step · s speed · r rotate · d details · esc exit</span></pre>
-          </div>
-
-          <div class="terminal compact" style="margin-top: 16px;">
-            <div class="titlebar">
-              <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-              <div class="title">same walk · same semantics as traverse</div>
-            </div>
-            <pre><span class="prompt">$</span> ug traverse <span class="c-str">"function:src/auth/login.ts:42:authenticate"</span> <span class="c-flag">-k</span> <span class="c-num">3</span>
-<span class="c-acc">▸</span> hop 1   4 nodes  · calls
-<span class="c-acc">▸</span> hop 2  11 nodes  · calls + extends
-<span class="c-acc">▸</span> hop 3  23 nodes  · calls + extends + imports</pre>
-          </div>
-        </div>
-
-        <div>
-          <ul class="feat">
-            <li><strong>Pick a seed</strong> — type a function, class or file, or click any node on the canvas</li>
-            <li><strong>Hop radius &amp; direction</strong> — 1–5 hops · outbound, inbound, or both</li>
-            <li><strong>Edge-type filters</strong> — walk only Calls, Imports, Extends… with per-type tallies</li>
-            <li><strong>Edges stream, frontiers ignite</strong> — a two-phase animated beat per hop, colour-coded from the seed</li>
-            <li><strong>Media-player controls</strong> — play/pause, step hop by hop, 0.5×–2× speed, auto-rotate on finish</li>
-            <li><strong>Recent walks</strong> — replay any walk from history instantly, no recompute</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="footer-bar">
-        <span class="tip">No LLM needed</span><span class="sep"></span>
-        <span>Computed in the browser over <code>graph.json</code> alone — the same N-hop walk as the <code>traverse</code> tool and <code>POST /api/db/traverse</code></span>
-      </div>
-    </section>
-
-    <!-- ───────────────────────────────────────── 7 · MCP INTEGRATION ────────────────────────────── -->
-    <section class="slide" data-title="Agent Integration">
-      <span class="section-tag">Agents · CLI skill or MCP, your choice</span>
-      <h1 class="small">Two ways in. <span class="hl">One command</span> to wire either.</h1>
-
-      <div style="display: flex; gap: 24px; margin-top: 8px; flex: 1; min-height: 0;">
-        <div style="display: flex; flex-direction: column; gap: 12px; flex: 1;">
-          <div class="terminal">
-            <div class="titlebar">
-              <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-              <div class="title">ug connect · pick how your agent reaches ug</div>
-              <button class="copy-btn" data-copy="ug connect claude">Copy</button>
-            </div>
-            <pre><span class="prompt">$</span> ug connect claude
-
-<span class="c-acc">❯</span> How should your agent reach ug?
-   <span class="c-num">1</span>) cli    <span class="c-dim">the agent runs `ug` directly — recommended</span>
-   <span class="c-num">2</span>) mcp    <span class="c-dim">MCP server only — tool calls over the protocol</span>
-   <span class="c-num">3</span>) both   <span class="c-dim">both, and let the agent choose</span>
-
-<span class="c-com"># or say it up front — nine agents supported:</span>
-<span class="prompt">$</span> ug connect cursor <span class="c-flag">--cli</span>     <span class="c-com"># skill only (recommended)</span>
-<span class="prompt">$</span> ug connect vscode <span class="c-flag">--mcp</span>     <span class="c-com"># MCP server entry only</span>
-<span class="prompt">$</span> ug disconnect claude         <span class="c-com"># remove either</span></pre>
-          </div>
-
-          <div class="terminal compact">
-            <div class="titlebar">
-              <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-              <div class="title">mcp · tool call · search</div>
-            </div>
-            <pre>{
-  <span class="c-key">"name"</span>: <span class="c-str">"search"</span>,
-  <span class="c-key">"arguments"</span>: { <span class="c-key">"query"</span>: <span class="c-str">"how does auth work"</span>, <span class="c-key">"k"</span>: <span class="c-num">8</span> }
-}</pre>
-          </div>
-        </div>
-
-        <div style="display: flex; flex-direction: column; gap: 12px; flex: 1;">
-          <div class="terminal compact">
-            <div class="titlebar">
-              <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-              <div class="title">explore mcp tools · learn what each does</div>
-              <button class="copy-btn" data-copy="ug mcp list">Copy</button>
-            </div>
-            <pre><span class="prompt">$</span> ug mcp list
-<span class="c-acc">▸</span> search            <span class="c-dim">GraphRAG search (PPR). The primary entry point.</span>
-<span class="c-acc">▸</span> semantic_search   <span class="c-dim">Lightweight pure-vector lookup</span>
-<span class="c-acc">▸</span> traverse          <span class="c-dim">Walk graph N hops from seed nodes</span>
-<span class="c-acc">▸</span> find_usages       <span class="c-dim">Inbound references to a node</span>
-<span class="c-acc">▸</span> find_symbols      <span class="c-dim">Multi-name symbol lookup (incl. docstrings)</span>
-<span class="c-acc">▸</span> file_outline      <span class="c-dim">Indexed symbols in one file</span>
-<span class="c-acc">▸</span> get_code          <span class="c-dim">Full source for a node or file range</span>
-<span class="c-acc">▸</span> project_overview  <span class="c-dim">Counts, biggest files, hotspot symbols</span>
-<span class="c-acc">▸</span> shortest_path     <span class="c-dim">How two symbols are connected</span>
-<span class="c-acc">▸</span> code_query        <span class="c-dim">Whole-repo stats: counts, distributions, blast radius</span>
-<span class="c-acc">▸</span> graph_schema      <span class="c-dim">Node & edge types in graph</span>
-<span class="c-acc">▸</span> list_projects     <span class="c-dim">Indexed projects on this machine</span>
-<span class="c-acc">▸</span> regen             <span class="c-dim">Re-run index → graph → embed</span></pre>
-          </div>
-
-          <div class="terminal compact">
-            <div class="titlebar">
-              <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-              <div class="title">call tools · test queries · see responses</div>
-              <button class="copy-btn" data-copy='ug mcp call find_symbols "{\"name\":\"authenticate\"}"'>Copy</button>
-            </div>
-            <pre><span class="prompt">$</span> ug mcp call find_symbols <span class="c-str">'{"name":"authenticate"}'</span>
-<span class="c-acc">▸</span> <span class="c-dim">[exact]</span>  function:src/auth.ts:authenticate
-<span class="c-acc">▸</span> <span class="c-dim">[prefix]</span> function:src/auth/middleware.ts:authenticateUser
-
-<span class="c-com"># Same tools over HTTP:</span>
-<span class="prompt">$</span> GET  http://localhost:8080/api/tools          <span class="c-com"># discovery</span>
-<span class="prompt">$</span> POST http://localhost:8080/api/tools/search   <span class="c-com"># run any tool</span></pre>
-          </div>
-        </div>
-      </div>
-
-      <div class="footer-bar">
-        <span class="tip">Zero setup</span><span class="sep"></span>
-        <span>Nine agents · <code>--cli</code> installs a skill that teaches <code>ug --help</code> and <code>ug query --list</code> — no idle context, never out of date</span>
-      </div>
-    </section>
-
-    <!-- ───────────────────────────────────────── 7 · CLOSE ─────────────────────────────────────── -->
-    <section class="slide title-slide" data-title="Try it">
-      <div>
-        <div class="brand">Try it</div>
-        <h1 style="font-size: 88px;">One command. <br /><span class="hl">The right context.</span></h1>
-
-        <div style="max-width: 1020px; margin: 18px auto 0;">
-          <div class="grid-2">
-            <div class="stack">
-              <p style="text-align: center; color: var(--slate); margin: 0 0 8px; font-size: 13px;">Install or upgrade in one command</p>
-              <div class="terminal compact">
-                <div class="titlebar">
-                  <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-                  <div class="title">install</div>
-                  <button class="copy-btn" data-copy="curl -fsSL https://ultra-graph.web.app/install.sh | sh">Copy</button>
-                </div>
-                <pre><span class="prompt">$</span> curl <span class="c-flag">-fsSL</span> https://ultra-graph.web.app/install.sh | sh</pre>
-              </div>
-              <div class="terminal compact">
-                <div class="titlebar">
-                  <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-                  <div class="title">upgrade</div>
-                  <button class="copy-btn" data-copy="ug upgrade">Copy</button>
-                </div>
-                <pre><span class="prompt">$</span> ug upgrade
-
-▸ Current version v0.1.4 — checking latest release...
-▸ Downloading v0.1.6 (ultragraph-macos-arm64.tar.gz)...
-  <span class="c-num">19.5</span> / <span class="c-num">19.5</span> MB (<span class="c-num">100</span>%)
-▸ Installing to ~/.local/share/ultragraph/.ug...
-
-<span class="c-acc">✓</span> Upgraded to v0.1.6
-  ug version 0.1.6
-  (restart any running `ug serve` / MCP server to pick it up)</pre>
-              </div>
-            </div>
-            <div class="stack">
-              <p style="text-align: center; color: var(--slate); margin: 0 0 8px; font-size: 13px;">Index, serve, and explore your knowledge base</p>
-              <div class="terminal compact">
-                <div class="titlebar">
-                  <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-                  <div class="title">index & serve</div>
-                </div>
-                <pre><span class="prompt">$</span> ug gen <span class="c-flag">-i</span> ~/.hermes/hermes-agent 
-
-<span class="c-acc">▸</span> indexing                 <span class="c-num">9.27</span>s
-<span class="c-acc">▸</span> graph build              <span class="c-num">264</span>ms
-<span class="c-acc">▸</span> embeddings (41,619)      <span class="c-num">618</span>s
-<span class="c-acc">▸</span> node write               <span class="c-num">993</span>ms
-<span class="c-acc">▸</span> edge write (95,071)      <span class="c-num">215</span>ms
-<span class="c-acc">▸</span> Run `ug serve` & view at  <span class="c-str">http://localhost:8080</span></pre>
-              </div>
-              <div class="terminal compact">
-                <div class="titlebar">
-                  <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-                  <div class="title">desktop app</div>
-                  <button class="copy-btn" data-copy="ug app">Copy</button>
-                </div>
-                <pre><span class="prompt">$</span> ug app
-
-<span class="c-acc">▸</span> opening knowledge base manager window…
-<span class="c-acc">▸</span> choose a project or generate a new one</pre>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="tag" style="margin-top: 36px;">
-          UltraGraph · <code
-            style="background: var(--bg-alt); padding: 4px 10px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; color: var(--ink); font-size: 18px;">ug</code>
-          · the right context, in seconds.
-        </div>
-
-        <div class="video-meta" style="margin-top: 28px;">
-          <a class="chip-link" href="https://github.com/shoocstorm/ug" target="_blank" rel="noopener">
-            <span class="dot">★</span> github.com/shoocstorm/ug
-          </a>
-          <a class="chip-link" href="https://youtu.be/9Je4T8h1YX8" target="_blank" rel="noopener">
-            <span class="dot">▶</span> watch the demo
-          </a>
-          <a class="chip-link" href="api-reference.html">
-            <span class="dot">⎔</span> API reference
-          </a>
-        </div>
-      </div>
-      <div class="footer-bar">
-        <span class="tip">Last refreshed</span><span class="sep"></span>
-        <span>2026-08-02 · pure Rust binary · canonical tool names (<code>search</code>/<code>traverse</code>) · HTTP API parity · <code>ug tour</code> guided walkthroughs · Graph Walk animated BFS · SSE streaming · <code>ug active</code> · <code>project_overview</code> stats</span>
-      </div>
-    </section>
-
-  </div>
-
-  <div class="hud">
-    <button id="prev" aria-label="Previous">◀</button>
-    <div class="pill"><span id="cur">1</span> / <span id="tot">15</span></div>
-    <button id="next" aria-label="Next">▶</button>
+    </footer>
   </div>
 
   <script>
+    // Theme toggle
     (function () {
-      const slides = Array.from(document.querySelectorAll('.slide'));
-      const total = slides.length;
-      let idx = 0;
-
-      const cur = document.getElementById('cur');
-      const tot = document.getElementById('tot');
-      const progress = document.getElementById('progress');
-      tot.textContent = total;
-
-      function go(n) {
-        idx = Math.max(0, Math.min(total - 1, n));
-        slides.forEach((s, i) => s.classList.toggle('active', i === idx));
-        cur.textContent = idx + 1;
-        progress.style.width = ((idx + 1) / total * 100) + '%';
-        document.title = (slides[idx].dataset.title || 'UltraGraph') + ' · UltraGraph';
-      }
-
-      document.getElementById('prev').addEventListener('click', () => go(idx - 1));
-      document.getElementById('next').addEventListener('click', () => go(idx + 1));
-
-      window.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); go(idx + 1); }
-        else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(idx - 1); }
-        else if (e.key === 'Home') { go(0); }
-        else if (e.key === 'End') { go(total - 1); }
-        else if (/^[1-9]$/.test(e.key)) {
-          const n = parseInt(e.key, 10) - 1;
-          if (n < total) go(n);
-        } else if (e.key === '0') {
-          if (total >= 10) go(9);
-        }
+      const toggle = document.getElementById('themeToggle');
+      if (!toggle) return;
+      toggle.addEventListener('click', () => {
+        const root = document.documentElement;
+        const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem('ug-theme', next); } catch (e) { }
       });
-
-      // touch swipe
-      let tx = 0;
-      window.addEventListener('touchstart', (e) => { tx = e.changedTouches[0].clientX; });
-      window.addEventListener('touchend', (e) => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 60) go(idx + (dx < 0 ? 1 : -1));
-      });
-
-      go(0);
     })();
 
-    // Copy-to-clipboard for install/setup commands. Falls back to a hidden
-    // textarea + execCommand since the Clipboard API needs a secure context
-    // and this page is also opened directly via file://.
+    // Reveal-on-scroll
+    (function () {
+      const els = document.querySelectorAll('.reveal');
+      if (!('IntersectionObserver' in window)) {
+        els.forEach(el => el.classList.add('in'));
+        return;
+      }
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.classList.add('in');
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      els.forEach(el => io.observe(el));
+    })();
+
+    // Show a styled poster in place of the video when opened via file://,
+    // since YouTube embeds are blocked on that origin.
+    (function () {
+      if (location.protocol === 'file:') {
+        const frame = document.getElementById('videoFrame');
+        if (frame) frame.setAttribute('data-offline', '');
+      }
+    })();
+
+    // Copy-to-clipboard
     (function () {
       document.querySelectorAll('.copy-btn[data-copy]').forEach((btn) => {
         btn.addEventListener('click', async () => {
@@ -1847,7 +1329,7 @@
             ta.style.opacity = '0';
             document.body.appendChild(ta);
             ta.select();
-            try { document.execCommand('copy'); } catch {}
+            try { document.execCommand('copy'); } catch { }
             document.body.removeChild(ta);
           }
           const original = btn.textContent;
@@ -1859,19 +1341,6 @@
           }, 1500);
         });
       });
-    })();
-
-    // YouTube embeds error out with code 153 on file:// origins.
-    // Detect that case and swap in the click-through poster.
-    (function () {
-      const isFileProto = location.protocol === 'file:';
-      const iframe = document.getElementById('yt-embed');
-      const fallback = document.getElementById('yt-fallback');
-      if (!iframe || !fallback) return;
-      if (isFileProto) {
-        iframe.remove();
-        fallback.hidden = false;
-      }
     })();
   </script>
 </body>
