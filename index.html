@@ -277,7 +277,31 @@
 
     /* — Hero — */
     .hero {
-      padding: 110px 0 70px;
+      position: relative;
+      padding: 130px 0 96px;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 100vw;
+      transform: translateX(-50%);
+      background:
+        linear-gradient(90deg, rgba(14, 18, 22, .94) 0%, rgba(14, 18, 22, .72) 34%, rgba(14, 18, 22, .28) 62%, rgba(14, 18, 22, 0) 100%),
+        linear-gradient(180deg, rgba(14, 18, 22, .88) 0%, rgba(14, 18, 22, .5) 40%, rgba(14, 18, 22, .22) 72%, rgba(14, 18, 22, .95) 100%),
+        url('UG-Graph.png') center 60% / cover no-repeat;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    html[data-theme="light"] .hero::before {
+      background:
+        linear-gradient(90deg, rgba(246, 244, 238, .96) 0%, rgba(246, 244, 238, .82) 34%, rgba(246, 244, 238, .5) 62%, rgba(246, 244, 238, .25) 100%),
+        linear-gradient(180deg, rgba(246, 244, 238, .9) 0%, rgba(246, 244, 238, .6) 40%, rgba(246, 244, 238, .35) 72%, rgba(246, 244, 238, .95) 100%),
+        url('UG-Graph.png') center 60% / cover no-repeat;
     }
 
     .hero .eyebrow {
