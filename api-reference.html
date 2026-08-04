@@ -163,7 +163,7 @@
   .tab-bar .tab.active { color: var(--teal); border-bottom-color: var(--teal); }
 
   /* ── Content ── */
-  .container { position: relative; z-index: 2; max-width: 1120px; margin: 0 auto; padding: 48px 24px 100px; }
+  .container { position: relative; z-index: 2; max-width: 1620px; margin: 0 auto; padding: 48px 24px 100px; }
   .tab-content { display: none; }
   .tab-content.active { display: block; }
 
@@ -371,22 +371,21 @@
     <table>
       <tr><th>Command</th><th>Aliases</th><th>What it does</th><th>Key flags</th></tr>
       <tr><td><code>ug gen</code></td><td>—</td><td>End-to-end pipeline: index → graph → ingest. Primary entry point.</td><td><code>-i</code> <code>-o</code> <code>-n</code> <code>-c</code> <code>--no-ingest</code> <code>--serve</code> <code>--model</code> <code>--base-url</code></td></tr>
+      <tr><td><code>ug regen</code></td><td><code>reindex</code></td><td>Re-run the pipeline for an existing project (reads the repo root from metadata — no <code>-i</code> needed). <strong>Incremental</strong>: unchanged files are skipped via content hashes, so it's cheap after a few edits.</td><td><code>-n</code> <code>--no-ingest</code> <span class="c-dim">…plus every <code>ug gen</code> option</span></td></tr>
       <tr><td><code>ug index</code></td><td>—</td><td>Index a directory: parse source files into <code>FileNode</code>s. Writes <code>indexed-tree.json</code>.</td><td><code>-i</code> <code>-o</code> <code>-n</code> <code>-c</code></td></tr>
       <tr><td><code>ug graph</code></td><td>—</td><td>Build graph from indexed tree: resolve cross-file imports. Writes <code>graph.json</code>.</td><td><code>-i</code> <code>-o</code> <code>-n</code></td></tr>
       <tr><td><code>ug ingest</code></td><td>—</td><td>Embed graph nodes and write to knowledge stores (OverGraph / Neo4j).</td><td><code>-i</code> <code>-o</code> <code>-n</code> <code>--dest</code> <code>--prune</code> <code>--model</code></td></tr>
     </table>
   </div>
 
-  <h2>1.2 Graph Analysis (graph.json-backed, in-memory)</h2>
+  <h2>1.2 Structural Analysis (graph.json only — no database needed)</h2>
   <p>All accept: <code>-n &lt;name&gt;</code>, <code>-i &lt;file&gt;</code>, <code>--json</code>, <code>-o &lt;file&gt;</code>.</p>
+  <p class="c-dim">K-hop graph walking is <code>ug traverse</code> (§1.4, OverGraph-backed); node-to-node paths are <code>ug shortest_path</code> (§1.3).</p>
   <div class="table-wrap">
     <table>
       <tr><th>Command</th><th>Aliases</th><th>What it does</th><th>Key flags</th></tr>
-      <tr><td><code>ug graph_bfs</code></td><td><code>bfs</code></td><td>K-hop BFS from a node id / name / file path.</td><td><code>&lt;id&gt;</code> <code>-k</code> <code>-d</code> <code>--edge-type</code> <code>-t</code> <code>-f</code> <code>-l</code></td></tr>
-      <tr><td><code>ug graph_filter</code></td><td><code>filter</code></td><td>List edges by type / endpoint. No args: shows edge types + counts.</td><td><code>-t</code> <code>--from</code> <code>--to</code> <code>-f</code> <code>-l</code></td></tr>
-      <tr><td><code>ug graph_path</code></td><td><code>path</code>, <code>shortest_path</code></td><td>Find shortest directed path between two symbols.</td><td><code>&lt;source&gt;</code> <code>&lt;target&gt;</code> <code>--strict</code></td></tr>
-      <tr><td><code>ug graph_centrality</code></td><td><code>centrality</code></td><td>Rank nodes by degree &amp; betweenness centrality.</td><td><code>--top</code> <code>-t</code> <code>-f</code></td></tr>
-      <tr><td><code>ug graph_cycles</code></td><td><code>cycles</code></td><td>Detect dependency cycles.</td><td><code>-l</code> <code>--min-len</code> <code>--max-len</code> <code>-f</code> <code>--fail-on-cycle</code></td></tr>
+      <tr><td><code>ug graph_centrality</code></td><td><code>centrality</code></td><td>Rank nodes by degree &amp; betweenness centrality. (Degree ranking is also <code>ug query dependency_fanin</code>; betweenness is only here.)</td><td><code>--top</code> <code>-t</code> <code>-f</code></td></tr>
+      <tr><td><code>ug graph_cycles</code></td><td><code>cycles</code></td><td>Detect dependency cycles. <code>--fail-on-cycle</code> exits non-zero for CI gates.</td><td><code>-l</code> <code>--min-len</code> <code>--max-len</code> <code>-f</code> <code>--fail-on-cycle</code></td></tr>
     </table>
   </div>
 
@@ -396,10 +395,10 @@
     <table>
       <tr><th>Command</th><th>What it does</th><th>Key flags</th></tr>
       <tr><td><code>ug find_symbols</code></td><td>Exact-name lookup (case-insensitive, ranked exact &gt; prefix &gt; substring).</td><td><code>-n</code> <code>-t</code> <code>-f</code> <code>-l</code> <code>--include-docs</code></td></tr>
-      <tr><td><code>ug graph_search</code></td><td>Same as find_symbols with <code>includeDocs: true</code> by default.</td><td>Same as find_symbols</td></tr>
       <tr><td><code>ug file_outline</code></td><td>List indexed symbols in a file, in line order.</td><td><code>&lt;file&gt;</code> <code>-n</code> <code>--json</code></td></tr>
       <tr><td><code>ug get_code</code></td><td>Read source for a node id or file/line range.</td><td><code>&lt;id&gt;</code> <code>-f</code> <code>--start-line</code> <code>--end-line</code> <code>--max-chars</code></td></tr>
       <tr><td><code>ug find_usages</code></td><td>Find inbound references (callers / importers) to a symbol.</td><td><code>&lt;id&gt;</code> <code>--hops</code> <code>--edge-type</code> <code>-n</code> <code>--json</code></td></tr>
+      <tr><td><code>ug shortest_path</code></td><td>How are two symbols connected? Shortest directed edge path between two node ids.</td><td><code>&lt;source&gt;</code> <code>&lt;target&gt;</code> <code>--strict</code> <code>-n</code> <code>--json</code></td></tr>
       <tr><td><code>ug project_overview</code></td><td>Orient in the codebase: stats, biggest files, most depended-upon symbols.</td><td><code>-n</code> <code>--json</code></td></tr>
       <tr><td><code>ug graph_schema</code></td><td>Node &amp; edge types with counts and connection info.</td><td><code>-n</code> <code>--json</code></td></tr>
     </table>
@@ -414,6 +413,23 @@
       <tr><td><code>ug traverse</code></td><td>—</td><td>K-hop BFS over the OverGraph edges table.</td><td><code>&lt;id&gt;...</code> <code>-k</code> <code>-n</code></td></tr>
       <tr><td><code>ug query</code></td><td>—</td><td><strong>Whole-repo statistics</strong>: counts, groups, distributions, blast radius. 33 named presets or raw GQL. Needs the db but <strong>no embedder</strong>.</td><td><code>&lt;preset&gt;</code> <code>-a k=v</code> <code>-g/--gql</code> <code>-k</code> <code>-r/--range</code> <code>--list</code></td></tr>
     </table>
+  </div>
+
+  <div class="code-block">
+    <div class="titlebar"><span class="label">cli · whole-repo statistics</span><button class="copy-btn" data-copy="ug query long_functions">Copy</button></div>
+    <pre><span class="c-dim">$</span> ug query <span class="c-str">long_functions</span>
+<span class="c-com"># Non-test functions longer than min_loc lines, longest first.</span>
+
+id                                                        <span class="c-dim">loc  nesting</span>
+function:native/src/graph.rs:build_graph_from_index       <span class="c-num">721</span>        <span class="c-num">8</span>
+function:native/src/serve.rs:run_serve                    <span class="c-num">327</span>        <span class="c-num">4</span>
+function:native/src/main.rs:run_upgrade                   <span class="c-num">292</span>        <span class="c-num">3</span>
+function:native/src/main.rs:run_chat                      <span class="c-num">219</span>        <span class="c-num">4</span>
+function:native/src/indexer.rs:index_with_cache           <span class="c-num">162</span>        <span class="c-num">4</span>
+<span class="c-dim">…</span>
+
+<span class="c-teal">rows 1–20 of 172</span>   <span class="c-dim">next: rerun with range "21-40"</span>
+<span class="c-com">coverage: loc 2919/3048 (96%) · is_test 3032/3048 (99%) · max_nesting 2916/3048 (96%)</span></pre>
   </div>
 
   <h2>1.5 Chat &amp; Tour</h2>

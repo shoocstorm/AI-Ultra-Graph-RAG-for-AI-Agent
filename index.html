@@ -1053,6 +1053,219 @@
       opacity: 1;
       transform: translateY(0);
     }
+
+    /* — For agents — */
+    .agent-panel .terminal {
+      max-width: 700px;
+      margin: 0 auto 0 0;
+    }
+
+    .agent-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .agent-chips .micro {
+      background: var(--panel-2);
+      border-color: var(--line-strong);
+      transition: border-color .15s ease, color .15s ease, transform .15s ease, box-shadow .15s ease;
+    }
+
+    .agent-chips .micro:hover {
+      border-color: var(--teal);
+      color: var(--ink);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px -12px rgba(45, 212, 191, .6);
+    }
+
+    /* — Showcase animations — */
+    .showcase-item {
+      position: relative;
+    }
+
+    .gframe .terminal {
+      max-width: none;
+      margin: 0;
+      border: 0;
+      border-radius: 0;
+    }
+
+    .gframe .terminal .titlebar {
+      animation: frameGlow 4s ease-in-out infinite;
+    }
+
+    @keyframes frameGlow {
+      0%, 100% { border-color: var(--line); }
+      50% { border-color: rgba(45, 212, 191, .45); }
+    }
+
+    @keyframes cursorBlink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+
+    .terminal pre .cursor {
+      display: inline-block;
+      width: 8px;
+      height: 16px;
+      background: var(--teal);
+      vertical-align: middle;
+      margin-left: 2px;
+      animation: cursorBlink 1s steps(1) infinite;
+    }
+
+    /* terminal echoes onto the page line by line, run once the section is in view */
+    .reveal.in .terminal pre .tline {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(2px);
+      animation: echoIn .4s ease forwards;
+    }
+
+    .reveal.in .terminal pre .tline:nth-child(1) { animation-delay: .2s; }
+    .reveal.in .terminal pre .tline:nth-child(2) { animation-delay: .55s; }
+    .reveal.in .terminal pre .tline:nth-child(3) { animation-delay: .9s; }
+    .reveal.in .terminal pre .tline:nth-child(4) { animation-delay: 1.25s; }
+    .reveal.in .terminal pre .tline:nth-child(5) { animation-delay: 1.6s; }
+    .reveal.in .terminal pre .tline:nth-child(6) { animation-delay: 1.95s; }
+    .reveal.in .terminal pre .tline:nth-child(7) { animation-delay: 2.3s; }
+    .reveal.in .terminal pre .tline:nth-child(8) { animation-delay: 2.65s; }
+    .reveal.in .terminal pre .tline:nth-child(9) { animation-delay: 3.0s; }
+    .reveal.in .terminal pre .tline:nth-child(10) { animation-delay: 3.35s; }
+    .reveal.in .terminal pre .tline:nth-child(11) { animation-delay: 3.7s; }
+
+    @keyframes echoIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* graph walk: nodes pulse outward along the frame border */
+    .gframe::after {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 22px;
+      pointer-events: none;
+      background: radial-gradient(circle at 18% 30%, rgba(45, 212, 191, .35), transparent 42%);
+      opacity: 0;
+      transition: opacity .5s ease;
+    }
+
+    .gframe:hover::after {
+      opacity: 1;
+      animation: pulseScan 2.2s ease-in-out infinite;
+    }
+
+    @keyframes pulseScan {
+      0%, 100% { transform: scale(.96); opacity: 0; }
+      30% { opacity: 1; }
+      70% { opacity: .4; }
+    }
+
+    /* showcase copy chips get a subtle lift + title ring */
+    .showcase-copy .cmd {
+      transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+    }
+
+    .showcase-item:hover .showcase-copy .cmd {
+      border-color: var(--teal);
+      box-shadow: 0 10px 30px -14px rgba(45, 212, 191, .55);
+      transform: translateY(-1px);
+    }
+
+    /* the gradient frame edge gently drifts, always on */
+    .gframe::before {
+      animation: frameShift 9s ease-in-out infinite;
+    }
+
+    @keyframes frameShift {
+      0%, 100% {
+        filter: hue-rotate(0deg);
+        opacity: .9;
+      }
+      50% {
+        filter: hue-rotate(28deg);
+        opacity: 1;
+      }
+    }
+
+    /* screenshots breathe slowly so the page feels alive */
+    .showcase-item .gframe .inner img {
+      transform-origin: center;
+      animation: breathe 7s ease-in-out infinite;
+    }
+
+    .showcase-item.flip .gframe .inner img {
+      animation-delay: 1.2s;
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.018); }
+    }
+
+    .showcase-item .gframe .inner img:hover {
+      animation-play-state: paused;
+    }
+
+    /* the graph walk gif gets a soft travelling highlight */
+    .showcase-item .gframe .inner {
+      position: relative;
+    }
+
+    .showcase-item .gframe .inner::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(115deg, transparent 30%, rgba(45, 212, 191, .18) 46%, rgba(96, 165, 250, .14) 54%, transparent 70%);
+      background-size: 250% 250%;
+      animation: sheen 6s ease-in-out infinite;
+      opacity: .6;
+    }
+
+    @keyframes sheen {
+      0%, 60%, 100% { background-position: 120% 0; }
+      75% { background-position: -20% 0; }
+    }
+
+    /* Feature 03 view-toggle: switch between the graph screenshot and the CLI demo */
+    .view-tabs {
+      display: flex;
+      gap: 2px;
+      padding: 6px;
+      margin: 0;
+      background: var(--bg-2);
+      border-bottom: 1px solid var(--line);
+      list-style: none;
+    }
+    .view-tab {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .02em;
+      color: var(--slate);
+      background: transparent;
+      border: 0;
+      padding: 6px 13px;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: color .15s ease, background .15s ease;
+    }
+    .view-tab:hover { color: var(--ink-2); }
+    .view-tab.active {
+      color: var(--bg-deep);
+      background: var(--teal);
+    }
+    .view-pane[hidden] { display: none; }
+
+    /* the CLI pane is shown on demand — its lines render statically (no scroll echo) */
+    .reveal.in .terminal.cli-pane pre .tline {
+      opacity: 1;
+      transform: none;
+      animation: none;
+    }
   </style>
 </head>
 
@@ -1066,6 +1279,7 @@
         <a href="#what">What it is</a>
         <a href="#how">How it works</a>
         <a href="#features">Features</a>
+        <a href="#agents">For agents</a>
         <a href="#showcase">In action</a>
         <a href="#demo">Demo</a>
       </div>
@@ -1196,11 +1410,7 @@
       <div class="feat-grid">
         <div class="feat reveal">
           <div class="check">✓</div>
-          <div><h3>Works for code &amp; docs</h3><p>Source code or markdown/PDF collections both index into the same graph model.</p></div>
-        </div>
-        <div class="feat reveal">
-          <div class="check">✓</div>
-          <div><h3>7 languages out of the box</h3><p>TypeScript, JavaScript, Python, Java, Rust, Markdown and PDF.</p></div>
+          <div><h3>7 languages out of the box</h3><p>TypeScript, JavaScript, Python, Java, Rust, Markdown and PDF — all into one graph model.</p></div>
         </div>
         <div class="feat reveal">
           <div class="check">✓</div>
@@ -1208,16 +1418,47 @@
         </div>
         <div class="feat reveal">
           <div class="check">✓</div>
-          <div><h3>Agent-ready via MCP</h3><p>Wire any AI agent in one command and give it tools like search, traverse and find_symbols.</p></div>
+          <div><h3>Incremental &amp; instant</h3><p><code>ug regen</code> re-indexes only the files that changed — blake3-hashed and cached, so re-runs stay near-instant.</p></div>
         </div>
         <div class="feat reveal">
           <div class="check">✓</div>
-          <div><h3>Whole-repo statistics</h3><p>Counts, rankings and blast-radius answers with <code>ug query</code> — no reading every file.</p></div>
+          <div><h3>Local-first &amp; private</h3><p>One binary ships the graph view, REST API and chat UI. Your code never leaves your machine.</p></div>
         </div>
-        <div class="feat reveal">
-          <div class="check">✓</div>
-          <div><h3>Zero setup</h3><p>One binary ships the graph view, REST API and chat UI. Nothing extra to install.</p></div>
+      </div>
+    </section>
+
+    <!-- FOR AGENTS -->
+    <section id="agents">
+      <div class="sec-head reveal">
+        <span class="sec-tag">For AI agents</span>
+        <h2>Wire any agent in <em>one command</em>.</h2>
+        <p>Claude, Cursor, Windsurf, Codex, Gemini — or any MCP client. <strong>ug installs the config</strong>, and the agent gets the whole graph as tools.</p>
+      </div>
+      <div class="agent-panel reveal">
+        <div class="terminal">
+          <div class="titlebar">
+            <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+            <span class="t">ug connect --mcp</span>
+            <button class="copy-btn" data-copy="ug connect --mcp">Copy</button>
+          </div>
+          <pre><span class="tline"><span class="prompt">$</span> ug connect --mcp</span>
+<span class="tline"><span class="ok">✓</span> <span class="dim">MCP server registered for</span> cursor</span>
+<span class="tline"><span class="ok">✓</span> <span class="dim">config →</span> ~/.cursor/mcp.json</span>
+<span class="tline"><span class="ok">✓</span> <span class="dim">the agent now sees the whole graph:</span> search · traverse · code_query · get_code …</span>
+<span class="tline"><span class="cmt"># “how many functions are longer than 50 lines?”</span></span>
+<span class="tline"><span class="ok">$ code_query</span> <span class="dim">long_functions</span> → <span class="ok">143 of 1162 (12.3%)</span><span class="cursor"></span></span></pre>
         </div>
+      </div>
+      <div class="agent-chips reveal">
+        <span class="micro">claude</span>
+        <span class="micro">claude-desk</span>
+        <span class="micro">cursor</span>
+        <span class="micro">windsurf</span>
+        <span class="micro">vscode</span>
+        <span class="micro">codex</span>
+        <span class="micro">gemini</span>
+        <span class="micro">hermes</span>
+        <span class="micro">opencode</span>
       </div>
     </section>
 
@@ -1225,8 +1466,8 @@
     <section id="showcase">
       <div class="sec-head reveal">
         <span class="sec-tag">In action</span>
-        <h2>Three features, <em>straight from the UI</em>.</h2>
-        <p>Real screens of the graph web app — the things you'll use every day.</p>
+        <h2>Three features, <em>live</em>.</h2>
+        <p>Real screens and real output — the things you'll use every day.</p>
       </div>
 
       <div class="showcase">
@@ -1257,13 +1498,50 @@
 
         <div class="showcase-item reveal">
           <div class="gframe">
-            <div class="inner"><img src="UG-Guided-Tour.png" alt="Guided Tour — narrated walkthrough in UltraGraph" loading="lazy" /></div>
+            <div class="inner">
+              <div class="view-tabs" role="tablist">
+                <button class="view-tab active" type="button" data-view="image">Web app</button>
+                <button class="view-tab" type="button" data-view="cli">Terminal</button>
+              </div>
+              <div class="view-pane" data-pane="image">
+                <img src="UG-Query.png" alt="ug query results in the UltraGraph web app — whole-repo statistics" loading="lazy" />
+              </div>
+              <div class="view-pane" data-pane="cli" hidden>
+                <div class="terminal cli-pane">
+                  <div class="titlebar">
+                    <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+                    <span class="t">ug query long_functions</span>
+                    <button class="copy-btn" data-copy="ug query long_functions">Copy</button>
+                  </div>
+                  <pre><span class="tline"><span class="prompt">$</span> ug query long_functions</span>
+<span class="tline">&nbsp;</span>
+<span class="tline"><span class="cmt">✦  U L T R A  G R A P H  ·  whole-repo statistics  ✦</span></span>
+<span class="tline">&nbsp;</span>
+<span class="tline"><span class="dim">long_functions</span> — non-test functions longer than min_loc lines, longest first.</span>
+<span class="tline">&nbsp;</span>
+<span class="tline"><span class="dim">id                                                    loc  nesting</span></span>
+<span class="tline">function:native/src/graph.rs:build_graph_from_index   <span class="ok">721</span>        <span class="dim">8</span></span>
+<span class="tline">function:native/src/serve.rs:run_serve                <span class="ok">327</span>        <span class="dim">4</span></span>
+<span class="tline">function:native/src/main.rs:run_upgrade               <span class="ok">292</span>        <span class="dim">3</span></span>
+<span class="tline">function:native/src/main.rs:run_chat                  <span class="ok">219</span>        <span class="dim">4</span></span>
+<span class="tline">function:native/src/main.rs:ingest_graph_with_progr…  <span class="ok">199</span>        <span class="dim">3</span></span>
+<span class="tline">function:native/src/indexer.rs:index_with_cache       <span class="ok">162</span>        <span class="dim">4</span></span>
+<span class="tline">function:native/src/mcp/tools.rs:raw_tools            <span class="ok">150</span>        <span class="dim">0</span></span>
+<span class="tline">function:native/src/indexer/classifier.rs:classify_…  <span class="ok">147</span>        <span class="dim">2</span></span>
+<span class="tline">…                                                     <span class="dim">(164 more)</span></span>
+<span class="tline">&nbsp;</span>
+<span class="tline"><span class="ok">rows 1–20 of 172</span>   <span class="dim">→  rerun with range "21-40"</span></span>
+<span class="tline">&nbsp;</span>
+<span class="tline"><span class="cmt">coverage · loc 2919/3048 (96%) · is_test 3032/3048 (99%) · max_nesting 2916/3048 (96%)</span><span class="cursor"></span></span></pre>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="showcase-copy">
-            <span class="tag">Feature 03 · Guided Tour</span>
-            <h3>A narrated <em>walkthrough</em> of any question.</h3>
-            <p>GraphRAG picks the nodes that matter, an LLM guide turns them into a story, and the web UI flies the camera stop by stop. Explore your codebase the way you'd be walked through it.</p>
-            <div class="cmd"><span class="ps">$</span> ug tour "authentication flow"</div>
+            <span class="tag">Feature 03 · Whole-repo statistics</span>
+            <h3>One command answers the <em>whole-repo</em> question.</h3>
+            <p>“How many methods are longer than 50 lines?” — a question that costs 500k tokens by grep-and-read is answered here in one call and about a hundred tokens. Counts, rankings, distributions and blast radius, over the graph ug already indexed.</p>
+            <div class="cmd"><span class="ps">$</span> ug query long_functions</div>
           </div>
         </div>
 
@@ -1363,6 +1641,24 @@
             btn.textContent = original;
             btn.classList.remove('copied');
           }, 1500);
+        });
+      });
+    })();
+
+    // Feature 03 view-toggle (Graph screenshot ↔ Terminal demo)
+    (function () {
+      document.querySelectorAll('.view-tabs').forEach(function (tabs) {
+        var scope = tabs.parentElement;
+        tabs.addEventListener('click', function (e) {
+          var btn = e.target.closest('.view-tab');
+          if (!btn) return;
+          var view = btn.dataset.view;
+          tabs.querySelectorAll('.view-tab').forEach(function (b) {
+            b.classList.toggle('active', b === btn);
+          });
+          scope.querySelectorAll('.view-pane').forEach(function (pane) {
+            pane.hidden = pane.dataset.pane !== view;
+          });
         });
       });
     })();
