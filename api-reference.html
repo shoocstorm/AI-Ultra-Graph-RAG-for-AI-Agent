@@ -374,7 +374,7 @@
       <tr><td><code>ug regen</code></td><td><code>reindex</code></td><td>Re-run the pipeline for an existing project (reads the repo root from metadata — no <code>-i</code> needed). <strong>Incremental</strong>: unchanged files are skipped via content hashes, so it's cheap after a few edits.</td><td><code>-n</code> <code>--no-ingest</code> <span class="c-dim">…plus every <code>ug gen</code> option</span></td></tr>
       <tr><td><code>ug index</code></td><td>—</td><td>Index a directory: parse source files into <code>FileNode</code>s. Writes <code>indexed-tree.json</code>.</td><td><code>-i</code> <code>-o</code> <code>-n</code> <code>-c</code></td></tr>
       <tr><td><code>ug graph</code></td><td>—</td><td>Build graph from indexed tree: resolve cross-file imports. Writes <code>graph.json</code>.</td><td><code>-i</code> <code>-o</code> <code>-n</code></td></tr>
-      <tr><td><code>ug ingest</code></td><td>—</td><td>Embed graph nodes and write to knowledge stores (OverGraph / Neo4j).</td><td><code>-i</code> <code>-o</code> <code>-n</code> <code>--dest</code> <code>--prune</code> <code>--model</code></td></tr>
+      <tr><td><code>ug ingest</code></td><td>—</td><td>Embed graph nodes and write to knowledge stores (OverGraph / Neo4j). Defaults resolve from active project (`<code>ug active</code>`), else cwd basename.</td><td><code>-n</code> <code>-i</code> <code>-o</code> <code>--dest</code> <code>--prune</code> <code>--model</code></td></tr>
     </table>
   </div>
 
@@ -473,6 +473,61 @@ function:native/src/indexer.rs:index_with_cache           <span class="c-num">16
 
 </div>
 
+<!-- ═══════════════════════════ PROJECTION & PROJECT RESOLUTION ═══════════════════════════ -->
+<div class="tab-content" id="tab-cli">
+<div class="separator">— — —</div>
+
+<h2>1.9 Project Resolution & Active Project Fallback</h2>
+<p>Commands need to resolve a project name to read <code>graph.json</code> and/or write/load the OverGraph store (<code>ugdb</code>). The order varies by command group:</p>
+
+<h3>Resolution Order by Command Group</h3>
+<table class="data-table">
+  <tr><th>Command Group</th><th>Resolution Order</th><th>Notes</th></tr>
+  <tr>
+    <td><code>gen</code>, <code>index</code>, <code>graph</code></td>
+    <td><code>-n/--name</code> → derive from input path</td>
+    <td>Generate commands must use cwd when no <code>-n</code> (they create a new project)</td>
+  </tr>
+  <tr>
+    <td><code>regen</code></td>
+    <td><code>-n</code> → <strong>active project</strong> → cwd basename</td>
+    <td>Rebuilds existing project; honors user's pinned active project</td>
+  </tr>
+  <tr>
+    <td><code>ingest</code></td>
+    <td><code>-n</code> → <strong>active project</strong> → cwd basename</td>
+    <td>Reads graph.json and writes ugdb from the active project by default</td>
+  </tr>
+  <tr>
+    <td>Read commands<br/>(<code>semantic_search</code>, <code>search</code>, <code>traverse</code>, <code>chat</code>, <code>tour</code>, <code>query</code>, <code>graph_centrality</code>, <code>graph_cycles</code>)</td>
+    <td><code>-n</code> → <strong>active project</strong> → cwd basename → most-recent</td>
+    <td>Now consistent with <code>regen</code>/<code>ingest</code></td>
+  </tr>
+  <tr>
+    <td><code>server</code>, <code>app</code>, <code>mcp</code></td>
+    <td><code>-n</code> → <strong>active project</strong> → cwd</td>
+    <td>Always opens the active project</td>
+  </tr>
+  <tr>
+    <td>Any command with <code>-i/--input</code></td>
+    <td><code>-i</code> wins</td>
+    <td>Bypasses all project logic</td>
+  </tr>
+</table>
+
+<h3><code>default_read_db_path()</code> Fallback Chain</h3>
+<p>When no <code>-n/--name</code> flag is provided, the store/db path resolves through:</p>
+<div class="code-block" style="background:#1e1e1e;padding:16px;border-radius:6px;font-family:Consolas,Mono,monospace;font-size:13px;line-height:1.6">
+  1. active project's ~/.ug/&lt;active&gt;/ugdb      ← honored first<br/>
+  2. cwd-basename ugdb (if exists)<br/>
+  3. legacy ~/.ug/ugdb                          ← deprecated path<br/>
+  4. most-recently-updated project's ugdb       ← last resort<br/>
+  5. cwd-basename ugdb (always exists, may be empty)
+</div>
+<p>This chain ensures that commands like <code>ug search "query"</code> or <code>ug chat "what is X"</code> run from an arbitrary directory will automatically pick the project the user previously pinned with <code>ug active &lt;name&gt;</code> rather than silently using the cwd or a random "most-recent" project.</p>
+
+</div>
+
 <!-- ═══════════════════════════ HTTP API ═══════════════════════════ -->
 <div class="tab-content" id="tab-http">
   <span class="tag-head">HTTP</span>
@@ -495,7 +550,7 @@ function:native/src/indexer.rs:index_with_cache           <span class="c-num">16
       <tr><td><code>GET</code></td><td><code>/api/projects</code></td><td>List all projects under ~/.ug with stats</td></tr>
       <tr><td><code>POST</code></td><td><code>/api/projects/select</code></td><td>Switch the active project at runtime</td></tr>
       <tr><td><code>POST</code></td><td><code>/api/projects/delete</code></td><td>Delete a project</td></tr>
-      <tr><td><code>GET</code></td><td><code>/api/projects/staleness</code></td><td>Per-project staleness report (changed/deleted files vs graph.json mtime)</td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/projects/staleness</code></td><td>Per-project staleness report (changed/deleted files vs graph.json mtime). Reports <code>repoMissing: true</code> with zero counts when the repo root is gone — never a misleading "N files deleted".</td></tr>
     </table>
   </div>
 
@@ -505,6 +560,7 @@ function:native/src/indexer.rs:index_with_cache           <span class="c-num">16
       <tr><th>Method</th><th>Path</th><th>What it does</th></tr>
       <tr><td><code>POST</code></td><td><code>/api/generate</code></td><td>Kick off <code>ug gen</code> as a background job. Streams log via SSE.</td></tr>
       <tr><td><code>GET</code></td><td><code>/api/generate/status</code></td><td>Check status of a gen job.</td></tr>
+      <tr><td><code>POST</code></td><td><code>/api/ingest</code></td><td>Re-embed an indexed project (UI "Ingest now"). Poll with <code>/api/generate/status</code>. A store that can't be opened is wiped and rebuilt automatically.</td></tr>
       <tr><td><code>GET</code></td><td><code>/api/browse-dir</code></td><td>List files/dirs for the KB Manager file picker.</td></tr>
     </table>
   </div>
@@ -540,7 +596,7 @@ function:native/src/indexer.rs:index_with_cache           <span class="c-num">16
   <div class="table-wrap">
     <table>
       <tr><th>Method</th><th>Path</th><th>What it does</th><th>503 when</th></tr>
-      <tr><td><code>GET</code></td><td><code>/api/file</code></td><td>Read source file content for the Preview tab. Falls back to OverGraph stored code.</td><td>No project</td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/file</code></td><td>Read source file content for the Preview tab: the live file first, falling back to the indexed copy in ugdb when the repo path is gone. Response carries <code>"source": "filesystem"|"db"</code>.</td><td>No project</td></tr>
     </table>
   </div>
 
